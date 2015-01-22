@@ -21,33 +21,33 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 ```js
 
     let fib = func(a, amount)      // Functions...
-      if(a === 0 or a === 1)
-        ret amount;
-      end;
-      ret fib(a - 1, amount * a);
+        if(a === 0 or a === 1)
+            ret amount;
+        end;
+        ret fib(a - 1, amount * a);
     end;
 
     let z = fib(3, 1);
 
     let Circle = <<                // And Objects!
-      radius: 0, 
-      location: << 
-        x: 0, 
-        y: 0,
-        toString: func()
-          ret "x: " + x + " y: " + y;
+        radius: 0, 
+        location: << 
+            x: 0, 
+            y: 0,
+            toString: func()
+                ret "x: " + x + " y: " + y;
+            end
+        >>,
+        getRadius: func()
+            ret self.radius;
+        end,
+        getLocation: func()
+            ret self.location;
+        end,
+        setLocation: func(x, y)
+            self["location"].x = x;
+            self["location"].y = y;
         end
-      >>,
-      getRadius: func()
-        ret self.radius;
-      end,
-      getLocation: func()
-        ret self.location;
-      end,
-      setLocation: func(x, y)
-        self["location"].x = x;
-        self["location"].y = y;
-      end
     >>;
 
     let Dot = new Circle();        // Constructors and extensibility
@@ -61,17 +61,17 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
     let fooBarCommentYACBL = new Dot();
 
     draw(<< 
-      x: 6, 
-      y: 10, 
-      width: 50, 
-      height: 20, 
-      color: "red", 
-      size: 9, 
-      << 
-        stroke_style: "dashed", 
-        freq: 0.5, 
-        color: "red"
-      >>
+        x: 6, 
+        y: 10, 
+        width: 50, 
+        height: 20, 
+        color: "red", 
+        size: 9, 
+        << 
+            stroke_style: "dashed", 
+            freq: 0.5, 
+            color: "red"
+        >>
     >>);
 
     fill(dotExample);
@@ -89,13 +89,13 @@ Naturally, you can loop in _AverageScript_:
     let c = false;
     let list = [5, 7, 0];
     while( not c )
-      c = true;
-      for( i : list )
-        if( x[i] > 0 )
-          x[i]--;
+        c = true;
+        for( i : list )
+            if( x[i] > 0 )
+                x[i]--;
+            end;
+            c = c and (x[i] === 0);
         end;
-        c = c and (x[i] === 0);
-      end;
     end;
 
 ```
@@ -106,11 +106,11 @@ Conditionals look a tad different, however.
 
     let x = parseInt( input("Please enter a number") );
     if( x > 0 )
-      console.log("Feeling positive?");
+        console.log("Feeling positive?");
     maybe( x === 0 )
-      console.log("Zero? Really?");
+        console.log("Zero? Really?");
     otherwise
-      console.log("Don't be so negative");
+        console.log("Don't be so negative");
     end;
 
 ```
