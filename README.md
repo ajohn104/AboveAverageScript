@@ -130,4 +130,4 @@ Minor notes:
 * Camel Casing is preferred  
 * Spacing norm is 4 spaces (NOT TABS)  
 * Expect the average
-* Not sure if you should use a semicolon? Use it.
+* Not sure if you should use a semicolon? Use it
