@@ -127,6 +127,6 @@ Comments are casual.
 
 
 Minor notes:  
-..* Camel Casing is preferred  
-..* Spacing norm is 4 spaces (NOT TABS)  
-..* Expect the average
+* Camel Casing is preferred  
+* Spacing norm is 4 spaces (NOT TABS)  
+* Expect the average
