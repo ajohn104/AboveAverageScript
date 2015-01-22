@@ -126,6 +126,6 @@ Comments are casual.
 
     let TeaScript = "Awesome";            // Shoutouts!
     CoffeeScript = "Casual";              // Variables can be declared without let,
-                                          // but its far less clear.
+    $ = "$";                              // but its far less clear.
 
 ```
