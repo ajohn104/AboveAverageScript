@@ -1,0 +1,143 @@
+Based in Javascript
+
+-------------------------------------
+functions
+
+
+let fib = func(a)
+
+
+end;
+
+fib(3);
+
+-------------------------------------
+Objects
+
+
+Object          ::= '<<' (PropertyPair (',' PropertyPair)* )? '>>'
+PropertyPair    ::= ('true' | 'false' | IntLit | StringLit | Id) ':' Exp
+
+
+
+let Circle = << 
+    radius: 0, 
+    location: << 
+        x: 0, 
+        y: 0,
+        toString: func()
+            ret "x: " + x + " y: " + y;
+        end
+    >>,
+    getRadius: func()
+        ret self.radius;
+    end,
+    getLocation: func()
+        ret self.location;
+    end,
+    setLocation: func(x, y)
+        self["location"].x = x;
+        self["location"].y = y;
+    end
+>>;
+
+let Dot = new Circle();
+dot.radius = 50;
+dot.location['x'] = 6;
+
+let Dot = new Circle();
+Dot.strokeIsDashed = true;
+Dot.color = "rgb(0,0,0)";
+
+let foodog = new Dot();
+
+
+
+draw(<< x: 6, y: 10, width: 50, height: 20, color: "red", size: 9, << stroke_style: "dashed", freq: 0.5, color: "red">>>>);
+
+-------------------------------------
+while loops
+
+
+while(rrfsf)
+
+
+end;
+
+------------------------------------
+variable declaration
+
+
+let x = fib(5) + 70;
+
+------------------------------------
+variable assignment
+
+
+x = fib(5);
+
+------------------------------------
+for loops
+
+'for (' (('let')? Id '=' Exp ';')? Exp ';' Stmt ')' Block end
+
+for(i < 5; i+=2)
+
+
+end;
+
+for(i = 0; true; i++)
+
+
+end;
+
+for(j : list)
+
+
+end;
+
+------------------------------------
+Arrays
+
+
+let x = [6,6,5];
+x[2] = 6;
+
+------------------------------------
+Conditionals
+
+
+if(boolexpr)
+
+    block
+
+maybe(boolexpr)
+
+    block
+
+otherwise
+
+    block
+
+end;
+
+
+if booleanExpr Block (maybe booleanexpr block)* (otherwise block)? end
+
+------------------------------------
+Operators
+
+
+THE NORM for numbers
+
+for booleans:
+
+not, or, and
+
+------------------------------------
+Comments
+
+
+// As usual.
+
+------------------------------------
