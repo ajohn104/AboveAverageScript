@@ -6,12 +6,13 @@ Here's some basic variable code:
 
 ```js
 
-    let x = 70;
-    x++;
-    let y = 60;
-    y += x;
-    let a = (x > y);
-    let b = not a;
+    let a = 70;
+    a++;
+    let b = 60;
+    b += a;
+    let c = (a > b);
+    let d = not c;
+    c, d = d, c;                   // The swap is real.
 
 ```
 
@@ -19,14 +20,14 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 
 ```js
 
-    let fib = func(a, amount)     // Functions...
+    let fib = func(a, amount)      // Functions...
         if(a === 0 or a === 1)
             ret amount;
         end;
         ret fib(a - 1, amount * a);
     end;
 
-    let z = fib( 3, 1);
+    let z = fib(3, 1);
 
     let Circle = <<                // And Objects!
         radius: 0, 
@@ -71,7 +72,7 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
               color: "red"
             >>
         >>);
-        
+
     fill(dotExample);
 
 ````
