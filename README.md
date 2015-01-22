@@ -49,13 +49,13 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
         end
     >>;
 
-    let Dot = new Circle();
-    dot.radius = 50;
-    dot.location['x'] = 6;
+    let Dot = new Circle();        // Constructors and extensibility
+    Dot["strokeIsDashed"] = true;
+    Dot["color"] = "rgb(0,0,0)";
 
-    let Dot = new Circle();
-    Dot.strokeIsDashed = true;
-    Dot.color = "rgb(0,0,0)";
+    let dotExample = new Dot();
+    dotExample.radius = 50;
+    dotExample.location['x'] = 6;
 
     let fooBarCommentYACBL = new Dot();
 
@@ -71,6 +71,8 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
               color: "red"
             >>
         >>);
+        
+    fill(dotExample);
 
 ````
 
