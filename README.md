@@ -19,7 +19,7 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 
 ```js
 
-    let fib = func(a, amount)
+    let fib = func(a, amount)     // Functions...
         if(a === 0 or a === 1)
             ret amount;
         end;
@@ -27,10 +27,8 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
     end;
 
     let z = fib( 3, 1);
-    
 
-    
-    let Circle = << 
+    let Circle = <<                // And Objects!
         radius: 0, 
         location: << 
             x: 0, 
