@@ -1,5 +1,10 @@
 Based in Javascript
 
+-> Need to add "instanceof" variant
+-> Need to fix Object/Prototype inheritance?
+-> Need to change << >> to something else, to make it prettier
+-> Need to add built-in's?
+
 -------------------------------------
 functions
 
