@@ -124,3 +124,9 @@ Comments are casual.
     $ = "$";                       // but its far less clear.
 
 ```
+
+
+Minor notes:
+..* Camel Casing is preferred
+..* Spacing norm is 4 spaces (NOT TABS)
+..* Expect the average
