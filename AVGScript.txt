@@ -59,10 +59,10 @@ draw(<< x: 6, y: 10, width: 50, height: 20, color: "red", size: 9, << stroke_sty
 while loops
 
 
-while(rrfsf)
+    while(rrfsf)
 
 
-end;
+    end;
 
 ------------------------------------
 variable declaration
@@ -75,6 +75,7 @@ variable assignment
 
 
 x = fib(5);
+x, y = y, x;
 
 ------------------------------------
 for loops
