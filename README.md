@@ -24,10 +24,10 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
         if(a === 0 or a === 1)
             ret amount;
         end;
-        ret fib(a -1, amount * a);
+        ret fib(a - 1, amount * a);
     end;
 
-    let z = fib(3, 1);
+    let z = fib( 3, 1);
     
 
     
@@ -62,18 +62,18 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 
     let fooBarCommentYACBL = new Dot();
 
-    draw( << x: 6, 
-                  y: 10, 
-                  width: 50, 
-                  height: 20, 
-                  color: "red", 
-                  size: 9, 
-                  << 
-                      stroke_style: "dashed", 
-                      freq: 0.5, 
-                      color: "red"
-                  >>
-             >>);
+    draw(<< x: 6, 
+            y: 10, 
+            width: 50, 
+            height: 20, 
+            color: "red", 
+            size: 9, 
+            << 
+              stroke_style: "dashed", 
+              freq: 0.5, 
+              color: "red"
+            >>
+        >>);
 
 ````
 
@@ -125,6 +125,7 @@ Comments are casual.
 ```js
 
     let TeaScript = "Awesome";            // Shoutouts!
-    CoffeeScript = "Casual";                // Variables can be declared without let, but its far less clear.
+    CoffeeScript = "Casual";              // Variables can be declared without let,
+                                          // but its far less clear.
 
 ```
