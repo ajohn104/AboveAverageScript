@@ -1,5 +1,4 @@
 #AverageScript
--
 
 Running on Javascript, _AverageScript_ is a combination of ECMAScript 6, Python, and Lua, with some random changes on the side. Let's get started.
 
