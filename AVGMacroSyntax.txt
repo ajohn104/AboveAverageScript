@@ -2,7 +2,7 @@ Program     ::= Block
 Block       ::= (Stmt ';')+
 Stmt        ::= 'let' Id (',' Id)* '=' Exp
              |  Id (',' Id)* '=' Exp (',' Exp)*
-             |  Exp
+             |  Exp (',' Exp)*
              |  'while(' Exp ')' Block 'end'
              |  'for(' (('let')? Id '=' Exp ';')? Exp ';' Stmt ')' Block 'end'
              |  'if(' Exp ')' Block ('maybe(' Exp ')' Block)* ('otherwise' Block)? 'end'
