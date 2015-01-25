@@ -12,7 +12,7 @@ Here's some basic variable code:
     b += a;
     let c = (a > b);
     let d = not c;
-    c, d = d, c;                   // The swap is real.
+    c, d = d, c;                    // The swap is real.
 
 ```
 
@@ -37,7 +37,7 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 
         self.cry = func() 
 
-            alert("COCKADOODLEDOO");
+            alert("COCKADOODLEDOO!");
 
         end
     
@@ -58,9 +58,12 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 
     end;
 
-    let Dot = new Circle(0, 0, 5); // Adding properties to existing object... 
+    let Dot = new Circle(0, 0, 5); // Adding properties to an existing object... 
     Dot["strokeIsDashed"] = true;
     Dot["color"] = "rgb(0,0,0)";
+	
+	let dotExample = Object.create(Dot); // Inheritance...
+	dotExample.radius = 50;
     
     draw(<< 
         x: 6, 
