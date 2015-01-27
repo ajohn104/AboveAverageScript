@@ -1,22 +1,23 @@
 Program     ::= Block
 Block       ::= (Stmt ';')+
-Stmt        ::= 'let' Id (',' Id)* '=' Exp
-             |  Id (',' Id)* '=' Exp (',' Exp)*
-             |  Exp (',' Exp)*
+Stmt        ::= Exp (',' Exp)*
              |  'while(' Exp ')' Block 'end'
-             |  'for(' (('let')? Id '=' Exp ';')? Exp ';' Stmt ')' Block 'end'
+             |  'for(' (('let')? Id '=' Exp ';')? Exp ';' Exp ')' Block 'end'
              |  'if(' Exp ')' Block ('maybe(' Exp ')' Block)* ('otherwise' Block)? 'end'
 Exp         ::= Exp1 ('or' Exp1)*
-Exp1        ::=  Exp2 ('and' Exp2)*
-Exp2        ::=  Exp3 (('<' | '<=' | '==' | '!=' | '>=' | '>') Exp3)?
-Exp3        ::=  Exp4 ([+-] Exp4)*
-Exp4        ::=  Exp5 ([*/] Exp5)*
-Exp5        ::=  ('not' | '-')? Exp6
-Exp6        ::=  'true' | 'false' | Intlit | '(' Exp ')' | Func | Array | Object | Call | Ref
-Func        ::=  'func(' (Id (',' Id)*)? ')' Block 'end'
-Array       ::=  '[' (Exp (',' Exp)?)* ']'
+Exp1        ::= Exp2 ('and' Exp2)*
+Exp2        ::= Exp3 (('<' | '<=' | '==' | '!=' | '>=' | '>') Exp3)?
+Exp3        ::= Exp4 ([+-] Exp4)*
+Exp4        ::= Exp5 ([*/] Exp5)*
+Exp5        ::= ('not' | '-')? Exp6
+Exp6        ::= BoolLit | Intlit | StringLit | '(' Exp ')' | Func | Array | Object | Call | Ref | Decl | Asmt
+Func        ::= 'func(' (Id (',' Id)*)? ')' Block 'end'
+Array       ::= '[' (Exp (',' Exp)?)* ']'
+Asmt        ::= Id (',' Id)* '=' Exp (',' Exp)*
+Decl        ::= 'let' Id (',' Id)* '=' Exp
 Object      ::= '<<' (Prop (',' Prop)* )? '>>'
 ValRef      ::= 'true' | 'false' | Id
 Prop        ::= (ValRef | StringLit | IntLit) ':' Exp
 Call        ::= Id '(' (Exp (',' Exp)?)* ')'
 Ref         ::= Id (('.' ValRef) | ('[' (ValRef | StringLit | IntLit) ']'))
+BoolLit     ::= 'true' | 'false'
