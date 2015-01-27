@@ -12,7 +12,7 @@ Here's some basic variable code:
     b += a;
     let c = (a > b);
     let d = not c;
-    c, d = d, c;                   // The swap is real.
+    c, d = d, c;                    // The swap is real.
 
 ```
 
@@ -20,7 +20,7 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 
 ```js
 
-    let fib = func(a, amount)      // Functions...
+    let fib = func(a, amount)       // Functions...
         if(a === 0 or a === 1)
             ret amount;
         end;
@@ -29,37 +29,42 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 
     let z = fib(3, 1);
 
-    let Circle = <<                // And Objects!
-        radius: 0, 
-        location: << 
-            x: 0, 
-            y: 0,
-            toString: func()
-                ret "x: " + x + " y: " + y;
-            end
-        >>,
-        getRadius: func()
-            ret self.radius;
-        end,
-        getLocation: func()
-            ret self.location;
-        end,
-        setLocation: func(x, y)
-            self["location"].x = x;
-            self["location"].y = y;
+    let Chicken = <<                // Object creation!
+
+        self.breed = "Bantam",
+        self.gender = "Male",
+        self.eggsLaid = 14,
+
+        self.cry = func() 
+
+            alert("COCKADOODLEDOO!");
+
         end
+    
     >>;
 
-    let Dot = new Circle();        // Constructors and extensibility
+    let Circle = func(x, y, radius) // Object prototyping!
+
+        self.x = x;
+        self.y = y;
+        self.radius = radius;
+
+        self.setLocation = func(x, y)
+
+            self.x = x;
+            self.y = y;
+
+        end;
+
+    end;
+
+    let Dot = new Circle(0, 0, 5); // Adding properties to an existing object... 
     Dot["strokeIsDashed"] = true;
     Dot["color"] = "rgb(0,0,0)";
-
-    let dotExample = new Dot();
-    dotExample.radius = 50;
-    dotExample.location['x'] = 6;
-
-    let fooBarCommentYACBL = new Dot();
-
+	
+	let dotExample = Object.create(Dot); // Inheritance...
+	dotExample.radius = 50;
+    
     draw(<< 
         x: 6, 
         y: 10, 
@@ -73,8 +78,6 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
             color: "red"
         >>
     >>);
-
-    fill(dotExample);
 
 ````
 
