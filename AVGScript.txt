@@ -4,6 +4,7 @@ Based in Javascript
 -> Need to fix Object/Prototype inheritance?
 -> Need to change << >> to something else, to make it prettier
 -> Need to add built-in's?
+-> We lack break, etc.
 
 -------------------------------------
 functions
