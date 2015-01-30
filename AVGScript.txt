@@ -5,6 +5,7 @@ Based in Javascript
 -> Need to change << >> to something else, to make it prettier
 -> Need to add built-in's?
 -> We lack break, etc.
+-> We lack syntax for regex. In javascript its /(stuff)/. It isn't a string.
 
 -------------------------------------
 functions
