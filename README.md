@@ -32,14 +32,14 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 
     let z = fib(3, 1);                           var z = fib(3, 1);
 
-    let Chicken = <<                             var Chicken = {
+    let Chicken = {                              var Chicken = {
         breed: "Bantam",                             breed: "Bantam",
         gender: "Male",                              gender: "Male",
         eggsLaid: 14,                                eggsLaid: 14,
         cry: func()                                  cry: function() {
             console.log("COCKADOODLEDOO!");              console.log("COCKADOODLEDOO!");
         end                                          }
-    >>;                                          };
+    };                                           };
 
     let Circle = func(x, y, radius)              var Circle = function(x, y, radius) {
         self.x = x;                                  this.x = x;
@@ -58,19 +58,19 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 	let dotExample = Object.create(Dot);         var dotExample = Object.create(Dot);
 	dotExample.radius = 50;                      dotExample.radius = 50;
     
-    draw(<<                                      draw( {
+    draw({                                       draw( {
         x: 6,                                        x: 6, 
         y: 10,                                       y: 10, 
         width: 50,                                   width: 50,
         height: 20,                                  height: 20,
         color: "red",                                color: "red", 
         size: 9,                                     size: 9,
-        <<                                           {
+        {                                            {
             stroke_style: "dashed",                      stroke_style: "dashed", 
             freq: 0.5,                                   freq: 0.5, 
             color: "red"                                 color: "red"
-        >>                                           }
-    >>);                                         } );
+        }                                            }
+     });                                         } );
 
 ````
 

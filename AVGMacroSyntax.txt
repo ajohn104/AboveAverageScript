@@ -15,7 +15,7 @@ Func        ::= 'func(' (Id (',' Id)*)? ')' Block 'end'
 Array       ::= '[' (Exp (',' Exp)?)* ']'
 Asmt        ::= Id (',' Id)* '=' Exp (',' Exp)*
 Decl        ::= 'let' Id (',' Id)* '=' Exp
-Object      ::= '<<' (Prop (',' Prop)* )? '>>'
+Object      ::= '{' (Prop (',' Prop)* )? '}'
 ValRef      ::= 'true' | 'false' | Id
 Prop        ::= (ValRef | StringLit | IntLit) ':' Exp
 Call        ::= Id '(' (Exp (',' Exp)?)* ')'

@@ -2,7 +2,7 @@ Based in Javascript
 
 -> Need to add "instanceof" variant
 -> Need to fix Object/Prototype inheritance?
--> Need to change << >> to something else, to make it prettier
+-> Need to change << >> to something else, to make it prettier <--- changed to { }
 -> Need to add built-in's?
 -> We lack break, etc.
 -> We lack syntax for regex. In javascript its /(stuff)/. It isn't a string.
@@ -22,20 +22,20 @@ fib(3);
 Objects
 
 
-Object          ::= '<<' (PropertyPair (',' PropertyPair)* )? '>>'
+Object          ::= '{' (PropertyPair (',' PropertyPair)* )? '}'
 PropertyPair    ::= ('true' | 'false' | IntLit | StringLit | Id) ':' Exp
 
 
 
-let Circle = << 
+let Circle = { 
     radius: 0, 
-    location: << 
+    location: { 
         x: 0, 
         y: 0,
         toString: func()
             ret "x: " + x + " y: " + y;
         end
-    >>,
+    },
     getRadius: func()
         ret self.radius;
     end,
@@ -46,7 +46,7 @@ let Circle = <<
         self["location"].x = x;
         self["location"].y = y;
     end
->>;
+};
 
 let Dot = new Circle();
 dot.radius = 50;
