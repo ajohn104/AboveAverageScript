@@ -1,7 +1,7 @@
 #AverageScript
 
 
-![AverageScript Logo](https://averagechronicles.files.wordpress.com/2013/02/average-logo.png)
+![AverageScript Logo courtesy of https://averagechronicles.files.wordpress.com/2013/02/average-logo.png](./AverageScriptLogo.png)
 
 Running on Javascript, _AverageScript_ is a combination of ECMAScript 6, Python, and Lua, with some random changes on the side. Let's get started.
 
