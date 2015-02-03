@@ -47,9 +47,9 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
         self.radius = radius;                        this.radius = radius;
         self.setLocation = func(x, y)                this.setLocation = function(x, y) {
             self.x = x;                                  this.x = x;
-            self.y = y;                                  this.y = y;          // This is wrong. "this" refers to the setLocation function
-        end;                                         };                       // in this scope, not Circle itself. It's wrong in the example
-    end;                                         };                           // code as well. 
+            self.y = y;                                  this.y = y;
+        end;                                         };
+    end;                                         };
 
     let Dot = new Circle(0, 0, 5);               var Dot = new Circle(0, 0, 5);
     Dot["strokeIsDashed"] = true;                Dot["strokeIsDashed"] = true;
