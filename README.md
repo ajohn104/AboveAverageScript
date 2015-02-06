@@ -1,9 +1,13 @@
-#AverageScript
+#AboveAverageScript
 
 
-![AverageScript Logo courtesy of https://averagechronicles.files.wordpress.com/2013/02/average-logo.png](./AverageScriptLogo.png)
+![AboveAverageScript Logo](./AboveAverageScriptLogo.png)
 
-Running on Javascript, _AverageScript_ is a combination of ECMAScript 6, Python, and Lua, with some random changes on the side. It was designed to increase efficiency, and also simply try out a few things to see how they look and feel when reading code. But enough about history, you're here for the language. Let's get started.
+<!--- 
+Logo courtesy (in part) of https://averagechronicles.files.wordpress.com/2013/02/average-logo.png
+-->
+
+Running on Javascript, _AboveAverageScript_ is a combination of ECMAScript 6, Python, and Lua, with some random changes on the side. It was designed to increase efficiency, and also simply try out a few things to see how they look and feel when reading code. But enough about history, you're here for the language. Let's get started.
 
 Here's some basic variable code:
 
@@ -19,7 +23,7 @@ Here's some basic variable code:
 
 ```
 
-Just like in Javascript, _AverageScript_ is object oriented, and includes functions as objects.
+Just like in Javascript, _AboveAverageScript_ is object oriented, and includes functions as objects.
 
 ```js
 
@@ -74,11 +78,11 @@ Just like in Javascript, _AverageScript_ is object oriented, and includes functi
 
 ````
 
-Rather than `this`, _AverageScript_ uses `self` to specify the containing object.
+Rather than `this`, _AboveAverageScript_ uses `self` to specify the containing object.
 
-An advantage of using _AverageScript_ (by design) is the capability skip unnecessary curly braces, but to still make clear where things start and end. However, semicolons help maintain clarity, so they remain.
+An advantage of using _AboveAverageScript_ (by design) is the capability skip unnecessary curly braces, but to still make clear where things start and end. However, semicolons help maintain clarity, so they remain.
 
-Naturally, you can loop in _AverageScript_:
+Naturally, you can loop in _AboveAverageScript_:
 
 ```js
 
