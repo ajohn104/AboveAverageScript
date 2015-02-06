@@ -1,5 +1,6 @@
 #AboveAverageScript
 
+Running on Javascript, _AboveAverageScript_ is a combination of ECMAScript 6, Python, and Lua, with some random changes on the side. It was designed to increase efficiency, and also simply try out a few things to see how they look and feel when reading code.
 
 ![AboveAverageScript Logo](./AboveAverageScriptLogo.png)
 
@@ -7,7 +8,7 @@
 Logo courtesy (in part) of https://averagechronicles.files.wordpress.com/2013/02/average-logo.png
 -->
 
-Running on Javascript, _AboveAverageScript_ is a combination of ECMAScript 6, Python, and Lua, with some random changes on the side. It was designed to increase efficiency, and also simply try out a few things to see how they look and feel when reading code. But enough about history, you're here for the language. Let's get started.
+But enough about history, you're here for the language. Let's get started.
 
 Here's some basic variable code:
 
