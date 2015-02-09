@@ -1,11 +1,12 @@
 Based in Javascript
 
--> Need to add "instanceof" variant
--> Need to fix Object/Prototype inheritance?
+-> Need to add "instanceof" variant <--- added to list
+-> Need to fix Object/Prototype inheritance? <-- still not sure if necessary
 -> Need to change << >> to something else, to make it prettier <--- changed to { }
--> Need to add built-in's?
--> We lack break, etc.
--> We lack syntax for regex. In javascript its /(stuff)/. It isn't a string.
+-> Need to add built-in's? <--- meaning the int, float, type, log, etc?
+-> We lack break, etc.  <-- added to list
+-> We lack syntax for regex. In javascript its /(stuff)/. It isn't a string. <-- actually, it can be.
+        --Regex can be created as an object via the RegExp constructor
 
 -------------------------------------
 functions
