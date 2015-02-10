@@ -120,18 +120,18 @@ if(boolexpr)
 
     block
 
-maybe(boolexpr)
+elif(boolexpr)
 
     block
 
-otherwise
+else
 
     block
 
 end;
 
 
-if booleanExpr Block (maybe booleanexpr block)* (otherwise block)? end
+if( booleanExpr ) Block (elif( booleanexpr ) Block)* (else( Block) )? end
 
 ------------------------------------
 Operators
