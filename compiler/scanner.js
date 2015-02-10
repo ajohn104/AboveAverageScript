@@ -13,7 +13,7 @@ var scan = function(file, callback) {
     var scanner = new LineScanner();
     var tokens = [];
     reader.on('error', function(error) {
-        console.log("Error on line " + count + ". Error: " + error);
+        console.log("Error on line " + scanner.currentLine + ". Error: " + error);
     });
     reader.on('line', function(line) {
         scanner.nextLine(line);

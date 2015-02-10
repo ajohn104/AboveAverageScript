@@ -1,0 +1,133 @@
+(func()
+    ***native***;
+    let ArrowSign = {
+        defaultLength: 200,
+        defaultLightRadius: 20,
+        defaultWidth: 60,
+        headLengthRatio: 0.2,
+        headWidthRatio: 2.0,
+        defaultLightMargin: 10,
+        angle: Math.PI/4,
+
+        lightOffColor: "rgb(50,50,50)",
+        // { Context ctx, Location loc, Attributes attr, int lightsOn }
+        //      Location: {int x, int y}
+        //      Attributes: {double scale, String signColor, String lightColor, int numLights}
+        drawFrame: func(settings)
+            let scale, signColor, lightColor = 
+                settings.attr['scale', 'signColor', 'lightColor'];
+            let ctx, lightsOn = settings['ctx', 'lightsOn'];
+            let lightMargin = _.defaultLightMargin;
+            let lightRadius = _.defaultLightRadius*scale;
+            let width = 2*(lightMargin + lightRadius);
+            let length = numLights*width;
+
+            ctx.save();
+            ctx.translate(settings.loc['x', 'y']);
+            ctx.rotate(_.angle);
+            ctx.beginPath();
+            ctx.fillStyle = signColor;
+            
+            width *= scale;
+            let headWidth = width*_.headWidthRatio * scale;
+            let headLength = length*_.headLengthRatio * scale;
+
+            ctx.fillRect(-length/2, -width/2, length - headLength, width);
+            ctx.closePath();
+
+            ctx.beginPath();
+            ctx.moveTo(length/2-headLength-1, -headWidth/2);
+            ctx.lineTo(length/2-headLength-1, headWidth/2);
+            ctx.lineTo(length/2, 0);
+            ctx.closePath();
+            ctx.fill();
+
+            for(i = 1; i <= numLights; i++)
+                let currLightColor = (i <= lightsOn)?(lightColor):(_.lightOffColor);
+                let lightX = -length/2 + i*(lightMargin + 2*lightRadius);
+                let lightY = 0;
+                ctx.fillStyle = currLightColor;
+                ctx.beginPath();
+                ctx.arc(lightX, lightY, lightRadius, 0, 2*Math.PI);
+                ctx.fill();
+            end;
+            ctx.restore();
+        end,
+        // { Context ctx, Location loc, Attributes attr, int lightsOn, Effects effects }
+        // Effects: { int period (ms), int endDelay, boolean endFlicker, boo int repeat}
+        // period refers to the length of time (ms) for the light to go from all lights off to all on
+        // In order to repeat forever, set repeat = -1
+        drawFramesAnimated: func(settings)
+            let numLights = settings.attr.numLights;
+            let period, repeat, endDelay, endFlicker = 
+                settings.effects['period', 'repeat', 'endDelay', 'endFlicker'];
+            let basicSettings = {};
+            basicSettings['ctx', 'loc', 'attr', 'lightsOn'] =
+                settings['ctx', 'loc', 'attr', 'lightsOn'];
+            let delay = period/numLights;
+
+            let draw = func()
+                Sprites.ArrowSign.drawFrame(basicSettings);
+                if(basicSettings.lightsOn <= basicSettings.attr.numLights)
+                    setTimeout(func()
+                        basicSettings.lightsOn++;
+                        draw();
+                    end, delay);
+                else
+                    repeat--;
+                    basicSettings.lightsOn = 0;
+                    if(repeat < 0)
+                        repeat = -1;
+                    end;
+                    if(not (repeat === 0))
+                        let drawAllOff = func()
+                            basicSettings.lightsOn = 0;
+                            Sprites.ArrowSign.drawFrame(basicSettings);
+                        end;
+                        let drawAll = func(isOn)
+                            if(isOn)
+                                basicSettings.lightsOn = settings.attr.numLights;
+                                Sprites.ArrowSign.drawFrame(basicSettings);
+                            else
+                                basicSettings.lightsOn = 0;
+                                Sprites.ArrowSign.drawFrame(basicSettings);
+                            end;
+                        end;
+                        let drawAllOn = func()
+                            basicSettings.lightsOn = settings.attr.numLights;
+                            Sprites.ArrowSign.drawFrame(basicSettings);
+                        end;
+                        let flicker = func(call, needDelay)
+                            let finalDelay = (needDelay)?endDelay:0;
+                            setTimeout(func()
+                                drawAll(false);
+                                setTimeout(func()
+                                    drawAll(true);
+                                    setTimeout(call, finalDelay);
+                                end, endDelay);
+                            end, endDelay);
+                        end;
+                        if(endFlicker)
+                            flicker(func()
+                                flicker(func()
+                                    drawAll(false);
+                                    setTimeout(func()
+                                        basicSettings.lightsOn = 0;
+                                        draw();
+                                    end, endDelay);
+                                end, true)
+                            end, false);
+                        else
+                            setTimeout(draw, endDelay);
+                        end;
+                    end;
+                end;
+            end;
+            draw();
+        end
+    };
+    window.Sprites = defaults(window.Sprites, {});
+    Object.defineProperties(window.Sprites, {
+            "ArrowSign": {  value: ArrowSign  }
+    });
+end());

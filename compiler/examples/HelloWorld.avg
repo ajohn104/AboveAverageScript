@@ -11,10 +11,7 @@ $(function() {
     hello();    // prints "Hello World!"
 
 
-
-
-
-    while(y||x)
+    while(y or x)
         console.log("x: " + x);
     end;
 });
