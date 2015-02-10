@@ -173,6 +173,24 @@ var del = function(prop, obj) {
     delete y[prop];
 }
 
+// A new way to declare locals
+
+-> obj['prop1', 'prop2', 'prop3'];
+
+// A new way to assign to properties (in this example, to 'this')
+
+_ -> obj['prop1', 'prop2', 'prop3'];
+
+// Or, perhaps to circle:
+
+circ -> obj['prop1', 'prop2', 'prop3'];
+
+// Lastly, the addition of minor list comprehension.
+let oldList = ["true", false, "9", "8", 7, null];
+let newList = [ oldList[0..len(oldList)] ];
+
+// The .. operator would be inclusive-exclusive. AKA a <= i < b
+
 var confirmedIdeas = {
     object_unpacking: "Done via the object[props] method. Converts directly into js as seen above",
     built_ins: "type, defaults, int, float, is, and log are now built-ins, and are auto-added to the compiled script",
