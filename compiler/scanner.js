@@ -1,10 +1,10 @@
 LineByLineReader = require('line-by-line');
 Tokens = require('./tokens');
 
-var scan = function(file) {
+var scan = function(file, callback) {
     reader = new LineByLineReader(file, {encoding: 'utf8'});
-    var scanner = new Scanner();
-
+    var scanner = new LineScanner();
+    var tokens = [];
     reader.on('error', function(error) {
         console.log("Error on line " + count + ". Error: " + error);
     });
@@ -13,8 +13,10 @@ var scan = function(file) {
         
     });
     reader.once('end', function() {
-        var tokens = scanner.complete();
-        console.log(tokensToString(tokens));
+        tokens = scanner.complete();
+        if(typeof callback !== "undefined") {
+            callback(tokens);
+        }
     });
 }
 
@@ -26,7 +28,7 @@ var tokensToString = function(tokens){
     return str;
 };
 
-var Scanner = function() {
+var LineScanner = function() {
     this.currentLine = null;
     this.lineNumber = 0;
     this.inMultilineComment = false;
@@ -165,6 +167,7 @@ var Scanner = function() {
                         var type = "";
                         type = (isAVGReserved(currentToken)?"Reserved":type);
                         type = (isECMAReserved(currentToken)?"Unused":type);
+                        type = (isWordOperator(currentToken)?"Operator":type);
                         type = (type === ""?"ID":type);
                         var token = {kind: type, lexeme: currentToken, line: this.lineNumber, character:i};
                         this.tokens.push(token);
@@ -295,6 +298,15 @@ var Scanner = function() {
         return false;
     };
 
+    var isWordOperator = function(word) {
+        for(i in Tokens.Operators) {
+            if(Tokens.Operators[i] === word) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     var isAVGReserved = function(word) {
         for(i in Tokens.Reserved) {
             if(Tokens.Reserved[i] === word) {
@@ -313,5 +325,9 @@ var Scanner = function() {
         return false;
     };
 };
+var Scanner = {
+    scan: scan,
+    tokensToString: tokensToString
+}
 
-scan(process.argv[2]);
+module.exports = Scanner;
