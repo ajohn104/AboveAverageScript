@@ -1,6 +1,13 @@
 LineByLineReader = require('line-by-line');
 Tokens = require('./tokens');
 
+/*
+ * I'm aware this could be a lot shorter, and a lot of code should be in functions. However
+ * I felt it was more important for me to be able to read it line by line, and have it work
+ * in the end, then make it shorter. So it will be shorter soon.
+ */
+
+
 var scan = function(file, callback) {
     reader = new LineByLineReader(file, {encoding: 'utf8'});
     var scanner = new LineScanner();
