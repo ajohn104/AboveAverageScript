@@ -1,0 +1,17 @@
+/*
+ * A simple program that prints "Hello World!" to the console.
+ */
+
+let hello = func()
+    log("Hello World!");
+end;
+
+hello();    // prints "Hello World!"
+
+
+
+
+
+while(y||x)
+    console.log("x: " + x);
+}

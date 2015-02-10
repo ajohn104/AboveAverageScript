@@ -35,6 +35,7 @@ var log = function(x) {
     console.log(x);
 };
 
+// instanceof is shorted to a function 'is', which checks the first arg against the second arg
 var is = function(x, y) {
     return x instanceof y;
 };
@@ -160,6 +161,18 @@ var len = function(arr) {
 // ...meaning the programmer can set their own length property to track with len. Cool, huh? However,
 // it is still up to the programmer to make length not be an enumerable property.
 
+do { ...stuff...} while(x); 
+
+// Just the basic do-while.
+
+del("x", y);     // deletes property x from y
+
+// ...in JS:
+
+var del = function(prop, obj) {
+    delete y[prop];
+}
+
 var confirmedIdeas = {
     object_unpacking: "Done via the object[props] method. Converts directly into js as seen above",
     built_ins: "type, defaults, int, float, is, and log are now built-ins, and are auto-added to the compiled script",
@@ -171,5 +184,9 @@ var confirmedIdeas = {
     continue_addition: "'continue' will be added as 'skip'",
     regex_addition: "regex will be ignored, since RegExp is a JS object that accepts strings for constructors",
     for_loops_expansion: "for loops get for..in, for..of, and for..:",
-    len_built_in: "len will be a built-in function that works according to the rules found above"
+    len_built_in: "len will be a built-in function that works according to the rules found above",
+    do_while: "do-while's will be available.",
+    try_catch_finally: "Since JS has this, we must also have it.",
+    switch_statements: "JS has this, and we should as well",
+    del_built_in: "del is the function for delete"
 }

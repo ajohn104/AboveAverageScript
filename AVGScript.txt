@@ -61,7 +61,7 @@ let foodog = new Dot();
 
 
 
-draw(<< x: 6, y: 10, width: 50, height: 20, color: "red", size: 9, << stroke_style: "dashed", freq: 0.5, color: "red">>>>);
+draw({ x: 6, y: 10, width: 50, height: 20, color: "red", size: 9, { stroke_style: "dashed", freq: 0.5, color: "red"}});
 
 -------------------------------------
 while loops
