@@ -187,7 +187,8 @@ circ -> obj['prop1', 'prop2', 'prop3'];
 
 // Lastly, the addition of minor list comprehension.
 let oldList = ["true", false, "9", "8", 7, null];
-let newList = [ oldList[0..len(oldList)] ];
+let newList = [ oldList[0..len(oldList)] ]; // this would probably be done as a for loop, 
+                                            // if this is going to stay a macro. 
 
 // The .. operator would be inclusive-exclusive. AKA a <= i < b
 
