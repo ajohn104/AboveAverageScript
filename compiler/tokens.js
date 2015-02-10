@@ -9,7 +9,7 @@ var Tokens = {
     Reserved:
         ["type", "defaults", "int", "float", "log", "is", "let", 
         "_", "for", "in", "of", "len", "end", "if", "elif", "else", 
-        "stop", "skip", "do", "while", "try", "catch", "throw", 
+        "stop", "skip", "do", "while", "try", "catch", "throw", "ret",
         "finally", "return", "switch", "case", "del", "new", "func"],
 
     Unused:
