@@ -1,17 +1,20 @@
-/*
- * A simple program that prints "Hello World!" to the console.
- */
+$(function() {
+    ***native***;
+    /*
+     * A simple program that prints "Hello World!" to the console.
+     */
 
-let hello = func()
-    log("Hello World!");
-end;
+    let hello = func()
+        log("Hello World!");
+    end;
 
-hello();    // prints "Hello World!"
-
-
+    hello();    // prints "Hello World!"
 
 
 
-while(y||x)
-    console.log("x: " + x);
-}
+
+
+    while(y||x)
+        console.log("x: " + x);
+    }
+});
