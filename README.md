@@ -126,6 +126,8 @@ Comments are casual.
 
 ```
 
+-
+
 _Time for the new stuff._
 
 To start things off, all objects can now be 'unpacked'.
@@ -227,6 +229,7 @@ Last, but certainly not least, we have the new and improved for loops. 3 new typ
     for(x :  y) log(x) end  // prints: {key: 0, val:"true"}, {key:1, val:"false"}, {key:2, value:true}, {key:3, val:0}, {key:4, val:9}, {key:5, val:{}}
     // so, for(x : y) becomes for(x in y) { x = { key: x, val: y[x] }; ...user input... }
 
+```
 
 Minor notes:
 * Camel Casing is preferred  
