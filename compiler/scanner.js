@@ -30,8 +30,6 @@ var Scanner = function() {
     this.currentLine = null;
     this.lineNumber = 0;
     this.inMultilineComment = false;
-    this.inString = false;
-    this.openQuote = "";
     this.tokens = [];
     this.nextLine = function(line) {
         this.lineNumber++;
@@ -39,6 +37,8 @@ var Scanner = function() {
         var currentToken = "";
         var escaped = false;
         var inNumber = false;
+        var inString = false;
+        var openQuote = "";
         var radixAppeared = false;
         var exponentialAppeared = false;
         var inHex = false;
@@ -55,9 +55,9 @@ var Scanner = function() {
                     continue;
                 }
             }
-            if(this.inString) {
+            if(inString) {
                 // Checks for end of string
-                var isCloseQuote = chars[i] === this.openQuote;
+                var isCloseQuote = chars[i] === openQuote;
                 if(!isCloseQuote || escaped) {
                     currentToken+=chars[i];
                     escaped = false;
@@ -66,7 +66,7 @@ var Scanner = function() {
                     currentToken+= chars[i];
                     var token = {kind: "StrLit", lexeme:currentToken, line: this.lineNumber, character:i};
                     this.tokens.push(token);
-                    this.inString = false;
+                    inString = false;
                     escaped = false;
                     currentToken = "";
                     continue;
@@ -188,11 +188,8 @@ var Scanner = function() {
                         currentToken = "";
                         continue;
                     }
-                    // Also, don't forget about comments and when lines end to close the current token and stuff
                 }
             } else {    // Starting a new word.
-                //console.log("LineNumber: " + this.lineNumber + ", character: " + i);
-                //console.log("chars.length > i + 1: " + (chars.length > i));
                 if(chars.length > i + 1 && chars[i] == "/") {
                     if(chars[i+1] === "/") {
                         return; // The rest of the line is a comment
@@ -207,8 +204,8 @@ var Scanner = function() {
                     currentToken += chars[i];
                     continue;
                 } else if(chars[i].match(/[\'\"]/)) {
-                    this.inString = true;
-                    this.openQuote = chars[i];
+                    inString = true;
+                    openQuote = chars[i];
                     currentToken += chars[i];
                     continue;
                 } else {
@@ -250,8 +247,10 @@ var Scanner = function() {
             
         }
         if(currentToken !== "") {
-            if(this.inString) {
-                ; // Multiline strings will continue to the end;
+            if(inString) {
+                // Should output error or something. Strings are not multiline
+                currentToken = "";
+                inString = false;
             } else if(inNumber) {
                 var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
                 this.tokens.push(token);
@@ -282,10 +281,6 @@ var Scanner = function() {
         }
     }
     this.complete = function() {
-        if(this.inString) {
-            // This is an error. The string was left unclosed. For now
-            // The string is simply ignored until I know what to do.
-        }
         return this.tokens;
     }
     // As it happens, we can be greedy when checking for operators.
