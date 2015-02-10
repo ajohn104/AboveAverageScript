@@ -1,4 +1,4 @@
-$(func() {
+$(func()
     ***native***;
     /*
      * A simple program that prints "Hello World!" to the console.
@@ -12,6 +12,6 @@ $(func() {
 
 
     while(y or x)
-        console.log("x: " + x);
+        log("x: " + x);
     end;
-});
+end);
