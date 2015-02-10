@@ -10,6 +10,6 @@ var test = function(file) {
     var scanResults = scan(file, function(tokens) {
         console.log(tokensToString(tokens));
     });
-}
+};
 
 test(files[0]);
