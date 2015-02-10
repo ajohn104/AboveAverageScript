@@ -234,5 +234,5 @@ Last, but certainly not least, we have the new and improved for loops. 3 new typ
 Minor notes:
 * Camel Casing is preferred  
 * Spacing norm is 4 spaces (NOT TABS)  
-* Expect the (_ever so slighly_) above average
+* Expect the (_ever so slightly_) above average
 * Not sure if you should use a semicolon? Use it
