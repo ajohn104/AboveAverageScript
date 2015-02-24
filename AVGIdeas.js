@@ -192,6 +192,23 @@ let newList = [ oldList[0..len(oldList)] ]; // this would probably be done as a 
 
 // The .. operator would be inclusive-exclusive. AKA a <= i < b
 
+
+// Fully indentation based (other than objects, as per usual). Via the 
+// concept that an indent means the continuation of something, and more
+// specifically a dedent means the end of something. So, if an indentation
+// occurs, then whatever came before simply continues on. When a dedent
+// occurs, the most recently indented thing comes to a close.
+
+// Now, in order to make it less hard coded, it should follow one simple
+// rule: An indentation occurs when a block is expected or when the user
+// wishes to indicate an unfinished expression. However, this creates issues
+// that would be resolved (I think) if it were relaxed to only specifying
+// blocks and their start/ends. However, that also creates issues. This is
+// because users might want to then use style for some of their objects or
+// array definitions, which it would then expect to be a block.
+
+// Refer to ./implideas/indents.avg for example possibilities
+
 var confirmedIdeas = {
     object_unpacking: "Done via the object[props] method. Converts directly into js as seen above",
     built_ins: "type, defaults, int, float, is, and log are now built-ins, and are auto-added to the compiled script",

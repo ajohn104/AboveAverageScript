@@ -1,0 +1,317 @@
+
+// Before I go any further, I'm writing out what it would look like
+// if the current strategy was entertained. Meaning the block-expr
+// need-based indentation rules. Of course, there are issues with it,
+// but I'm writing it according to those rules to make the issues more
+// obvious so they can be better addressed in the future.
+
+$(func()
+        ***native***
+
+        let hello = func()
+            log("Hello World!")
+
+        hello()
+
+        while(y or x)
+            log("x: " + x)
+    )
+
+
+// Right then. Lets break it down a bit.
+
+// First off, lets talk about that
+// incredibly awkward placement of the final parenthesis. So, currently
+// its there due to the fact that its a continuation of the function call
+// to $ (its an unfinished expression). Since the parenthesis would normally
+// be in the same line as the function call (aka it would have a semicolon
+// after it), it now lands in the same indentation level as arguments to
+// the function call.
+
+// Alongside this issue, there's one more glaring problem. The indentation
+// level for the stuff inside the function is also...odd. Now, the reason
+// they landed at that level is because the first indentation is for the 
+// unfinished call, meaning what follows are parameters to a function call.
+// The second indentation is due to the block created by the function. Well,
+// ideally the indentation would only be of size 1, but that would cause 
+// issues with the current implementation strategy.
+
+// Now, this would be solved with better newlines on the part of the user, 
+// as shown below. Not quite perfect, but the current strategy may be better
+// down the road, so I'd rather not ditch it. However, this does employ one
+// change, that is to say it moves the ending character to after the dedent.
+// This is important, since that character shows the end of the call more
+// clearly, which is a huge part of this whole implementation idea.
+
+$(
+    func()
+        ***native***
+
+        let hello = func()
+            log("Hello World!")
+
+        hello()
+
+        while(y or x)
+            log("x: " + x)
+)
+
+
+// Here's another bit of example code, following the slightly improved strategy.
+
+$(
+    func()
+        ***native***
+
+        let repeat = $("#textInput")
+
+        repeat
+            .val(
+                (
+                    func()
+                        return
+                            repeat.val() +
+                                repeat
+                                    .val()
+                )()
+            )
+)
+
+// So, now although this is an extreme case, it shows a clear issue. TOO MANY THINGS
+// cause a rise in indent, and there's not an obvious way to release the need for
+// those indents. So, here's what the above looks like without the silly new lines.
+
+$(func()
+    ***native***
+
+    let repeat = $("#textInput")
+
+    repeat.val( 
+        (func()
+            return repeat.val() + repeat.val()
+        )()
+    )
+)
+
+// Still, it could use improvement. However, I had a realization. In the first call to val,
+// I originally added another indent to the stuff after func. However, it doesn't need it.
+// The reason it doesn't need it is because technically, the function definition
+// expression is still unfinished, so the parenthesis expression cannot be expecting the
+// indentation from it. However, if the func had been placed on a new line, it would have
+// been necessary. Here is the program in a style that shows the base idea.
+
+$(func()
+    ***native***
+
+    let repeat = $("#textInput")
+
+    repeat.val( 
+        (func()
+            return repeat
+                .val() +
+                    repeat
+                        .val()
+        )()
+    )
+)
+
+// Now, an interesting solution to the cascading .val's, starting with the problematic example.
+
+repeat.val()
+    .val()
+        .val()
+            .val()
+
+// However, this isn't necessary. It's a bit forced, but function calls via the . operator allow
+// the option of forcing the indentation of the first, and if the line is a single function call,
+// then the following lines can stay on the same indentation level, as shown below:
+
+repeat.val()
+    .val()
+    .val()
+    .val() + repeat         // Should this indent a second time due to the unfinished expr? No, since
+        .val().val()        // that's dealt with by the function call cascading.
+            .val()
+            .val()
+
+// This shouldn't be too much trouble, since if the indentation capture is something along the lines of:
+// Expr# ::= Id ('.' Call)? (Newline Indent '.' Call)*
+// Of course, this only takes into account a single indent, not all the possible indents that may be already needed.
+
+// ...returning to the original code bit, it would now look like this:
+
+$(func()
+    ***native***
+
+    let hello = func()
+        log("Hello World!")
+
+    hello()
+
+    while(y or x)
+        log("x: " + x)
+)
+
+// Which is...acceptable. Of course, now we're left with a multitude of other decisions. So far, we've dealt
+// with indentations for function call cascading and touched on it with immediate function calls in parenthesis.
+
+// So lets just lay it all out. All issues all at once. Plus, some new solution ideas.
+
+$(func()
+    ***native***
+
+    let car =                                                   // Objects don't need curly braces, they only need to be indented. 
+        length: 50                                              // Commas also unnecessary, since everything MUST BE on separate
+        color: "blue"                                           // lines in this format.
+        isMoving: true
+        owner: new Human("Bob")
+        park: func()
+            _.isMoving = false
+            return _
+        drive: func()
+            _.isMoving = true
+            return _
+        sell: func(sellObject)
+            _.owner = sellObject.owner
+        status: "broken"
+    
+
+    car.park()
+        .drive()
+        .park()
+        .drive()
+
+    car.sellTo({'owner': new Human('Tony'), 'price': 5000})     // Old-style objects supported, to allow for JQuery-style object passing
+
+    let list = [ 8, 9, 6,                                       // Ideally, this would be on the next line, but I left it here to show
+        10, 12, 2,                                              // that it's still technically legal. I know Coffeescript allows the
+        8, 9, 4, 6, 2                                           // user to omit the commas at the end of the line, but I require it for
+    ]                                                           // completeness and clarity.
+
+)
+
+// Quick list of all things I can think of that whitespace will affect:
+// function definitions, function calls and arguments, cascading function calls, 
+// arrays, for loops, object definitions, object unpacking, if, elif, else, while loops,
+// do-while's, strings, and expressions. So lets show an example of each, with some new
+// ideas placed in here and there.
+
+
+// function definitions
+
+let jump = func(reps, callback)
+    log("I jumped " + reps + " times!")
+    callback(reps)
+
+// function calls and arguments
+
+jump( 4,
+    func(times)
+        log("Jump report recieved: " + times)
+)
+
+// cascading function calls
+
+let positionX = $("#boxDiv")
+    .text("I'm a box")                              // '.position().x' remains on the same indent due to the previous line 
+    .height("50px").width( box.width()*2 + "px" )   // ONLY being function calls, meaning it isn't that each line can only
+    .position().x                                   // have a single call, but that each line can only have continuous calls.
+
+// arrays
+
+states = [ "solid",                                 // This should really be on the next line, but I put it here to show that
+    "liquid",                                       // it CAN go there if needed or wanted. Indents aren't meant to be forced
+    "gas"                                           // out of strictness, but out of clarity, with a bias for neatness.
+]
+
+// for loops
+
+log(state) for state of states
+
+for i in states
+    log(states[i])
+
+// object definitions
+
+let wheel =
+    radius: 50
+    color: "black"
+    position:
+        x: 30
+        y: 20
+        sync: func(pos)
+            _.x = pos.x
+            _.y = pos.y
+        load: func(x, y)
+            _.x = x
+            _.y = y
+    speed: 40
+    accelerate: func(delta)
+        _.speed += delta
+    condition: "new"
+
+wheel.position.sync({'x': 70, 'y': 10})
+
+// object unpacking
+
+let newPos = {                                      // Technically, these curly braces are optional. As are commas.
+    x: 100
+    y: 200
+}
+wheel.position.load(newPos['x', 'y'])
+
+// if, elif, else
+
+x*=3 if x%2===0 else x/=2
+
+if a or b
+    log(x)
+elif is(c, d)
+    log(y)
+else
+    log(z)
+
+// while loops
+
+let num1 = 10
+log(num1--) while num1 > 0
+
+let num2 = 50
+log(num2 -=3) if num % 2 = 1 else log(num+=1) while num >= 0
+
+let num3 = 100
+while num >= 0
+    if(num > 75)
+        num -= 5
+    elif(num <= 75 and num >= 25)
+        num = (num/2) + 10
+    else
+        num -= 4
+    log(num)
+
+// do while's
+
+let word = "Stegosaurus"
+do
+    log(word)
+    word = word.substring(1)
+while len(word) > 0
+
+// strings
+
+let story = "This is the beginning of a 
+    short story. I hope you like it. It's
+    actually quite long. Here goes."
+
+// expressions
+
+let pennies, nickels, dimes, quarters = 4, 1, 1, 2
+
+let total = pennies * 1
+    + nickels * 5
+    + dimes * 10
+    + quarters * 25
+
+log(total)
+
+// And that's it for indents. I think its doable. There are a few new concepts here, however.
