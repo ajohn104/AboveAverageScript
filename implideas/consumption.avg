@@ -32,7 +32,7 @@ let Circle =
         x: 5
         y: 10
         set: func(point)
-            _ -> point['x', 'y']                                // Roughly translates to _['x'], _['y'] = point['x'], point['y']
+            _ <- point['x', 'y']                                // Roughly translates to _['x'], _['y'] = point['x'], point['y']
     area: func()                                                // ...in avg. That isn't the final compiled code.
         return Math.pow(_circ.radius, 2) * Math.PI
 
@@ -57,6 +57,37 @@ let RectangleMaker =
         height: 200
     make: func(props)
         let rectProps = Object.create(_maker.defaultProps)      // I have absolutely no idea how I intend on implementing this. Currently, object unpacking
-        rectProps -> props[key for key in props]                // is done basically via a macro. This... this isn't a macro. This is at runtime.
+        rectProps <- props[key for key in props]                // is done basically via a macro. This... this isn't a macro. This is at runtime.
                                                                 
 let rect = RectangleMaker.make(newProps)
+
+// A quick note, since I changed the direction of the arrow for clarity. Since the arrow is now '<-',
+// there's an issue with precedence. The '<-' operator must have higher precedence than '<' in order
+// to make sure it isn't blocked entirely by '<'.
+
+// Lastly, we have the local property consumption, as seen below.
+
+let privateShared = func()
+    let _num = 0
+    return
+        incrNum: func()
+            return _num += 1
+        decrNum: func()
+            return _num -= 1
+        num: func(a)
+            if(isUndef(a))
+                return _num
+            else
+                return _num = a
+
+<- privateShared()['incrNum', 'decrNum', 'num']                 // In a sense, this is risky since it might replace preexisting
+log(num())                                                      // variables. But that's the programmers problem. However, when
+                                                                // compiled this should produce let's, so as to not pollute the
+incrNum()                                                       // global namespace. Unless, of course, it's used in the global
+log(num())                                                      // namespace. But then let's would be fine to use anyways.
+
+decrNum(num())
+log(num())
+
+num(8)
+log(num())

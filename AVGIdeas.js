@@ -175,16 +175,16 @@ var del = function(prop, obj) {
 
 // A new way to declare locals
 
--> obj['prop1', 'prop2', 'prop3'];
+<- obj['prop1', 'prop2', 'prop3'];
 
 
 // A new way to assign to properties (in this example, to 'this')
 
-_ -> obj['prop1', 'prop2', 'prop3'];
+_ <- obj['prop1', 'prop2', 'prop3'];
 
 // Or, perhaps to circle:
 
-circ -> obj['prop1', 'prop2', 'prop3'];
+circ <- obj['prop1', 'prop2', 'prop3'];
 
 // Lastly, the addition of minor list comprehension.
 let oldList = ["true", false, "9", "8", 7, null];

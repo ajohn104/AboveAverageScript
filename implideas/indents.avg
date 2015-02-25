@@ -241,7 +241,7 @@ let wheel =
         y: 20
         sync: func(pos)
             _.x = pos.x                             // Honestly, this is a good place to use object unpacking and, if added, the
-            _.y = pos.y                             // 'property consumption' operator (ie: the -> operator). However, I didn't
+            _.y = pos.y                             // 'property consumption' operator (ie: the <- operator). However, I didn't
         load: func(x, y)                            // want to use them until I had specifically mentioned the object unpacking
             _.x = x
             _.y = y
