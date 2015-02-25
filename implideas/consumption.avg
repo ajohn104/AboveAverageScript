@@ -1,0 +1,62 @@
+// So, this is the summary, analysis, and general thoughts about the 'property consumption'
+// operator I recently thought of. I'm well aware of the fact that some of these ideas might
+// be awful, or worse yet, be bad coding practice and even turn the language into a dynamically
+// scoped one. I don't care. A huge part of why I put so much effort into these projects and,
+// in the case of this project, why I don't like to go looking at how other languages do things,
+// is that I want to run into problems. Specifically for this project, I have done my best not to
+// to look at CoffeeScript for ideas or solutions to the implementation ideas I have (such as
+// indentation) because I don't care so much about the grade that I get, but more so that I know
+// why CoffeeScript is the way it is. I want to know why certain design decisions were made, and
+// the best way to do that is to drag myself through the mud and hit the issues myself and solve
+// them myself. If you'll notice, I only ever looked or mentioned CoffeeScript once I had finished
+// my analysis of indents and finished my own ideas. As it happens, the ideas and solutions I came
+// up with ended up being exactly what CoffeeScript did for whitespace and indentation (although 
+// I've got a few variations of my own that I came up with), and the only thing I really gained
+// from looking at CoffeeScript was the possibility of keeping the old curly brace option for objects
+// as well as implementing the indented curly-brace-free option, which we both determined as worthwhile.
+// Well, that, and I gained a bit of pride too. It's nice to know that I came to the same conclusion as
+// an extremely popular language in a matter of hours. Maybe my ideas aren't all that bad after all?
+// ...we'll see.
+
+// But for now, lets do some inital work on 'property consumption'. I'm sure there's a better name, 
+// and I might figure one out eventually, but I like it due to the contrast with object unpacking.
+// I mean, you can use object unpacking alongside property consumption to quickly load parameters into
+// a local environment, global environment, or any object you choose! Well, that's the idea anyways.
+// But the juxtapositon is wonderful. Anyways, let's get started. Here's a quick example of the
+// current syntax for property consumption.
+
+let Circle =
+    _circ: _
+    radius: 50
+    location:
+        x: 5
+        y: 10
+        set: func(point)
+            _ -> point['x', 'y']                                // Roughly translates to _['x'], _['y'] = point['x'], point['y']
+    area: func()                                                // ...in avg. That isn't the final compiled code.
+        return Math.pow(_circ.radius, 2) * Math.PI
+
+Circle.location.set({ 'x': 50, 'y': 80})
+
+// Now, I just had an idea of another way this can be used with object unpacking and another concept that I've yet
+// to actually implement, array comprehensions. Suppose you want to implement a function that takes an object as a
+// parameter, and makes the specified changes and the unspecified default to whatever you choose.
+
+let newProps =
+    width: 50
+    y: 70
+
+let RectangleMaker =
+    _maker = _
+    Rectangle: func(props)
+        _[key] = val for key, val : props                       // This is an experimental idea I had just now. Might be worthwhile.
+    defaultProps:
+        x: 50
+        y: 40
+        width: 100
+        height: 200
+    make: func(props)
+        let rectProps = Object.create(_maker.defaultProps)      // I have absolutely no idea how I intend on implementing this. Currently, object unpacking
+        rectProps -> props[key for key in props]                // is done basically via a macro. This... this isn't a macro. This is at runtime.
+                                                                
+let rect = RectangleMaker.make(newProps)

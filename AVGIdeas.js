@@ -170,12 +170,13 @@ del("x", y);     // deletes property x from y
 // ...in JS:
 
 var del = function(prop, obj) {
-    delete y[prop];
+    delete obj[prop];
 }
 
 // A new way to declare locals
 
 -> obj['prop1', 'prop2', 'prop3'];
+
 
 // A new way to assign to properties (in this example, to 'this')
 
