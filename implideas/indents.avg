@@ -226,9 +226,9 @@ states = [ "solid",                                 // This should really be on 
 
 // for loops
 
-log(state) for state of states
+log(state) for state of states                      // As a reminder, for..of loops through property values
 
-for i in states
+for i in states                                     // and for..in loops through property keys
     log(states[i])
 
 // object definitions
@@ -240,9 +240,9 @@ let wheel =
         x: 30
         y: 20
         sync: func(pos)
-            _.x = pos.x
-            _.y = pos.y
-        load: func(x, y)
+            _.x = pos.x                             // Honestly, this is a good place to use object unpacking and, if added, the
+            _.y = pos.y                             // 'property consumption' operator (ie: the -> operator). However, I didn't
+        load: func(x, y)                            // want to use them until I had specifically mentioned the object unpacking
             _.x = x
             _.y = y
     speed: 40
@@ -277,7 +277,7 @@ let num1 = 10
 log(num1--) while num1 > 0
 
 let num2 = 50
-log(num2 -=3) if num % 2 = 1 else log(num+=1) while num >= 0
+log((num%2==1)?(num2-=3):(num2+=1)) while num >= 0
 
 let num3 = 100
 while num >= 0
@@ -307,11 +307,22 @@ let story = "This is the beginning of a
 
 let pennies, nickels, dimes, quarters = 4, 1, 1, 2
 
-let total = pennies * 1
-    + nickels * 5
-    + dimes * 10
-    + quarters * 25
+let total = pennies * 1 +
+    nickels * 50 +                                  // I'm still not sure about the placement of the plus sign here.
+    dimes * 10 +
+    quarters * 25
 
-log(total)
+log("$" + total/100)
 
 // And that's it for indents. I think its doable. There are a few new concepts here, however.
+
+// However, just to gather up several of the new ideas used here, that don't appear elsewhere:
+
+let obj = {}        // object can be defined with {} still, usually for passing argument object
+
+Expr if Condit else Expr        // pythonic if else conditionals.
+
+Expr for LoopStuff              // Inline for loops
+
+Expr while Condit               // Inline while loops
+do Expr while Condit            // Inline do while's

@@ -207,7 +207,10 @@ let newList = [ oldList[0..len(oldList)] ]; // this would probably be done as a 
 // because users might want to then use style for some of their objects or
 // array definitions, which it would then expect to be a block.
 
-// Refer to ./implideas/indents.avg for example possibilities
+// Refer to ./implideas/indents.avg for full indentation implementation breakdown
+
+// Another thing...coffeescript has the option to refer to variables in strings quickly
+// via #{variablename}. Maybe AVG can have @{variablename}? Or even use #?
 
 var confirmedIdeas = {
     object_unpacking: "Done via the object[props] method. Converts directly into js as seen above",
