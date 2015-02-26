@@ -272,6 +272,11 @@ var proposedIdeas = {
     direct_pair_for_loop: "Support a 'for key, val: props' form of a for loop, where the user immediately gets the pairs as two variables"
 };
 
+var successfullyTestedIdeas = {
+    lazy_built_in: "./implattempts/lazy.js",
+    
+}
+
 var confirmedIdeas = {
     object_unpacking: "Done via the object[props] method. Converts directly into js as seen above",
     built_ins: "type, defaults, int, float, is, and log are now built-ins, and are auto-added to the compiled script",
