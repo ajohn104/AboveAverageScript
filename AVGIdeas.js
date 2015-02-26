@@ -188,8 +188,8 @@ circ <- obj['prop1', 'prop2', 'prop3'];
 
 // Lastly, the addition of minor list comprehension.
 let oldList = ["true", false, "9", "8", 7, null];
-let newList = [ oldList[0..len(oldList)] ]; // this would probably be done as a for loop, 
-                                            // if this is going to stay a macro. 
+let newList = [ oldList[0..len(oldList)] ];                     // this would probably be done as a for loop, 
+let altList = [ oldList[ range( len(oldList) ) ] ]              // if this is going to stay a macro. 
 
 // The .. operator would be inclusive-exclusive. AKA a <= i < b
 
@@ -212,6 +212,65 @@ let newList = [ oldList[0..len(oldList)] ]; // this would probably be done as a 
 
 // Another thing...coffeescript has the option to refer to variables in strings quickly
 // via #{variablename}. Maybe AVG can have @{variablename}? Or even use #?
+
+// range(a,b) built-in? Which produces an array of length b - a of numbers
+// from a <= i < b. This would have to be accessed via a for..of in order to
+// maintain symmetry with ECMAScript 6. I don't have it in me to do it the
+// pythonic way. It would go against everything AVG stands for.
+
+// Generators, Iterators, that whole thing. But done the ECMASCript 6 way, 
+// if it's different from python. Ideally, if the web ever upgrades to 
+// EMCAScript 6 fully, my language won't feel any different. In fact, it
+// would ideally feel more at home, since it would be even closer to the norm.
+// However, Generators would require some decent code on my part to attempt to
+// recreate effectively for lazy evaluation. That, and making things appear at
+// the same time. Not sure how at the moment, but I'll think about it later.
+
+// I think it's time to start looking at other languages and what I could add,
+// remove, and change. I'm pretty happy with the overall syntax changes I've made
+// but now its time to look into some built-ins and other such things I could add.
+// Languages to definitely look into: Python, ECMAScript 6, CoffeeScript, and Ruby.
+// Other possibilities: Java, Dart, MATLAB (surprised?), C++, Swift (maybe.), Rust, 
+// Go, and finally, a final few, from Toal: Lua, IO, Smalltalk, Factor, Clojure,
+// Elm, Elixir, and Julia. I particularly suggest IO, and perhaps Clojure, Elixir,
+// Lua, and Julia.
+
+// Ideas found: 
+//      built-in functions:
+//          => max and min from Python. Lazily evaluated on an array (or object) (and possibly generators)
+//          => sum from Python. Lazily evaluated, preferably with a generator if that gets added.
+//          => all and any from Python. Lazily evaluated on an array (or object) (and possibly generators)
+//              -> Javascript already has this, but I think all and any sound better than every and some
+//          => stringify, from JSON. Difference being the parameters, which should now allow settings for spacing after commas, etc
+//          => abs and pow from Python. Just a shorter way to write Math.abs and Math.pow
+//          => round from Python. Such that it can also take in a second param for the number of digits to right of
+//              decimal point to round to. Should be capable of rounding down and up. Rounds up at and above 5 as the
+//              final digit. Possibly add floor and ceiling built-in's to allow users to force down or up?
+//          => lazy from me. Caller should pass in a function and an array of parameters in their call order, and in return
+//              they would get a function that will call the function they gave it with the parameters they gave it when called.
+
+// Screw it. Since I'm going to rewrite the scanner anyways, I should add '!=' and '!=='
+// back into the language. 'not(x === y)' seems unnecessary compared to 'x !== y'
+
+// Syntax checking means a '-s' parameter option to print out "syntax ok" if syntax
+// is fine or a list of issues if the syntax is incorrect. This is for HW 2.
+
+var proposedIdeas = {
+    whitespace_syntax: "Convert the language to a indentation based syntax for blocks and such",
+    parenthesis_freedom: "if, elif, while, and for don't need parenthesis (parsed as part of the expression if found)",
+    range_built_in: "Make range a built-in, which produces an array of numbers based on its input",
+    property_consumption: "An operator that allows for the quick loading of properties into an object or environment",
+    not_equal_comparator: "Bring back the !== and !=== operators",
+    variable_reference_in_strings: "Add a variable reference syntax in strings to make strings more...convenient",
+    generators_and_iterators: "Add generators (and possibly iterators) to allow for lazily evaluated loops and such",
+    for_loops_naturalization: "Figure out what feels best between for..in and for..of to optimize how natural they feel to use",
+    keep_object_braces_option: "Even with the whitespace_syntax, objects should still be allowed to be defined with {}'s",
+    inline_conditionals: "Pythonic 'x if y else z' as a second option for a conditional ?:",
+    inline_loops: "expr for condit, do expr while condit, expr while condit. All added as short, one expression loops",
+    loop_comprehension: "[x for x in y], etc that should be able to create arrays AND be used with object_unpacking, and possibly 'x if y else z' expressions",
+    regex_js_style: "Bring back JavaScript's usual regex syntax, aka /stuff/",
+    direct_pair_for_loop: "Support a 'for key, val: props' form of a for loop, where the user immediately gets the pairs as two variables"
+};
 
 var confirmedIdeas = {
     object_unpacking: "Done via the object[props] method. Converts directly into js as seen above",
