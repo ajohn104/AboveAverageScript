@@ -58,7 +58,6 @@ abs = function(x) {
     return Math.abs(x);
 };
 
-
 // Works exactly like python now. Three ways of calling it:
 // range(max) -> returns array from: 0 <= x < max with increments of 1
 // range(min, max) -> returns array from: min <= x < max with increments of 1
@@ -114,7 +113,6 @@ lazy = function(call) {
     }                                               // let me tell you this: arguments ISN'T an array. Mind = blown. 10/10 ign.
     return lazier(call, args);
 };
-
 
 // Shorter version of console.log
 log = function() {
