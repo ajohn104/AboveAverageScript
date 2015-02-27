@@ -142,8 +142,7 @@ for(x :  y) log(x) end  // prints: {key: 0, val:"true"}, {key:1, val:"false"}, {
 // so, for(x : y) becomes for(x in y) { x = { key: x, val: y[x] }; ...user input... }
 
 
-// len, rather than .length or otherwise. This method will attempt to find a .length property, and will
-// default to getting the object's key array length.
+// len, rather than .length or otherwise.
 
 let x = len(y); // x is now 6, y.length;
 let x = len({blue: "fox", "candy": true, 0: 9, undefined: "willsmith"}); // x is now 4, Object.keys(y).length
@@ -151,12 +150,14 @@ let x = len({blue: "fox", "candy": true, 0: 9, undefined: "willsmith"}); // x is
 // in the JS side of things, it would look like:
 
 var len = function(arr) {
-    if(arr.hasOwnProperty('length')) {
-        return arr.length;
-    } else {
-        return Object.keys(arr).length;
-    }
-}
+    return arr.length;
+};
+
+// This method will attempt to find a .length property, and will
+// default to getting the object's key array length.
+var size = function(obj) {
+    return Object.keys(arr)['length'];
+};
 
 // ...meaning the programmer can set their own length property to track with len. Cool, huh? However,
 // it is still up to the programmer to make length not be an enumerable property.
