@@ -34,7 +34,7 @@ let Circle =
         set: func(point)
             _ <- point['x', 'y']                                // Roughly translates to _['x'], _['y'] = point['x'], point['y']
     area: func()                                                // ...in avg. That isn't the final compiled code.
-        return Math.pow(_circ.radius, 2) * Math.PI
+        return pow(_circ.radius, 2) * Math.PI
 
 Circle.location.set({ 'x': 50, 'y': 80})
 

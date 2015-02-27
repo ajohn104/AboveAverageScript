@@ -58,6 +58,11 @@ abs = function(x) {
     return Math.abs(x);
 };
 
+// Shorter Math.pow(x, y)
+pow = function(x, y) {
+    return Math.pow(x, y);
+};
+
 // Works exactly like python now. Three ways of calling it:
 // range(max) -> returns array from: 0 <= x < max with increments of 1
 // range(min, max) -> returns array from: min <= x < max with increments of 1

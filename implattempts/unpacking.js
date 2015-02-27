@@ -137,7 +137,7 @@ log('\n');
 
 var _list_numbers_unpacked_2 = [];
 for(var _list_unpack_i1 = 0; _list_unpack_i1 < len(_list_numbers_comprehend_2); _list_unpack_i1++) {
-    _list_numbers_unpacked_2.push("numbers[" + _list_numbers_comprehend_2[_list_unpack_i1] + "]");
+    _list_numbers_unpacked_2.push("numbers['" + _list_numbers_comprehend_2[_list_unpack_i1] + "']");
 }
 
 log("Test case three unpacked right side output:");
@@ -222,3 +222,24 @@ log('\n');
 // Seriously though, this was hard to implement in a way that will work in any situation. But
 // I'm confident that this is close to perfect if not perfect. I know the inline conditional is
 // pointless since there's already the ?: operator, but I don't really care. Preference is key.
+
+// Note to self: I need to change the value assignment and use for unpacking. If this is going to
+// work the way other parts of the language does, it needs to handle value swaps. To do this, it
+// needs to store all values it gets from each unpacking and then use the stored values on the
+// right side of any assignment. As for the left side, well, its hard to say. Property accesses,
+// such as x[y['a', 'b']] = y['a', 'b'] should remain constant, that is to say, if the code was:
+//
+// x = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+// y =
+//     a: 3
+//     b: 6
+// 
+// x[y['a', 'b']] = y['a', 'b']
+//
+// ...then the code should, at runtime, ultimately be doing the same as this:
+//
+// x[3, 6] = 3, 6
+//
+// The only thing that shouldn't change is x. But the values of y should evaluate. Now, this is hard
+// to say is perfect. And even harder to implement correctly. So I'll come back to this issue, but the 
+// property swapping should be dealt with just after consumption.js is finished.
