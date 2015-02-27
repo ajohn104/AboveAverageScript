@@ -189,7 +189,7 @@ circ <- obj['prop1', 'prop2', 'prop3'];
 // Lastly, the addition of minor list comprehension.
 let oldList = ["true", false, "9", "8", 7, null];
 let newList = [ oldList[0..len(oldList)] ];                     // this would probably be done as a for loop, 
-let altList = [ oldList[ range( len(oldList) ) ] ]              // if this is going to stay a macro. 
+let altList = [ oldList[ i for i in range(len(oldList)) ] ]              // if this is going to stay a macro. 
 
 // The .. operator would be inclusive-exclusive. AKA a <= i < b
 
@@ -255,6 +255,9 @@ let altList = [ oldList[ range( len(oldList) ) ] ]              // if this is go
 // Syntax checking means a '-s' parameter option to print out "syntax ok" if syntax
 // is fine or a list of issues if the syntax is incorrect. This is for HW 2.
 
+// for loop notes: have 'for..:' be the property keys, and 'for..in' be the property values or key, value assigned simultaneously.
+//  -> Just drop 'for..of' entirely. You don't need to make the same mistake Javascript made.
+
 var proposedIdeas = {
     whitespace_syntax: "Convert the language to a indentation based syntax for blocks and such",
     parenthesis_freedom: "if, elif, while, and for don't need parenthesis (parsed as part of the expression if found)",
@@ -274,7 +277,9 @@ var proposedIdeas = {
 
 var successfullyTestedIdeas = {
     lazy_built_in: "./implattempts/lazy.js",
-    
+    whitespace_syntax: "./implideas/indents.avg",
+    unpacking: "./implideas/unpacking.js",
+
 }
 
 var confirmedIdeas = {

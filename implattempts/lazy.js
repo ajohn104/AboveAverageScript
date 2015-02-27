@@ -3,17 +3,33 @@
 
 // It takes in a function, then any number of arguments to pass
 // to that function in the order they were passed to lazy
-var lazy = function() {
-    var call = arguments[0];
-    var args = arguments;
+var defaults = function(a, def) {
+    return (type(a) !== 'undefined' ? a : def);
+};
+
+var len = function(a) {
+    return a['length'];
+};
+
+var lazy = function(call, args) {
+    var call = defaults(call, arguments[0]);
+    var args = defaults(args, arguments.shift);
     var argString = "";
-    for(var i = 1; i < arguments.length; i++) {
+    for(var i = 0; i < len(args); i++) {
         argString += ", args[" + i + "]";
     }
     argString = argString.substring(2);
     return function() {
         eval("call(" + argString + ");");
     };
+};
+
+var log = function() {
+    lazy(console.log, arguments)();
+};
+
+var error = function() {
+    lazy(console.error, arguments)();
 };
 
 // And now, a test to make sure it works.
