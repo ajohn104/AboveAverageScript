@@ -1,7 +1,7 @@
 var Tokens = {
     Indent: 
         ["    "],
-    Separators: 
+    Separator: 
         [".", "{", "}", "[", "]", "(", ")", ":", ",", ";"],
     OneCharacterOperators: 
         ["+", "-", "~", "/", "*", "%", "<", ">", "&", "|", "^", "?", "="],
@@ -18,11 +18,11 @@ var Tokens = {
         ["let", "_", "for", "in", "end", "if", "elif", "else",
          "stop", "skip", "do", "while", "try", "catch", "throw",
          "ret", "finally", "switch", "case", "new", "func"],
-    Comments: 
+    Comment: 
         ["//", "/*", "*/"],
     Native:
         ["***native***"],
-    Bool: 
+    BoolLit: 
         ["true", "false"],
     Unused:
         ["break", "class", "const", "continue", "debugger", 

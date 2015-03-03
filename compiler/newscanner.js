@@ -102,7 +102,7 @@ var LineScanner = function() {
                 line = line.substring(token.lexeme.length + token.index);
                 continue;
             } else {
-                var characterNumber = line.indexOf(Tokens.Comments[2]);
+                var characterNumber = line.indexOf(Tokens.Comment[2]);
                 if(characterNumber >= 0) {
                     this.inMultilineComment = false;
                     line = line.substring(characterNumber+2);
@@ -118,10 +118,10 @@ var LineScanner = function() {
         }
     };
     this.isSinglelineComment = function(token) {
-        return token.lexeme === Tokens.Comments[0];
+        return token.lexeme === Tokens.Comment[0];
     };
     this.isMultilineComment = function(token) {
-        return token.lexeme === Tokens.Comments[1];
+        return token.lexeme === Tokens.Comment[1];
     };
     this.isIndent = function(token) {
         return token.lexeme === Tokens.Indent[0];
@@ -140,42 +140,21 @@ var LineScanner = function() {
             }
             if(index === -1 || (tokenIndex >= 0 && tokenIndex < index)) {
                 index = tokenIndex;
-                arrayIndex = (wordBreak)?i:arrayIndex;
+                arrayIndex = i;
             }
         }
-        return (!wordBreak)?index:{index: index, arrayIndex:arrayIndex};
+        return {index: index, arrayIndex:arrayIndex};
     };
-    // I'm sure I could have used negative lookaheads to do this in about 5
-    // lines, but I don't feel confident enough to use them. Ever.
-    var getStringMatch = function(line) {
-        var doubleQuotes = line.search(/\"/);
-        var singleQuote = line.search(/\'/);
-        var start = null
-        var token = null;
-        var offset = 0;
-        if(singleQuote < 0 && doubleQuotes < 0) return token;
-        var single = (singleQuote > 0 && singleQuote < doubleQuotes); 
-        start = singleQuote;
-        var endQuote = single?"\'":"\"";
-        var newLine = line.substring(1);
-        var end = null;
-        while(end === null) {
-            end = (single)?newLine.search(/\'/):newLine.search(/\"/);
-            if(end === -1) return {kind: "OpenString", lexeme: "ERROR"};
-            if(end > 0 && newLine.substring(end-1, end+1) === "\\" + endQuote) {
-                offset += end + 1;
-                newLine = substring(end+1);
-                end = null;
-            } else {
-                end += offset;
-            }
-        }
-        token = {kind: "StrLit", lexeme: line.substring(start, end+1), index: start};
+    var getMatch = function(line, kind, wordBreak) {
+        var matchIndexes = getBestMatch(line, Tokens[kind], wordBreak);
+        var matchIndex = matchIndexes['index'];
+        if(matchIndex === -1) return null;
+        var size = Tokens[kind][matchIndexes['arrayIndex']].length;
+        var match = line.substring(matchIndex, matchIndex + size);
+        var token = {kind: kind, lexeme: match, index: matchIndex};
         return token;
     };
     // ...I found a way without using negative lookaheads. 6 lines. Boom.
-    // I'm going to keep the previous one around for reference until I
-    // feel comfortable removing it. Basically, whenever I finish testing.
     var getStrRegexMatch = function(line) {
         var start = null;
         var matchIndex = line.search(/(\"(.+?[^\\])?\")|(\'(.+?[^\\])?\'')/);
@@ -193,29 +172,19 @@ var LineScanner = function() {
         return token;
     };
     var getBoolMatch = function(line) {
-        var matchIndexes = getBestMatch(line, Tokens.Bool, true);
-        var matchIndex = matchIndexes['index'];
-        if(matchIndex === -1) return null;
-        var size = Tokens.Bool[matchIndexes['arrayIndex']].length;
-        var match = line.substring(matchIndex, matchIndex + size);
-        var token = {kind: "BoolLit", lexeme: match, index: matchIndex};
-        return token;
+        return getMatch(line, "BoolLit", true);
     };
     var getNativeMatch = function(line) {
-        var matchIndex = getBestMatch(line, Tokens.Native);
-        if(matchIndex === -1) return null;
-        var match = line.substring(matchIndex, matchIndex + Tokens.Native[0].length);
-        var token = {kind: "Native", lexeme: match, index: matchIndex};
-        return token;
+        return getMatch(line, "Native", false);
     };
     var getOperatorMatch = function(line) {
         var matchIndex, size;
-        matchIndex = getBestMatch(line, Tokens.OneCharacterOperators);
+        matchIndex = getBestMatch(line, Tokens.OneCharacterOperators)['index'];
         if(matchIndex >= 0) size = 1;
         [Tokens.TwoCharacterOperators, Tokens.ThreeCharacterOperators, Tokens.FourCharacterOperators]
             .forEach(function(array, newSize) {
                 newSize += 2;
-                var newMatchIndex = getBestMatch(line, array);
+                var newMatchIndex = getBestMatch(line, array)['index'];
                 if(newMatchIndex !== -1 && newMatchIndex <= matchIndex) {
                     matchIndex = newMatchIndex;
                     size = newSize;
@@ -233,30 +202,16 @@ var LineScanner = function() {
         return token;
     };
     var getSeparatorMatch = function(line) {
-        var matchIndex = getBestMatch(line, Tokens.Separators);
-        if(matchIndex === -1) return null;
-        var token = {kind: "Separator", lexeme: line.charAt(matchIndex), index: matchIndex};
-        return token;
+        return getMatch(line, "Separator");
     };
     var getCommentMatch = function(line) {
-        var matchIndex = getBestMatch(line, Tokens.Comments);
-        if(matchIndex === -1) return null;
-        var token = {kind: "Comment", lexeme: line.substring(matchIndex, matchIndex+2), index: matchIndex};
-        return token;
-    };
-    var getResMatch = function(line, kind) {
-        var matchIndexes = getBestMatch(line, Tokens[kind], true);
-        var matchIndex = matchIndexes['index'];
-        if(matchIndexes['index'] === -1) return null;
-        var size = Tokens[kind][matchIndexes['arrayIndex']].length;
-        var token = {kind: kind, lexeme: line.substring(matchIndex, matchIndex + size), index: matchIndex};
-        return token;
+        return getMatch(line, "Comment", false);
     };
     var getReservedMatch = function(line) {
-        return getResMatch(line, "Reserved");
+        return getMatch(line, "Reserved", true);
     };
     var getUnusedMatch = function(line) {
-        return getResMatch(line, "Unused");
+        return getMatch(line, "Unused", true);
     };
     var getIdMatch = function(line) {
         var start = null;
