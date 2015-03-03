@@ -549,7 +549,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(stop|case|catch|skip|default|do|elif|else|end|finally|for|goto|if|import|package|return|switch|throw|try|while)\b</string>
+			<string>\b(stop|case|catch|skip|default|do|elif|else|end|finally|for|goto|if|import|package|ret|switch|throw|try|while)\b</string>
 			<key>name</key>
 			<string>keyword.control.js</string>
 		</dict>
@@ -645,7 +645,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?&lt;=[=(:]|^|return|and|or|not)\s*(/)(?![/*+{}?])</string>
+			<string>(?&lt;=[=(:]|^|ret|and|or|not)\s*(/)(?![/*+{}?])</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
