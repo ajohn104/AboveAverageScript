@@ -4,7 +4,8 @@ Tokens = require('./tokens');
 /*
  * I'm aware this could be a lot shorter, and a lot of code should be in functions. However
  * I felt it was more important for me to be able to read it line by line, and have it work
- * in the end, then make it shorter. So it will be shorter soon.
+ * in the end, then make it shorter. So it will be shorter soon. And now it is. I'm probably
+ * going to get rid of this soon, but I'm keeping it around for reference for a tad longer.
  */
 
 
@@ -27,7 +28,7 @@ var scan = function(file, callback) {
     });
 }
 
-var tokensToString = function(tokens){
+var tokensToStringFull = function(tokens){
     var str = "";
     for(var i = 0; i < tokens.length; i++ ) {
         str += tokens[i]['kind'] + "( '" + tokens[i]['lexeme'] + "' ), ";
@@ -334,7 +335,7 @@ var LineScanner = function() {
 };
 var Scanner = {
     scan: scan,
-    tokensToString: tokensToString
+    tokensToStringFull: tokensToStringFull
 }
 
 module.exports = Scanner;

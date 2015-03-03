@@ -1,0 +1,14 @@
+// Simple stuff.
+
+$(func()
+    ***native***
+
+    let hello = /*  Should work just fine */ func()
+    /*this indent shouldn't even notice the comment. Or this nested one // See? */    log("Hello World!")
+
+    hello()
+
+    while(y or x)
+        log("x: " + x)
+)
+

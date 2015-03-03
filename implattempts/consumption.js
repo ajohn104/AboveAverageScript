@@ -70,3 +70,50 @@ var Circle = {
 Circle.location.set({'x': 50, 'y': 80});
 
 // Boom. One successful test done.
+
+// And now, another. This is for consumption into named objects
+
+// let newProps =
+//     width: 50
+//     y: 70
+// 
+// let RectangleMaker =
+//     _maker = _
+//     Rectangle: func(props)
+//         _[key] = val for key, val : props                       // This is an experimental idea I had just now. Might be worthwhile.
+//     defaultProps:
+//         x: 50
+//         y: 40
+//         width: 100
+//         height: 200
+//     make: func(props)
+//         let rectProps = Object.create(_maker.defaultProps)      // I have absolutely no idea how I intend on implementing this. Currently, object unpacking
+//         rectProps <- props[key for key in props]                // is done basically via a macro. This... this isn't a macro. This is at runtime.
+//                                                                 
+// let rect = RectangleMaker.make(newProps)
+
+var newProps = {
+    width: 50,
+    y: 70,
+};
+
+var RectangleMaker = {
+    _maker: this,
+    Rectangle: function(props) {
+        for(var key in props) {
+            var val = props[key];
+
+            this[key] = val;
+        }
+    },
+    defaultProps: {
+        x: 50,
+        y: 40,
+        width: 100,
+        height: 200,
+    },
+    make: function(props) {
+        var rectProps = Object.create(_maker.defaultProps);
+        
+    },
+}

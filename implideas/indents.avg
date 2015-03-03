@@ -69,7 +69,7 @@ $(
             .val(
                 (
                     func()
-                        return
+                        ret
                             repeat.val() +
                                 repeat
                                     .val()
@@ -88,7 +88,7 @@ $(func()
 
     repeat.val( 
         (func()
-            return repeat.val() + repeat.val()
+            ret repeat.val() + repeat.val()
         )()
     )
 )
@@ -107,7 +107,7 @@ $(func()
 
     repeat.val( 
         (func()
-            return repeat
+            ret repeat
                 .val() +
                     repeat
                         .val()
@@ -167,10 +167,10 @@ $(func()
         owner: new Human("Bob")
         park: func()
             _.isMoving = false
-            return _
+            ret _
         drive: func()
             _.isMoving = true
-            return _
+            ret _
         sell: func(sellObject)
             _.owner = sellObject.owner
         status: "broken"
