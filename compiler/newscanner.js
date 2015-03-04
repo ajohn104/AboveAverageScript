@@ -154,28 +154,14 @@ var LineScanner = function() {
         var token = {kind: kind, lexeme: match, index: matchIndex};
         return token;
     };
-    // ...I found a way without using negative lookaheads. 6 lines. Boom.
-    var getStrRegexMatch = function(line) {
+    var getMatchReg = function(line, kind, regexStr) {
         var start = null;
-        var matchIndex = line.search(/(\"(.+?[^\\])?\")|(\'(.+?[^\\])?\')/);
-        if(matchIndex === -1) return null;
-        var match = line.match(/(\"(.+?[^\\])?\")|(\'(.+?[^\\])?\')/)[0];
-        var token = {kind: "StrLit", lexeme: match, index: matchIndex};
+        var matches = line.match(new RegExp(regexStr));
+        if(matches === null) return null;
+        var match = matches[0], 
+            matchIndex = matches['index'];
+        var token = {kind: kind, lexeme: match, index: matchIndex};
         return token;
-    };
-    var getIntMatch = function(line) {
-        var start = null;
-        var matchIndex = line.search(/[+-]?(0x[a-f0-9]+)|(\d+(\.\d+)?(e\d+)?)/i);
-        if(matchIndex === -1) return null;
-        var match = line.match(/[+-]?(0x[a-f0-9]+)|(\d+(\.\d+)?(e\d+)?)/i)[0];
-        var token = {kind: "IntLit", lexeme: match, index: matchIndex};
-        return token;
-    };
-    var getBoolMatch = function(line) {
-        return getMatch(line, "BoolLit", true);
-    };
-    var getNativeMatch = function(line) {
-        return getMatch(line, "Native", false);
     };
     var getOperatorMatch = function(line) {
         var matchIndex, size;
@@ -204,8 +190,31 @@ var LineScanner = function() {
     var getSeparatorMatch = function(line) {
         return getMatch(line, "Separator");
     };
+    var getIdMatch = function(line) {
+        return getMatchReg(line, "Id", "[_$a-zA-Z][$\\w]*(?=[^$\\w]|$)");
+    };
+    var getIntMatch = function(line) {
+        return getMatchReg(line, "IntLit", "[+-]?((0x[a-fA-F0-9]+)|(\\d+(\\.\\d+)?([eE][+-]?\\d+)?))");
+    };
+    // newest string literal regex courtesy of arcain from StackOverflow
+    var getStrMatch = function(line) {      
+        return getMatchReg(line, "StrLit", "\\\"[^\\\"\\\\]*(?:\\\\.[^\\\"\\\\]*)*\\\"|\\\'[^\\\'\\\\]*(?:\\\\.[^\\\'\\\\]*)*\\\'");
+    };
+    // Slightly adapted from the string regex...
+    var getRegExpMatch = function(line) {
+        return getMatchReg(line, "RegExpLit", "\\/[^\\/\\\\]+(?:\\\\.[^\\/\\\\]*)*\\/[igm]{0,3}");
+    };
+    var getBoolMatch = function(line) {
+        return getMatch(line, "BoolLit", true);
+    };
     var getCommentMatch = function(line) {
-        return getMatch(line, "Comment", false);
+        return getMatch(line, "Comment");
+    };
+    var getIndentMatch = function(line) {
+        return getMatch(line, "Indent");
+    };
+    var getNativeMatch = function(line) {
+        return getMatch(line, "Native");
     };
     var getReservedMatch = function(line) {
         return getMatch(line, "Reserved", true);
@@ -213,57 +222,39 @@ var LineScanner = function() {
     var getUnusedMatch = function(line) {
         return getMatch(line, "Unused", true);
     };
-    var getIdMatch = function(line) {
-        var start = null;
-        var matchIndex = line.search(/[_$a-z][$\w]*(?=[^$\w])/i);
-        if(matchIndex === -1) return null;
-        var match = line.match(/[_$a-z][$\w]*(?=[^$\w])/i)[0];
-        var token = {kind: "Id", lexeme: match, index: matchIndex};
-        return token;
-    };
-    var getIndentMatch = function(line) {
-        var start = null;
-        var indent = Tokens.Indent[0];
-        var matchIndex = line.search(new RegExp(indent));
-        if(matchIndex !== 0) return null;
-        var match = indent;
-        var token = {kind: "Indent", lexeme: match, index: matchIndex};
-        return token;
-    };
+    var tokenFunctions = [
+        getReservedMatch, getUnusedMatch, getBoolMatch, getCommentMatch,
+        getRegExpMatch, getNativeMatch, getOperatorMatch, getSeparatorMatch,
+        getStrMatch, getIntMatch, getIdMatch
+    ];
     this.getNextToken = function(line, contentHasAppeared) {
         var token = null;
         token = getIndentMatch(line);
         if(!contentHasAppeared && token !== null && token.index === 0) {
             return token;
         }
-        var tokenFunctions = [
-            getReservedMatch, getUnusedMatch, getStrRegexMatch, getBoolMatch,
-            getCommentMatch, getNativeMatch, getOperatorMatch, getSeparatorMatch,
-            getStrRegexMatch, getIntMatch, getIdMatch
-        ];
         var tokenOptions = [];
         for(var i = 0; i < tokenFunctions.length; i++) {
             var token = tokenFunctions[i](line);
             if(token !== null) {
-                var priority = "" + i;          // To prevent the object from changing to the value of i from the loop as it changes.
-                tokenOptions.push({token:token, priority: priority});
+                tokenOptions.push({token:token, priority: i});
             }
         }
-        token = null;
+        var option = null;
         for(var j = 0; j < tokenOptions.length; j++) {
             var newToken = tokenOptions[j];
-            if(token === null) {
-                token = newToken;
+            if(option === null) {
+                option = newToken;
                 continue;
             }
-            var betterIndex = newToken.token.index < token.token.index;
-            var betterPriority = (newToken.token.index === token.token.index) && (newToken.priority < token.priority);
+            var betterIndex = newToken.token.index < option.token.index;
+            var betterPriority = (newToken.token.index === option.token.index) && (newToken.priority < option.priority);
             if(betterIndex || betterPriority) {
-                token = newToken;
+                option = newToken;
             }
         }
-        if(token === null) return null;
-        var cutout = line.substring(0, token.token.index);
+        if(option === null) return null;
+        var cutout = line.substring(0, option.token.index);
         if(cutout.length > 0 && cutout.search(/^\x20+$/) === -1) {
             // Error report goes here. Unexpected characters, basically.
             // This should only be entered if the next token found has non-space characters
@@ -271,7 +262,7 @@ var LineScanner = function() {
             // considered to be a space character. In other words, tabs are not allowed.
             return {kind: "UnexpectedChars", lexeme: cutout, index: 0};
         }
-        return token.token;
+        return option.token;
     };
     this.complete = function() {
         return this.tokens;

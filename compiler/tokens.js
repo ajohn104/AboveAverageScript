@@ -37,6 +37,6 @@ Tokens.kinds =
      {kind:"Id", abbr: "Id"}, {kind:"Reserved", abbr: null/*"Res"*/}, {kind:"Unused", abbr: "ErrUR"},
      {kind:"Comment", abbr: undefined}, {kind:"Separator", abbr: null/*"Sep"*/}, {kind:"Operator", abbr: null/*"Op"*/},
      {kind:"Native", abbr: null}, {kind:"BoolLit", abbr: "Bool"}, {kind:"IntLit", abbr: "Int"},
-     {kind:"StrLit", abbr: "Str"} ];
+     {kind:"StrLit", abbr: "Str"}, {kind:"RegExpLit", abbr: "Rgx"} ];
 
 module.exports = Tokens;
