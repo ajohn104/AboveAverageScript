@@ -3,6 +3,7 @@ var scan = Scanner.scan;
 var tokensToStringFull = Scanner.tokensToStringFull;
 var tokensToStringPretty = Scanner.tokensToStringPretty;
 var tokensToStringBest = Scanner.tokensToStringBest;
+var tokensToStringSpacially = Scanner.tokensToStringSpacially;
 
 var files = ["./examples/HelloIndents.avg"];
 
@@ -25,6 +26,8 @@ for(j in arguments) {
         case "-b":
             printFunction = tokensToStringBest;
             break;
+        case "-s":
+            printFunction = tokensToStringSpacially;
     }
 }
 

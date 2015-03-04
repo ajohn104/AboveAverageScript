@@ -73,6 +73,26 @@ var tokensToStringBest = function(tokens) {
     return str;
 };
 
+var tokensToStringSpacially = function(tokens) {
+    var str = "";
+    var indent = "    ";
+    var charCount = 0;
+    for(var i = 0; i < tokens.length; i++ ) {
+        if(tokens[i]['kind'] === 'Newline') {
+            str += "\n";
+            charCount = 0;
+        }
+        var newStr = tokens[i]['kind'] + "('" + tokens[i]['lexeme'] + "'), ";
+        if(newStr.length + charCount > 80) {
+            charCount = indent.length;
+            str += "\n" + indent;
+        }
+        str += tokens[i]['kind'] + "('" + tokens[i]['lexeme'] + "'), ";
+        charCount += newStr.length;
+    }
+    return str;
+};
+
 var LineScanner = function() {
     this.currentLine = null;
     this.lineNumber = 0;
@@ -272,7 +292,8 @@ var Scanner = {
     scan: scan,
     tokensToStringFull: tokensToStringFull,
     tokensToStringPretty: tokensToStringPretty,
-    tokensToStringBest: tokensToStringBest
+    tokensToStringBest: tokensToStringBest,
+    tokensToStringSpacially: tokensToStringSpacially
 }
 
 module.exports = Scanner;
