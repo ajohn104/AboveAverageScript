@@ -157,9 +157,9 @@ var LineScanner = function() {
     // ...I found a way without using negative lookaheads. 6 lines. Boom.
     var getStrRegexMatch = function(line) {
         var start = null;
-        var matchIndex = line.search(/(\"(.+?[^\\])?\")|(\'(.+?[^\\])?\'')/);
+        var matchIndex = line.search(/(\"(.+?[^\\])?\")|(\'(.+?[^\\])?\')/);
         if(matchIndex === -1) return null;
-        var match = line.match(/(\"(.+?[^\\])?\")|(\'(.+?[^\\])?\'')/)[0];
+        var match = line.match(/(\"(.+?[^\\])?\")|(\'(.+?[^\\])?\')/)[0];
         var token = {kind: "StrLit", lexeme: match, index: matchIndex};
         return token;
     };
