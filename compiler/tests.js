@@ -31,10 +31,4 @@ for(j in arguments) {
     }
 }
 
-var test = function(file) {
-    var scanResults = scan(file, function(tokens) {
-        console.log(printFunction(tokens));
-    });
-};
 
-test(files[0]);

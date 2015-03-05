@@ -24,7 +24,7 @@ var scan = function(file, callback) {
             callback(tokens);
         }
     });
-}
+};
 
 var tokensToStringFull = function(tokens){
     var str = "";

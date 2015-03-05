@@ -53,7 +53,7 @@ let car =
         ret _car
 log(car[key for key: car])
 
-let x = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+let x = [ 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 let y =
     a: 3
     b: 6
@@ -61,3 +61,15 @@ let y =
 x[y['a', 'b']] = y['a', 'b']
 
 log(x), log(y)
+
+for let i = 0, i < 8, i++
+
+u = [ 0, 0, 
+    0, 0
+
+]
+
+k = [ 
+    0, 0,
+    9, 9
+]
