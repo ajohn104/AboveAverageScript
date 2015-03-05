@@ -40,7 +40,7 @@ var tokensToStringPretty = function(tokens) {
         if(tokens[i]['kind'] === 'Newline') {
             str += "\n\'\\n\'";
         } else if(tokens[i]['kind'] === "Indent") {
-            str += " \'\\t\'";
+            str += " \'\\i\'";
         } else {
             str += " \'"+ tokens[i]['lexeme'] + "\'";
         }
@@ -98,9 +98,11 @@ var LineScanner = function() {
     this.lineNumber = 0;
     this.inMultilineComment = false;
     this.tokens = [];
+    this.indentsInPreviousLine = 0;
     this.nextLine = function(line) {
         var contentHasAppeared = false;
         this.lineNumber++;
+        var indentsOnThisLine = [];
         while(line.length > 0) {
             if(!this.inMultilineComment) {
                 var token = this.getNextToken(line, contentHasAppeared);
@@ -117,7 +119,26 @@ var LineScanner = function() {
                     line = line.substring(2);
                     continue;
                 }
+                if(this.isIndent(token) && !contentHasAppeared) {
+                    indentsOnThisLine.push(token);
+                    line = line.substring(token.lexeme.length + token.index);
+                    continue;
+                }
+                var hasAppearedBefore = contentHasAppeared;
                 contentHasAppeared = (!this.isIndent(token))?true:contentHasAppeared;
+                if(hasAppearedBefore !== contentHasAppeared) {
+                    for(var k = indentsOnThisLine.length; k < this.indentsInPreviousLine; k++) {
+                        var prev = this.tokens.pop();
+                        this.tokens.push({kind:"Dedent", lexeme:"\\d"});
+                        this.tokens.push(prev);
+                    }
+                    for(var l = this.indentsInPreviousLine; l < indentsOnThisLine.length; l++) {
+                        var prev = this.tokens.pop();
+                        this.tokens.push({kind:"Indent", lexeme:"\\i"});
+                        this.tokens.push(prev);
+                    }
+                    this.indentsInPreviousLine = indentsOnThisLine.length;
+                }
                 this.tokens.push(token);
                 line = line.substring(token.lexeme.length + token.index);
                 continue;
@@ -132,10 +153,17 @@ var LineScanner = function() {
                 }
             }
         }
-        if(!this.inMultilineComment) {
+        var lastToken = this.getLastToken();
+        if(!this.inMultilineComment && typeof lastToken !== "undefined" && !this.isNewline(lastToken)) {
             var token = {kind: "Newline", lexeme:"\\n"};
             this.tokens.push(token);
         }
+    };
+    this.getLastToken = function() {
+        return this.tokens[this.tokens.length-1];
+    };
+    this.isNewline = function(token) {
+        return token.lexeme === "\\n";
     };
     this.isSinglelineComment = function(token) {
         return token.lexeme === Tokens.Comment[0];

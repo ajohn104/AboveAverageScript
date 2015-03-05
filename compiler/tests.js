@@ -5,7 +5,7 @@ var tokensToStringPretty = Scanner.tokensToStringPretty;
 var tokensToStringBest = Scanner.tokensToStringBest;
 var tokensToStringSpacially = Scanner.tokensToStringSpacially;
 
-var files = ["./examples/HelloIndents.avg"];
+var files = ["./examples/HelloIndents.avg", "./examples/UnpacksConsumersInlines.avg"];
 
 var arguments = [];
 for(var i = 2; i < process.argv.length; i++) {

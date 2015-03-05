@@ -4,13 +4,17 @@ $(func()
     ***native***
 
     let hello = /*  Should work just fine */ func()
-    /*this indent shouldn't even notice the comment. Or this nested one // See? */    log("Hello World!")
+    /* This is a multiline comment // This isn't. */    log("Hello World!")
 
     hello()
 
-    while(y or x)
+    while y or x
         log("x: " + x)
 
     let match = "I am Rob Shneider reborn! REBORN".match(/or/ig)
+
+    let color1 = "red",
+        color2 = "white",
+        color3 = "blue"
 )
 

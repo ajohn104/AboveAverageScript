@@ -15,7 +15,7 @@ require('./native.js');
 //         set: func(point)
 //             _ <- point['x', 'y']
 //     area: func()
-//         return pow(_circ.radius, 2) * Math.PI
+//         ret pow(_circ.radius, 2) * Math.PI
 // 
 // Circle.location.set({ 'x': 50, 'y': 80})
 
