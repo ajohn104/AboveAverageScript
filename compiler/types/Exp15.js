@@ -1,9 +1,9 @@
-// Exp15           ::= 'new'? Exp16 Call*
+// Exp15           ::= 'new'? Exp16 Call?
 module.exports = {
     is: function() {
         var indexBefore = index;
-
-        if(tokens[index].lexeme === 'new') {
+        console.log("Starting on exp15. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        if(parseTokens[index].lexeme === 'new') {
             index++;
         }
 
@@ -12,8 +12,8 @@ module.exports = {
             return false;
         }
 
-        while(expect(Call));
-
+        expect(Call);
+        console.log("Finalizing exp15 success. index:" + index + ', lexeme: ' + parseTokens[index-1].lexeme);
         return true;
-    };
+    }
 };

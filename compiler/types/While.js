@@ -1,9 +1,9 @@
-// While           ::= 'while' Exp Indent Block Dedent
+// While           ::= 'while' Exp ':' Indent Block Dedent
 module.exports = {
     is: function() {
         var indexBefore = index;
-
-        if(tokens[index].lexeme !== 'while') {
+        console.log("Checking for while loop");
+        if(parseTokens[index].lexeme !== 'while') {
             index = indexBefore;
             return false;
         } 
@@ -13,6 +13,12 @@ module.exports = {
             index = indexBefore;
             return false;
         }
+
+        if(parseTokens[index].lexeme !== ':') {
+            index = indexBefore;
+            return false;
+        }
+        index++;
 
         if(!expect(Indent)) {
             index = indexBefore;
@@ -30,5 +36,5 @@ module.exports = {
         }
 
         return true;
-    };
+    }
 };

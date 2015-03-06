@@ -2,11 +2,12 @@
 module.exports = {
     is: function() {
         var indexBefore = index;
-        if(!tokens[index].kind !== 'Id') {
+        if(parseTokens[index].kind !== 'Id') {
             index = indexBefore;
             return false;
         }
         index++;
+        console.log("Finalizing id success. index:" + index + ', lexeme: ' + parseTokens[index-1].lexeme);
         return true;
-    };
+    }
 };

@@ -1,11 +1,11 @@
 Scanner = require('./newscanner');
 var scan = Scanner.scan;
-var tokensToStringFull = Scanner.tokensToStringFull;
-var tokensToStringPretty = Scanner.tokensToStringPretty;
+var parseTokensToStringFull = Scanner.parseTokensToStringFull;
+var parseTokensToStringPretty = Scanner.parseTokensToStringPretty;
 
 var test = function(file) {
-    var scanResults = scan(file, function(tokens) {
-        console.log(tokensToStringFull(tokens));
+    var scanResults = scan(file, function(parseTokens) {
+        console.log(parseTokensToStringFull(parseTokens));
     });
 };
 

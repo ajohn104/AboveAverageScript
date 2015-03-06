@@ -3,7 +3,7 @@ module.exports = {
     is: function() {
         var indexBefore = index;
 
-        if(tokens[index].lexeme !== '{') {
+        if(parseTokens[index].lexeme !== '{') {
             index = indexBefore;
             return false;
         }
@@ -11,7 +11,8 @@ module.exports = {
 
         if(expect(Property)) {
 
-            while(tokens[index].lexeme === ',') {
+            while(parseTokens[index].lexeme === ',') {
+                index++;
                 if(!expect(Property)) {
                     index = indexBefore;
                     return false;
@@ -20,7 +21,8 @@ module.exports = {
 
             if(expect(Indent)) {
 
-                while(tokens[index].lexeme === ',') {
+                while(parseTokens[index].lexeme === ',') {
+                    index++;
                     if(!expect(Newline)) {
                         index = indexBefore;
                         return false;
@@ -39,5 +41,5 @@ module.exports = {
 
         }
         return true;
-    };
+    }
 };

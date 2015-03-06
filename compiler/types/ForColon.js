@@ -3,7 +3,7 @@ module.exports = {
     is: function() {
         var indexBefore = index;
 
-        if(tokens[index].lexeme !== 'for') {
+        if(parseTokens[index].lexeme !== 'for') {
             index = indexBefore;
             return false;
         } 
@@ -14,7 +14,7 @@ module.exports = {
             return false;
         }
 
-        if(tokens[index].lexeme !== ':') {
+        if(parseTokens[index].lexeme !== ':') {
             index = indexBefore;
             return false;
         }
@@ -25,5 +25,5 @@ module.exports = {
         }
 
         return true;
-    };
+    }
 };

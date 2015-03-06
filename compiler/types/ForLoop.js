@@ -1,4 +1,4 @@
-// ForLoop         ::= (ForIn | ForColon | For) Indent Block Dedent
+// ForLoop         ::= (ForIn | ForColon | For) ':' Indent Block Dedent
 module.exports = {
     is: function() {
         var indexBefore = index;
@@ -7,6 +7,12 @@ module.exports = {
             index = indexBefore;
             return false;
         }
+
+        if(parseTokens[index].lexeme !== ':') {
+            index = indexBefore;
+            return false;
+        }
+        index++;
 
         if(!expect(Indent)) {
             index = indexBefore;
@@ -24,5 +30,5 @@ module.exports = {
         }
 
         return true;
-    };
+    }
 };

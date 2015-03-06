@@ -26,7 +26,7 @@ var scan = function(file, callback) {
     });
 };
 
-var tokensToStringFull = function(tokens){
+var parseTokensToStringFull = function(tokens){
     var str = "";
     for(var i = 0; i < tokens.length; i++ ) {
         str += tokens[i]['kind'] + "( '" + tokens[i]['lexeme'] + "' ), ";
@@ -34,7 +34,7 @@ var tokensToStringFull = function(tokens){
     return str;
 };
 
-var tokensToStringPretty = function(tokens) {
+var parseTokensToStringPretty = function(tokens) {
     var str = "";
     for(var i = 0; i < tokens.length; i++ ) {
         if(tokens[i]['kind'] === 'Newline') {
@@ -48,7 +48,7 @@ var tokensToStringPretty = function(tokens) {
     return str;
 };
 
-var tokensToStringBest = function(tokens) {
+var parseTokensToStringBest = function(tokens) {
     var str = "";
     for(var i = 0; i < tokens.length; i++ ) {
         var abbr = null;
@@ -73,7 +73,7 @@ var tokensToStringBest = function(tokens) {
     return str;
 };
 
-var tokensToStringSpacially = function(tokens) {
+var parseTokensToStringSpacially = function(tokens) {
     var str = "";
     var indent = "    ";
     var charCount = 0;
@@ -129,16 +129,17 @@ var LineScanner = function() {
                 if(hasAppearedBefore !== contentHasAppeared) {
                     for(var k = indentsOnThisLine.length; k < this.indentsInPreviousLine; k++) {
                         var prev = this.tokens.pop();
-                        this.tokens.push({kind:"Dedent", lexeme:"\\d"});
+                        this.tokens.push({kind:"Dedent", lexeme:"\\d", line: this.lineNumber});
                         this.tokens.push(prev);
                     }
                     for(var l = this.indentsInPreviousLine; l < indentsOnThisLine.length; l++) {
                         var prev = this.tokens.pop();
-                        this.tokens.push({kind:"Indent", lexeme:"\\i"});
+                        this.tokens.push({kind:"Indent", lexeme:"\\i", line: this.lineNumber});
                         this.tokens.push(prev);
                     }
                     this.indentsInPreviousLine = indentsOnThisLine.length;
                 }
+                token.line = this.lineNumber;
                 this.tokens.push(token);
                 line = line.substring(token.lexeme.length + token.index);
                 continue;
@@ -155,7 +156,7 @@ var LineScanner = function() {
         }
         var lastToken = this.getLastToken();
         if(!this.inMultilineComment && typeof lastToken !== "undefined" && !this.isNewline(lastToken)) {
-            var token = {kind: "Newline", lexeme:"\\n"};
+            var token = {kind: "Newline", lexeme:"\\n", line: this.lineNumber+1};
             this.tokens.push(token);
         }
     };
@@ -313,15 +314,24 @@ var LineScanner = function() {
         return option.token;
     };
     this.complete = function() {
+        for(var i = 0; i < this.indentsInPreviousLine; i++) {
+            var prev = this.tokens.pop();
+            this.tokens.push({kind:"Dedent", lexeme:"\\d", line: this.lineNumber});
+            this.tokens.push(prev);
+        }
+        if(this.tokens[this.tokens.length-1].kind === "Newline") {
+            this.tokens.pop();
+        }
+        this.tokens.push({kind: "EndOfFile", lexeme:"@EOF"});
         return this.tokens;
     };
 };
 var Scanner = {
     scan: scan,
-    tokensToStringFull: tokensToStringFull,
-    tokensToStringPretty: tokensToStringPretty,
-    tokensToStringBest: tokensToStringBest,
-    tokensToStringSpacially: tokensToStringSpacially
+    parseTokensToStringFull: parseTokensToStringFull,
+    parseTokensToStringPretty: parseTokensToStringPretty,
+    parseTokensToStringBest: parseTokensToStringBest,
+    parseTokensToStringSpacially: parseTokensToStringSpacially
 }
 
 module.exports = Scanner;

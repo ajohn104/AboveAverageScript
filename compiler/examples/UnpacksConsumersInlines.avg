@@ -3,15 +3,15 @@ let newProps =
     y: 70
 
 let RectangleMaker =
-    _maker = _
-    Rectangle: func(props)
+    _maker : _
+    Rectangle: func props ->
         _[key] = val for key, val : props
     defaultProps:
         x: 50
         y: 40
         width: 100
         height: 200
-    make: func(props)
+    make: func props, x, y ->
         let rectProps = Object.create(_maker.defaultProps)
         rectProps <- props[key for key in props]
                                                                 
@@ -25,9 +25,9 @@ let Circle =
     location:
         x: 5
         y: 10
-        set: func(point)
+        set: func point ->
             _ <- point['x', 'y']
-    area: func()
+    area: func ->
         ret pow(_circ.radius, 2) * Math.PI
 
 Circle.location.set({ 'x': 50, 'y': 80})
@@ -48,7 +48,7 @@ let car =
     y: 70
     color: 'blue'
     owner: 'Sam'
-    sell: func(newOwner)
+    sell: func newOwner ->
         _car['owner'] = newOwner
         ret _car
 log(car[key for key: car])
@@ -59,17 +59,3 @@ let y =
     b: 6
 
 x[y['a', 'b']] = y['a', 'b']
-
-log(x), log(y)
-
-for let i = 0, i < 8, i++
-
-u = [ 0, 0, 
-    0, 0
-
-]
-
-k = [ 
-    0, 0,
-    9, 9
-]

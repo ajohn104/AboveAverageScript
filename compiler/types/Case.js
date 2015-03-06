@@ -3,7 +3,7 @@ module.exports = {
     is: function() {
         var indexBefore = index;
 
-        if(tokens[index].lexeme !== 'case') {
+        if(parseTokens[index].lexeme !== 'case') {
             index = indexBefore;
             return false;
         } 
@@ -25,5 +25,5 @@ module.exports = {
         }
 
         return true;
-    };
+    }
 };

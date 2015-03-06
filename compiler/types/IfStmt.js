@@ -1,9 +1,9 @@
-// IfStmt          ::= 'if' Exp Indent Block Dedent ('elif' Exp Indent Block Dedent)* ('else' Indent Block Dedent)?
+// IfStmt          ::= 'if' Exp ':' Indent Block Dedent ('elif' ':' Exp Indent Block Dedent)* ('else' Indent Block Dedent)?
 module.exports = {
     is: function() {
         var indexBefore = index;
 
-        if(tokens[index].lexeme !== ',') {
+        if(parseTokens[index].lexeme !== 'if') {
             index = indexBefore;
             return false;
         }
@@ -13,6 +13,12 @@ module.exports = {
             index = indexBefore;
             return false;
         }
+
+        if(parseTokens[index].lexeme !== ':') {
+            index = indexBefore;
+            return false;
+        }
+        index++;
 
         if(!expect(Indent)) {
             index = indexBefore;
@@ -29,12 +35,18 @@ module.exports = {
             return false;
         }
 
-        while(tokens[index].lexeme === 'elif') {
+        while(parseTokens[index].lexeme === 'elif') {
             index++;
             if(!expect(Exp)) {
                 index = indexBefore;
                 return false;
             }
+
+            if(parseTokens[index].lexeme !== ':') {
+                index = indexBefore;
+                return false;
+            }
+            index++;
 
             if(!expect(Indent)) {
                 index = indexBefore;
@@ -52,7 +64,7 @@ module.exports = {
             }
         }
 
-        if(tokens[index].lexeme === 'else') {
+        if(parseTokens[index].lexeme === 'else') {
             index++;
             if(!expect(Indent)) {
                 index = indexBefore;
@@ -70,5 +82,5 @@ module.exports = {
             }
         }
         return true;
-    };
+    }
 };

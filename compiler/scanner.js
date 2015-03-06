@@ -1,5 +1,5 @@
 LineByLineReader = require('line-by-line');
-Tokens = require('./tokens');
+parseTokens = require('./parseTokens');
 
 /*
  * I'm aware this could be a lot shorter, and a lot of code should be in functions. However
@@ -12,7 +12,7 @@ Tokens = require('./tokens');
 var scan = function(file, callback) {
     reader = new LineByLineReader(file, {encoding: 'utf8'});
     var scanner = new LineScanner();
-    var tokens = [];
+    var parseTokens = [];
     reader.on('error', function(error) {
         console.log("Error on line " + scanner.currentLine + ". Error: " + error);
     });
@@ -21,17 +21,17 @@ var scan = function(file, callback) {
         
     });
     reader.once('end', function() {
-        tokens = scanner.complete();
+        parseTokens = scanner.complete();
         if(typeof callback !== "undefined") {
-            callback(tokens);
+            callback(parseTokens);
         }
     });
 }
 
-var tokensToStringFull = function(tokens){
+var parseTokensToStringFull = function(parseTokens){
     var str = "";
-    for(var i = 0; i < tokens.length; i++ ) {
-        str += tokens[i]['kind'] + "( '" + tokens[i]['lexeme'] + "' ), ";
+    for(var i = 0; i < parseTokens.length; i++ ) {
+        str += parseTokens[i]['kind'] + "( '" + parseTokens[i]['lexeme'] + "' ), ";
     }
     return str;
 };
@@ -40,7 +40,7 @@ var LineScanner = function() {
     this.currentLine = null;
     this.lineNumber = 0;
     this.inMultilineComment = false;
-    this.tokens = [];
+    this.parseTokens = [];
     this.nextLine = function(line) {
         this.lineNumber++;
         var chars = line.split("");
@@ -75,7 +75,7 @@ var LineScanner = function() {
                 } else {
                     currentToken+= chars[i];
                     var token = {kind: "StrLit", lexeme:currentToken, line: this.lineNumber, character:i};
-                    this.tokens.push(token);
+                    this.parseTokens.push(token);
                     inString = false;
                     escaped = false;
                     currentToken = "";
@@ -99,7 +99,7 @@ var LineScanner = function() {
                             // another exp really is an error, but I'm allowing it here
                             if(exponentialAppeared) {
                                 var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                                this.tokens.push(token);
+                                this.parseTokens.push(token);
                                 inNumber = false;
                                 exponentialAppeared = false;
                                 i--;
@@ -112,7 +112,7 @@ var LineScanner = function() {
                             }
                         } else {
                             var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                            this.tokens.push(token);
+                            this.parseTokens.push(token);
                             inNumber = false;
                             exponentialAppeared = false;
                             i--;
@@ -127,7 +127,7 @@ var LineScanner = function() {
                             // another exp really is an error, but I'm allowing it here
                             if(exponentialAppeared) {
                                 var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                                this.tokens.push(token);
+                                this.parseTokens.push(token);
                                 inNumber = false;
                                 exponentialAppeared = false;
                                 radixAppeared = false;
@@ -143,7 +143,7 @@ var LineScanner = function() {
                             // Also an error. Allowing it for now.
                             if(radixAppeared || exponentialAppeared) {
                                 var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                                this.tokens.push(token);
+                                this.parseTokens.push(token);
                                 inNumber = false;
                                 radixAppeared = false;
                                 i--;
@@ -156,7 +156,7 @@ var LineScanner = function() {
                             }
                         } else {
                             var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                            this.tokens.push(token);
+                            this.parseTokens.push(token);
                             inNumber = false;
                             exponentialAppeared = false;
                             radixAppeared = false;
@@ -178,7 +178,7 @@ var LineScanner = function() {
                         type = (isWordOperator(currentToken)?"Operator":type);
                         type = (type === ""?"ID":type);
                         var token = {kind: type, lexeme: currentToken, line: this.lineNumber, character:i};
-                        this.tokens.push(token);
+                        this.parseTokens.push(token);
                         isWord = false;
                         isOther = false;
                         i--;
@@ -192,7 +192,7 @@ var LineScanner = function() {
                         continue;
                     } else {
                         var token = {kind: "Operator", lexeme: currentToken, line: this.lineNumber, character:i};
-                        this.tokens.push(token);
+                        this.parseTokens.push(token);
                         isOperator = false;
                         isOther = false;
                         i--;
@@ -228,15 +228,15 @@ var LineScanner = function() {
                         }
                         if(word === "***native***") {
                             var token = {kind: "Reserved", lexeme: "***native***", line: this.lineNumber, character:i};
-                            this.tokens.push(token);
+                            this.parseTokens.push(token);
                             i+="***native***".length-1; // i will be inc after continue, so the -1 fixes that
                             continue;
                         }
                     }
-                    // The few solo tokens, hardcoded:
-                    if(Tokens.AlwaysSolo.indexOf(chars[i]) >= 0) {
+                    // The few solo parseTokens, hardcoded:
+                    if(parseTokens.AlwaysSolo.indexOf(chars[i]) >= 0) {
                         var token = {kind: "ControlSymbol", lexeme: chars[i], line: this.lineNumber, character:i};
-                        this.tokens.push(token);
+                        this.parseTokens.push(token);
                         continue;
                     } else {
                         isOther = true;
@@ -264,7 +264,7 @@ var LineScanner = function() {
                 inString = false;
             } else if(inNumber) {
                 var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                this.tokens.push(token);
+                this.parseTokens.push(token);
                 inNumber = false;
                 exponentialAppeared = false;
                 radixAppeared = false;
@@ -277,13 +277,13 @@ var LineScanner = function() {
                     type = (isECMAReserved(currentToken)?"Unused":type);
                     type = (type === ""?"ID":type);
                     var token = {kind: type, lexeme: currentToken, line: this.lineNumber, character:i};
-                    this.tokens.push(token);
+                    this.parseTokens.push(token);
                     isWord = false;
                     isOther = false;
                     currentToken = "";
                 } else {
                     var token = {kind: "Operator", lexeme: currentToken, line: this.lineNumber, character:i};
-                    this.tokens.push(token);
+                    this.parseTokens.push(token);
                     isOperator = false;
                     isOther = false;
                     currentToken = "";
@@ -292,14 +292,14 @@ var LineScanner = function() {
         }
     }
     this.complete = function() {
-        return this.tokens;
+        return this.parseTokens;
     }
     // As it happens, we can be greedy when checking for operators.
     // If an operator is suddenly cut short, it will definitely still
     // refer to a valid operator
     var canBeOperator = function(operatorPart) {
-        for(i in Tokens.Operators) {
-            if(Tokens.Operators[i].indexOf(operatorPart) === 0) {
+        for(i in parseTokens.Operators) {
+            if(parseTokens.Operators[i].indexOf(operatorPart) === 0) {
                 return true;
             }
         }
@@ -307,8 +307,8 @@ var LineScanner = function() {
     };
 
     var isWordOperator = function(word) {
-        for(i in Tokens.Operators) {
-            if(Tokens.Operators[i] === word) {
+        for(i in parseTokens.Operators) {
+            if(parseTokens.Operators[i] === word) {
                 return true;
             }
         }
@@ -316,8 +316,8 @@ var LineScanner = function() {
     }
 
     var isAVGReserved = function(word) {
-        for(i in Tokens.Reserved) {
-            if(Tokens.Reserved[i] === word) {
+        for(i in parseTokens.Reserved) {
+            if(parseTokens.Reserved[i] === word) {
                 return true;
             }
         }
@@ -325,8 +325,8 @@ var LineScanner = function() {
     };
 
     var isECMAReserved = function(word) {
-        for(i in Tokens.Unused) {
-            if(Tokens.Unused[i] === word) {
+        for(i in parseTokens.Unused) {
+            if(parseTokens.Unused[i] === word) {
                 return true;
             }
         }
@@ -335,7 +335,7 @@ var LineScanner = function() {
 };
 var Scanner = {
     scan: scan,
-    tokensToStringFull: tokensToStringFull
+    parseTokensToStringFull: parseTokensToStringFull
 }
 
 module.exports = Scanner;

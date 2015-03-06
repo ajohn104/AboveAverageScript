@@ -7,7 +7,7 @@ module.exports = {
             return false;
         }
 
-        if(tokens[index].lexeme !== ':') {
+        if(parseTokens[index].lexeme !== ':') {
             index = indexBefore;
             return false;
         }
@@ -19,5 +19,5 @@ module.exports = {
         }
 
         return true;
-    };
+    }
 };

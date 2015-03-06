@@ -1,9 +1,9 @@
-// NativeStmt      ::= '***native***'
+// EOF             ::= '@EOF'
 module.exports = {
     is: function() {
         var indexBefore = index;
-
-        if(parseTokens[index].lexeme !== '***native***') {
+        console.log("At of of file");
+        if(parseTokens[index].kind !== 'EndOfFile') {
             index = indexBefore;
             return false;
         }

@@ -3,7 +3,7 @@ module.exports = {
     is: function() {
         var indexBefore = index;
 
-        if(tokens[index].lexeme !== 'let') {
+        if(parseTokens[index].lexeme !== 'let') {
             index = indexBefore;
             return false;
         }
@@ -14,5 +14,5 @@ module.exports = {
             return false;
         }
         return true;
-    };
+    }
 };

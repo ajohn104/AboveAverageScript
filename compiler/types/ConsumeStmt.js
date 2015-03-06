@@ -3,9 +3,9 @@ module.exports = {
     is: function() {
         var indexBefore = index;
 
-        expect(Assignable));
+        expect(Assignable);
 
-        while(tokens[index].lexeme === ',') {
+        while(parseTokens[index].lexeme === ',') {
             index++;
             if(!expect(Assignable)) {
                 index = indexBefore;
@@ -13,7 +13,7 @@ module.exports = {
             }
         }
 
-        if(tokens[index].lexeme !== '<-')
+        if(parseTokens[index].lexeme !== '<-') {
             index = indexBefore;
             return false;
         }
@@ -30,4 +30,5 @@ module.exports = {
         }
 
         return true;
+    }
 };

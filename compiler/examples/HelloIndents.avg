@@ -1,14 +1,14 @@
 // Simple stuff.
 
-$(func()
+$(func ->
     ***native***
 
-    let hello = /*  Should work just fine */ func()
+    let hello = /*  Should work just fine */ func a ->
     /* This is a multiline comment // This isn't. */    log("Hello World!")
 
     hello()
 
-    while y or x
+    while y or x:
         log("x: " + x)
 
     let match = "I am Rob Shneider reborn! REBORN".match(/or/ig)

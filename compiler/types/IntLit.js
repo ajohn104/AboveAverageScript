@@ -2,11 +2,11 @@
 module.exports = {
     is: function() {
         var indexBefore = index;
-        if(!tokens[index].kind !== 'IntLit') {
+        if(!parseTokens[index].kind !== 'IntLit') {
             index = indexBefore;
             return false;
         }
         index++;
         return true;
-    };
+    }
 };

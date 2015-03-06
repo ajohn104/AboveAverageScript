@@ -2,8 +2,10 @@
 module.exports = {
     is: function() {
         var indexBefore = index;
-
-        if(tokens[index].lexeme !== 'let') {
+        /*console.log("looking for let");
+        console.log("have a:");
+        console.log(parseTokens[index]);*/
+        if(parseTokens[index].lexeme !== 'let') {
             index = indexBefore;
             return false;
         } 
@@ -13,7 +15,7 @@ module.exports = {
             index = indexBefore;
             return false;
         }
-        if(tokens[index].lexeme === ',') {
+        if(parseTokens[index].lexeme === ',') {
             index++;
             if(!expect(Indent)) {
                 index = indexBefore;
@@ -27,7 +29,7 @@ module.exports = {
                 index = indexBefore;
                 return false;
             }
-            while(tokens[index].lexeme === ',') {
+            while(parseTokens[index].lexeme === ',') {
                 index++;
                 if(!expect(Newline)) {
                     index = indexBefore;
@@ -44,5 +46,5 @@ module.exports = {
             }
         }
         return true;
-    };
+    }
 };

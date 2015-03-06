@@ -1,50 +1,96 @@
-// Call            ::= '(' ( Exp(',' Exp)?)* (Indent (Newline ',' Exp)* Dedent)? ')'
+// Call            ::= '(' ( Exp (',' Exp)* (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? ) Newline? ')'
 module.exports = {
     is: function() {
         var indexBefore = index;
-
-        if(tokens[index].lexeme !== '(') {
+        console.log("Starting call test");
+        if(parseTokens[index].lexeme !== '(') {
             index = indexBefore;
             return false;
         }
         index++;
 
-        while(expect(Exp)) {
-            if(tokens[index].lexeme === ',') {
+        if(expect(Exp)) {
+            var indexMid = index;
+            if(parseTokens[index].lexeme === ',') {
                 index++;
                 if(expect(Exp)) {
+                    indexMid = index;
+                    while(parseTokens[index].lexeme === ',') {
+                        index++;
+                        if(!expect(Exp)) {
+                            index = indexMid;
+                            break;
+                        }
+                        indexMid = index;
+                    }
+                }
+            }
+            if(parseTokens[index].lexeme === ',') {
+                index++;
+                if(!expect(Indent)) {
+                    index = indexBeforeIndent;
+                    return false;
+                }
+
+                if(!expect(Newline)) {
+                    index = indexBeforeIndent;
+                    return false;
+                }
+
+                if(!expect(Exp)) {
+                    index = indexBeforeIndent;
+                    return false;
+                }
+
+                while(expect(Newline)) {
+                    if(parseTokens[index].lexeme !== ',') {
+                        index = indexBefore;
+                        break;
+                    }
+                    index++;
+                    if(!expect(Exp)) {
+                        index = indexBefore;
+                        break;
+                    }
+                }
+
+                if(!expect(Dedent)) {
                     index = indexBefore;
                     return false;
                 }
             }
+
+
         }
 
         if(expect(Indent)) {
 
             while(expect(Newline)) {
-                if(tokens[index].lexeme !== ',') {
+                if(parseTokens[index].lexeme !== ',') {
                     index = indexBefore;
-                    return false;
+                    break;
                 }
                 index++;
-                if(expect(Exp)) {
+                if(!expect(Exp)) {
                     index = indexBefore;
-                    return false;
+                    break;
                 }
             }
 
-            if(expect(Dedent)) {
+            if(!expect(Dedent)) {
                 index = indexBefore;
                 return false;
             }
         }
 
-        if(tokens[index].lexeme !== ')') {
+        expect(Newline);
+
+        if(parseTokens[index].lexeme !== ')') {
             index = indexBefore;
             return false;
         }
         index++;
-
+        console.log("Ending successful call");
         return true;
-    };
+    }
 };

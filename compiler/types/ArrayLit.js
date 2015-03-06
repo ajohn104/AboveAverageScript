@@ -3,9 +3,9 @@ module.exports = {
     is: function() {
         var indexBefore = index;
 
-        if(tokens[index].lexeme === '[') {
+        if(parseTokens[index].lexeme === '[') {
             index++;
-            if(tokens[index].lexeme === ']') {
+            if(parseTokens[index].lexeme === ']') {
                 index++;
                 return true;
             }
@@ -13,5 +13,5 @@ module.exports = {
         }
 
         return expect(ArrayCont);
-    };
+    }
 };

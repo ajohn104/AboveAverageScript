@@ -3,16 +3,25 @@ var scan = Scanner.scan;
 Parser = require('./parser');
 var parse = Parser.parse;
 
-compile(files[0]);
+var files = ["./examples/HelloIndents.avg", "./examples/UnpacksConsumersInlines.avg"];
+
+
 
 var compile = function(file) {
-    scan(file, scanCallback);
+    scan(file, scanCall);
 };
 
-var scanCallback = function(tokens) {
-    parse(tokens, parseCallback);
+var scanCall = function(tokens) {
+    parse(tokens, parseCall, parseError);
 };
 
-var parseCallback = function(stuff) {
+var parseCall = function(stuff) {
     console.log(stuff);
 };
+
+var parseError = function(stuff) {
+    console.error("Error token:");
+    console.error(stuff);
+}
+
+compile(files[1]);

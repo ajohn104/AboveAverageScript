@@ -3,7 +3,7 @@ module.exports = {
     is: function() {
         var indexBefore = index;
 
-        if(tokens[index].lexeme !== 'switch') {
+        if(parseTokens[index].lexeme !== 'switch') {
             index = indexBefore;
             return false;
         } 
@@ -32,5 +32,5 @@ module.exports = {
         }
 
         return true;
-    };
+    }
 };

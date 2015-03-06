@@ -3,19 +3,19 @@ module.exports = {
     is: function() {
         var indexBefore = index;
 
-        if(tokens[index].lexeme !== 'for') {
+        if(parseTokens[index].lexeme !== 'for') {
             index = indexBefore;
             return false;
         } 
         index++;
 
-        if(tokens[index].lexeme === 'let') {
+        if(parseTokens[index].lexeme === 'let') {
             index++;
             if(!expect(Id)) {
                 index = indexBefore;
                 return false;
             }
-            if(tokens[index].lexeme !== '=') {
+            if(parseTokens[index].lexeme !== '=') {
                 index = indexBefore;
                 return false;
             }
@@ -24,13 +24,13 @@ module.exports = {
                 index = indexBefore;
                 return false;
             }
-            if(tokens[index].lexeme !== ',') {
+            if(parseTokens[index].lexeme !== ',') {
                 index = indexBefore;
                 return false;
             }
             index++;
         } else if(expect(Id)) {
-            if(tokens[index].lexeme !== '=') {
+            if(parseTokens[index].lexeme !== '=') {
                 index = indexBefore;
                 return false;
             }
@@ -39,13 +39,13 @@ module.exports = {
                 index = indexBefore;
                 return false;
             }
-            if(tokens[index].lexeme !== ',') {
+            if(parseTokens[index].lexeme !== ',') {
                 index = indexBefore;
                 return false;
             }
             index++;
         } else {
-            if(tokens[index].lexeme !== ',') {
+            if(parseTokens[index].lexeme !== ',') {
                 index = indexBefore;
                 return false;
             }
@@ -56,7 +56,7 @@ module.exports = {
             index = indexBefore;
             return false;
         }
-        if(tokens[index].lexeme !== ',') {
+        if(parseTokens[index].lexeme !== ',') {
             index = indexBefore;
             return false;
         }
@@ -67,5 +67,5 @@ module.exports = {
         }
 
         return true;
-    };
+    }
 };

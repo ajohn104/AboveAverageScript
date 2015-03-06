@@ -60,7 +60,8 @@ This = require("./types/This");
 Newline = require("./types/Newline");
 Indent = require("./types/Indent");
 Dedent = require("./types/Dedent");
-
+RegExpLit = require("./types/RegExpLit");
+EndOfFile = require("./types/EndOfFile");
 
 parseTokens = [];
 index = 0;
@@ -80,31 +81,38 @@ check = function(isExpected) {
 callback = undefined;
 error = undefined;
 
-var parse = function(tokens, call, err) {
-    var parser = new TokenStreamParser(tokens, call, err);
+var parse = function(tkns, call, err) {
+    var parser = new tokenStreamParser(tkns, call, err);
     return parser.parseProgram();
 };
 
-var TokenStreamParser = function(tkns, call, err) {
+var tokenStreamParser = function(tkns, call, err) {
     parseTokens = tkns;
     callback = call;
     error = err;
-    var parseProgram = function() {
-        if(parseCont) check(expect(Stmt));
-        if(parseCont) check(expect(Block));
-        if(parseCont) check(expect(Newline));
-        return parseCont;
+    this.parseProgram = function() {
+        if(!expect(Stmt)) {
+            error(parseTokens[index]);
+            return false;
+        }
+        if(!expect(Block)) {
+            error(parseTokens[index]);
+            return false;
+        };
+        console.log("End of program block");
+        
+        if(!expect(EndOfFile)) {
+            error(parseTokens[index]);
+            return false
+        }
+        return true;
     };
 };
 
 
 
 var Parser = {
-    parse: parse,
-    tokensToStringFull: tokensToStringFull,
-    tokensToStringPretty: tokensToStringPretty,
-    tokensToStringBest: tokensToStringBest,
-    tokensToStringSpacially: tokensToStringSpacially
+    parse: parse
 }
 
 module.exports = Parser;
