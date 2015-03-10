@@ -1,13 +1,6 @@
-// Assignable      ::= Id ArrayCont?
+// Assignable      ::= Exp16
 module.exports = {
     is: function() {
-        var indexBefore = index;
-        if(!expect(Id)) {
-            index = indexBefore;
-            return false;
-        }
-        expect(ArrayCont);
-
-        return true;
+        return expect(Exp16);
     }
 };

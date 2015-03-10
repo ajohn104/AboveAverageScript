@@ -1,0 +1,101 @@
+// This is intended to change the indentation syntax from an
+// indescribable, lenient, "easy-going" syntax to a tad less
+// lenient but more easily describable one.
+
+// ---------------------------------------
+// #{Arrays}
+
+let arrInline = [0, 1, 2, 3, 4, 5]
+let arrMultiline = [
+    0, 1, 2,
+    3, 4, 5
+]
+
+// Here, Arrays are given to be described in two ways:
+//  -> Inline AKA one line only
+//  -> Multiline, where the '[' and ']' are given their own line, 
+//    completely separate from the indent.
+//  => This does cause an issue with @{Property Accessors}
+// ---------------------------------------
+
+
+// ---------------------------------------
+// #{Objects}
+
+let objCurlyInline = { x: 1, y: 2 }
+let objCurlyMultiline = {
+    x: 1,
+    y: 2
+}
+let objIndentMultiline =
+    x: 1
+    y: 2
+
+// Here, Objects are given to be described in three ways:
+//  -> Inline Curly Braced, where 
+//      - Object definition is one line only
+//      - ',' is required to separate Properties
+//  -> Multiline Curly Braced, where
+//      - '{' and '}' are given their own line
+//      - ',' is required to separate Properties
+//  -> Multiline Indented, where
+//      - the Indent acts as the '{'
+//      - the Dedent acts as the '}'
+//      - Newlines act as ','
+//  => As before, the Multiline Indented must be used alone for @{Assignment}/@{Declaration}
+// ---------------------------------------
+
+
+// ---------------------------------------
+// #{Dot Accessor}
+
+"example".length.toString(16 + y.props[9].length)
+"example"
+    .length
+    .toString(16 + y
+        .props[9]
+            .length
+
+// Here, Dot Accessors are given to be described in two ways:
+//  -> All-in-one AKA single line
+//  -> Multiline "Cascading", where continuous Dot Accessors keep their indent
+//      - This requires that the first access be indented, not inline with the Object
+//  --> Also, included is a short analysis of its interaction with Exp and Property Accessors
+//  => Further analysis needed for the interaction with @{Exp} and @{Property Accessors}
+// ---------------------------------------
+
+
+// ---------------------------------------
+// #{Property Accessor}
+
+A[1] = B[1][2][3][4]
+
+// Here, Property Accessors are given to be described in one way:
+//  -> All-in-one AKA all single line.
+//  => I've yet to find a multiline approach that doesn't look...odd. So no indents for now
+// ---------------------------------------
+
+
+// ---------------------------------------
+// Expressions
+
+let x = 1 + 2 - 3 * 4 / 5
+let x = 1
+    + 2
+    - 3
+    * 4
+    / 5
+let x = 1 +
+    2 +
+    3 +
+    4 +
+    5
+let x = 1
+    + 2 +
+    3
+    + 4 +
+    5
+
+// Personally, I'd like these all to be valid. So, I'm going to decipher each and find the pattern.
+
+// First one, deciphered:

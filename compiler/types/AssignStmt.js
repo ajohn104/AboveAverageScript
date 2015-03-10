@@ -1,9 +1,9 @@
-// AssignStmt      ::= Assignable (( AssignOp Exp (',' Indent NewLine Assignable AssignOp Exp (',' NewLine Assignable AssignOp Exp)* Dedent)? ) | ((',' Assignable)* AssignOp Exp (',' Indent Newline Exp (Newline Exp)* Dedent )?) )
+// AssignStmt      ::= Exp (( AssignOp Exp (',' Indent NewLine Exp AssignOp Exp (',' NewLine Exp AssignOp Exp)* Dedent)? ) | ((',' Exp)* AssignOp Exp (',' Indent Newline Exp (Newline Exp)* Dedent )?) )
 module.exports = {
     is: function() {
         var indexBefore = index;
 
-        if(!expect(Assignable)) {
+        if(!expect(Exp)) {
             index = indexBefore;
             return false;
         }
@@ -23,7 +23,7 @@ module.exports = {
                     index = indexBefore;
                     return false;
                 }
-                if(!expect(Assignable)) {
+                if(!expect(Exp)) {
                     index = indexBefore;
                     return false;
                 }
@@ -41,7 +41,7 @@ module.exports = {
                         index = indexBefore;
                         return false;
                     }
-                    if(!expect(Assignable)) {
+                    if(!expect(Exp)) {
                         index = indexBefore;
                         return false;
                     }
@@ -62,7 +62,7 @@ module.exports = {
         } else if(parseTokens[index].lexeme === ',') {
             while(parseTokens[index].lexeme === ',') {
                 index++;
-                if(!expect(Assignable)) {
+                if(!expect(Exp)) {
                     index = indexBefore;
                     return false;
                 }

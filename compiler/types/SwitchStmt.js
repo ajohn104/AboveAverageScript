@@ -1,4 +1,4 @@
-// SwitchStmt      ::= 'switch' Exp Indent Case+ Dedent
+// SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Dedent
 module.exports = {
     is: function() {
         var indexBefore = index;
@@ -13,6 +13,12 @@ module.exports = {
             index = indexBefore;
             return false;
         }
+
+        if(parseTokens[index].lexeme !== ':') {
+            index = indexBefore;
+            return false;
+        }
+        index++;
 
         if(!expect(Indent)) {
             index = indexBefore;

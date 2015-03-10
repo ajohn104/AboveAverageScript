@@ -1,4 +1,5 @@
-// Exp17           ::= Exp18 ('.' Id)*
+// Exp17           ::= Exp18
+// removed: ('.' Exp16 Call?)*
 module.exports = {
     is: function() {
         var indexBefore = index;
@@ -8,14 +9,16 @@ module.exports = {
             return false;
         }
 
-        while(parseTokens[index].lexeme === '.') {
+        /*while(parseTokens[index].lexeme === '.') {
             index++;
-            if(!expect(Id)) {
+            if(!expect(Exp16)) {
                 index = indexBefore;
                 return false;
             }
-        }
-        console.log("Finalizing exp17 success. index:" + index + ', lexeme: ' + parseTokens[index-1].lexeme);
+
+            expect(Call);
+        }*/
+        console.log("Finalizing exp17 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
         return true;
     }
 };

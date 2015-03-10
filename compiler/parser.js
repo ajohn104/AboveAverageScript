@@ -39,7 +39,7 @@ Exp16 = require("./types/Exp16");
 Exp17 = require("./types/Exp17");
 Exp18 = require("./types/Exp18");
 BoolLit = require("./types/BoolLit");
-Intlit = require("./types/Intlit");
+IntLit = require("./types/IntLit");
 StringLit = require("./types/StringLit");
 Func = require("./types/Func");
 ObjectInline = require("./types/ObjectInline");
@@ -62,6 +62,7 @@ Indent = require("./types/Indent");
 Dedent = require("./types/Dedent");
 RegExpLit = require("./types/RegExpLit");
 EndOfFile = require("./types/EndOfFile");
+ObjIndentPropAssign = require("./types/ObjIndentPropAssign");
 
 parseTokens = [];
 index = 0;

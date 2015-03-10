@@ -1,4 +1,4 @@
-// Call            ::= '(' ( Exp (',' Exp)* (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? ) Newline? ')'
+// Call            ::= '(' ( Exp (',' Exp)* (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? )? Newline? ')'
 module.exports = {
     is: function() {
         var indexBefore = index;
@@ -28,29 +28,25 @@ module.exports = {
             if(parseTokens[index].lexeme === ',') {
                 index++;
                 if(!expect(Indent)) {
-                    index = indexBeforeIndent;
+                    index = indexMid;
                     return false;
                 }
 
                 if(!expect(Newline)) {
-                    index = indexBeforeIndent;
+                    index = indexMid;
                     return false;
                 }
 
                 if(!expect(Exp)) {
-                    index = indexBeforeIndent;
+                    index = indexMid;
                     return false;
                 }
 
-                while(expect(Newline)) {
-                    if(parseTokens[index].lexeme !== ',') {
-                        index = indexBefore;
-                        break;
-                    }
-                    index++;
+                while(parseTokens[index].kind === "Newline" && parseTokens[index+1].lexeme === ",") {
+                    index+=2;
                     if(!expect(Exp)) {
                         index = indexBefore;
-                        break;
+                        return false;
                     }
                 }
 
@@ -61,9 +57,11 @@ module.exports = {
             }
 
 
+        } else {
+            console.log("Cannot find any arguments to function. Checking for ')'. index:" + index);
         }
 
-        if(expect(Indent)) {
+        /*if(expect(Indent)) {
 
             while(expect(Newline)) {
                 if(parseTokens[index].lexeme !== ',') {
@@ -81,7 +79,7 @@ module.exports = {
                 index = indexBefore;
                 return false;
             }
-        }
+        }*/
 
         expect(Newline);
 
@@ -90,7 +88,7 @@ module.exports = {
             return false;
         }
         index++;
-        console.log("Ending successful call");
+        console.log("Ending successful call on function: " + parseTokens[indexBefore-1].lexeme);
         return true;
     }
 };

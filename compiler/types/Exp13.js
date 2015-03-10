@@ -9,7 +9,7 @@ module.exports = {
             index = indexBefore;
             return false;
         }
-        console.log("Finalizing exp13 success. index:" + index + ', lexeme: ' + parseTokens[index-1].lexeme);
+        console.log("Finalizing exp13 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
         return true;
     }
 };

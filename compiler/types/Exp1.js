@@ -22,7 +22,7 @@ module.exports = {
                 }
             }
         }
-        console.log("Finalizing exp1 success. index:" + index + ', lexeme: ' + parseTokens[index-1].lexeme);
+        console.log("Finalizing exp1 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
         return true;
     }
 };

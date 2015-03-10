@@ -1,4 +1,4 @@
-// IfStmt          ::= 'if' Exp ':' Indent Block Dedent ('elif' ':' Exp Indent Block Dedent)* ('else' Indent Block Dedent)?
+// IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
 module.exports = {
     is: function() {
         var indexBefore = index;
@@ -34,9 +34,9 @@ module.exports = {
             index = indexBefore;
             return false;
         }
-
-        while(parseTokens[index].lexeme === 'elif') {
-            index++;
+        console.log("Completed 'if' block. Moving on to elif. index:" + index);
+        while(parseTokens[index].kind === "Newline" && parseTokens[index+1].lexeme === 'elif') {
+            index+=2;
             if(!expect(Exp)) {
                 index = indexBefore;
                 return false;
@@ -63,9 +63,10 @@ module.exports = {
                 return false;
             }
         }
-
-        if(parseTokens[index].lexeme === 'else') {
-            index++;
+        console.log("Completed 'elif' blocks. Moving on to else. index:" + index);
+        if(parseTokens[index].kind === "Newline" && parseTokens[index+1].lexeme === 'else') {
+            index+=2;
+            
             if(!expect(Indent)) {
                 index = indexBefore;
                 return false;
@@ -81,6 +82,7 @@ module.exports = {
                 return false;
             }
         }
+        console.log("Completed 'else' block. Done with IfStmt. index:" + index);
         return true;
     }
 };

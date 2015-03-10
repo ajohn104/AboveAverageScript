@@ -40,6 +40,13 @@ module.exports = {
             }
 
         }
+
+        if(parseTokens[index].lexeme !== '}') {
+            index = indexBefore;
+            return false;
+        }
+        index++;
+
         return true;
     }
 };

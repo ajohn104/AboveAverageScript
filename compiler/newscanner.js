@@ -273,7 +273,7 @@ var LineScanner = function() {
     };
     var tokenFunctions = [
         getReservedMatch, getUnusedMatch, getBoolMatch, getCommentMatch,
-        getRegExpMatch, getNativeMatch, getOperatorMatch, getSeparatorMatch,
+        /*getRegExpMatch,*/ getNativeMatch, getOperatorMatch, getSeparatorMatch,
         getStrMatch, getIntMatch, getIdMatch
     ];
     this.getNextToken = function(line, contentHasAppeared) {

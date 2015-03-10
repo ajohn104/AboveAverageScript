@@ -3,9 +3,9 @@ let newProps =
     y: 70
 
 let RectangleMaker =
-    _maker : _
+    _maker: _
     Rectangle: func props ->
-        _[key] = val for key, val : props
+        _[key] = val for key, val in props
     defaultProps:
         x: 50
         y: 40
@@ -59,3 +59,5 @@ let y =
     b: 6
 
 x[y['a', 'b']] = y['a', 'b']
+
+let THIS_IS_THE_END = 0

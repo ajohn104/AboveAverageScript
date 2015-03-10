@@ -37,4 +37,4 @@ var test = function(file) {
     });
 };
 
-test(files[1]);
+test(files[0]);

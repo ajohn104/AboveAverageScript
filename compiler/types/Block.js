@@ -8,12 +8,14 @@ module.exports = {
         console.log("Previous token:");
         console.log(parseTokens[index-1]);
         console.log('\n');
+        var indexMid = index;
         while(expect(Newline)) {
             if(!expect(Stmt)) {
-                console.log("Block search failed.\n");
-                index = indexBefore;
-                return false;
+                console.log("Block search stopped.\n");
+                index = indexMid;
+                break;
             }
+            indexMid = index;
         }
         console.log("Ending block search. index:" + index + " \n");
         console.log("Current token is now:");
