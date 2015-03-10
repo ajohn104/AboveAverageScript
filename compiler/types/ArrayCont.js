@@ -1,4 +1,4 @@
-// ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Exp (',' Newline? Exp)* Dedent) ']'
+// ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) ']'
 module.exports = {
     is: function() {
         var indexBefore = index;
@@ -18,6 +18,11 @@ module.exports = {
                 }
             }
         } else if(expect(Indent)) {
+            if(!expect(Newline)) {
+                index = indexBefore;
+                return false;
+            }
+            
             if(!expect(Exp)) {
                 index = indexBefore;
                 return false;
@@ -31,6 +36,11 @@ module.exports = {
                 }
             }
             if(!expect(Dedent)) {
+                index = indexBefore;
+                return false;
+            }
+
+            if(!expect(Newline)) {
                 index = indexBefore;
                 return false;
             }

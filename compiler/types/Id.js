@@ -7,7 +7,7 @@ module.exports = {
             return false;
         }
         index++;
-        console.log("Finalizing id success. index:" + index + ', lexeme: ' + parseTokens[index-1].lexeme);
+        debug("Finalizing id success. index:" + index + ', lexeme: ' + parseTokens[index-1].lexeme);
         return true;
     }
 };

@@ -2,7 +2,7 @@
 module.exports = {
     is: function() {
         var indexBefore = index;
-        console.log("Checking for while loop");
+        debug("Checking for while loop");
         if(parseTokens[index].lexeme !== 'while') {
             index = indexBefore;
             return false;

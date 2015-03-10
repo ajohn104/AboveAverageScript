@@ -1,14 +1,7 @@
 LineByLineReader = require('line-by-line');
 Tokens = require('./tokens');
 
-/*
- * I'm aware this could be a lot shorter, and a lot of code should be in functions. However
- * I felt it was more important for me to be able to read it line by line, and have it work
- * in the end, then make it shorter. So it will be shorter soon.
- */
-
-
-var scan = function(file, callback) {
+var scan = function(file, callback, error) {
     reader = new LineByLineReader(file, {encoding: 'utf8'});
     var scanner = new LineScanner();
     var tokens = [];
@@ -16,7 +9,13 @@ var scan = function(file, callback) {
         console.log("Error on line " + scanner.currentLine + ". Error: " + error);
     });
     reader.on('line', function(line) {
-        scanner.nextLine(line);
+        reader.pause();
+        var allValid = scanner.nextLine(line);
+        if(!allValid) {
+            error(scanner.errorToken);
+        } else {
+            reader.resume();
+        }
     });
     reader.once('end', function() {
         tokens = scanner.complete();
@@ -99,6 +98,7 @@ var LineScanner = function() {
     this.inMultilineComment = false;
     this.tokens = [];
     this.indentsInPreviousLine = 0;
+    this.errorToken = null;
     this.nextLine = function(line) {
         var contentHasAppeared = false;
         this.lineNumber++;
@@ -107,8 +107,7 @@ var LineScanner = function() {
             if(!this.inMultilineComment) {
                 var token = this.getNextToken(line, contentHasAppeared);
                 if(token === null) {
-                    break; // I doubt this will ever happen, but I think it would
-                    // if there was an unnessary space at the end of the line.
+                    break;
                 }
                 if(this.isSinglelineComment(token)) {
                     line = "";
@@ -139,6 +138,10 @@ var LineScanner = function() {
                     }
                     this.indentsInPreviousLine = indentsOnThisLine.length;
                 }
+                if(token.kind === "UnexpectedChars" || token.kind === "Unused") {
+                    this.errorToken = token;
+                    return false;
+                }
                 token.line = this.lineNumber;
                 this.tokens.push(token);
                 line = line.substring(token.lexeme.length + token.index);
@@ -159,6 +162,7 @@ var LineScanner = function() {
             var token = {kind: "Newline", lexeme:"\\n", line: this.lineNumber+1};
             this.tokens.push(token);
         }
+        return true;
     };
     this.getLastToken = function() {
         return this.tokens[this.tokens.length-1];
@@ -271,6 +275,7 @@ var LineScanner = function() {
     var getUnusedMatch = function(line) {
         return getMatch(line, "Unused", true);
     };
+    // Regex disabled until matches with divide operator dealt with. Shouldn't take long.
     var tokenFunctions = [
         getReservedMatch, getUnusedMatch, getBoolMatch, getCommentMatch,
         /*getRegExpMatch,*/ getNativeMatch, getOperatorMatch, getSeparatorMatch,
@@ -302,14 +307,17 @@ var LineScanner = function() {
                 option = newToken;
             }
         }
-        if(option === null) return null;
-        var cutout = line.substring(0, option.token.index);
+
+        var cutout = line.substring(0, (option !== null)?(option.token.index):(line.length));
         if(cutout.length > 0 && cutout.search(/^\x20+$/) === -1) {
             // Error report goes here. Unexpected characters, basically.
             // This should only be entered if the next token found has non-space characters
             // between it and the previous token (or beginning of line). Note: a tab is NOT
             // considered to be a space character. In other words, tabs are not allowed.
             return {kind: "UnexpectedChars", lexeme: cutout, index: 0};
+        }
+        if(option === null) {
+            return null;
         }
         return option.token;
     };

@@ -1,4 +1,4 @@
-// ObjectInline    ::= '{' ( Property (',' Property)* (Indent (',' Newline Property)* Dedent)? )? '}'
+// ObjectInline    ::= '{' (Property (',' Property)*) | (Indent Newline Property (',' Newline Property)* Dedent Newline) '}'
 module.exports = {
     is: function() {
         var indexBefore = index;
@@ -10,7 +10,6 @@ module.exports = {
         index++;
 
         if(expect(Property)) {
-
             while(parseTokens[index].lexeme === ',') {
                 index++;
                 if(!expect(Property)) {
@@ -18,35 +17,44 @@ module.exports = {
                     return false;
                 }
             }
-
-            if(expect(Indent)) {
-
-                while(parseTokens[index].lexeme === ',') {
-                    index++;
-                    if(!expect(Newline)) {
-                        index = indexBefore;
-                        return false;
-                    }
-                    if(!expect(Property)) {
-                        index = indexBefore;
-                        return false;
-                    }
+        } else if(expect(Indent)) {
+            if(!expect(Newline)) {
+                index = indexBefore;
+                return false;
+            }
+            
+            if(!expect(Property)) {
+                index = indexBefore;
+                return false;
+            }
+            while(parseTokens[index].lexeme === ',') {
+                index++;
+                if(!expect(Newline)) {
+                    index = indexBefore;
+                    return false;
                 }
-
-                if(!expect(Dedent)) {
+                if(!expect(Property)) {
                     index = indexBefore;
                     return false;
                 }
             }
+            if(!expect(Dedent)) {
+                index = indexBefore;
+                return false;
+            }
 
+            if(!expect(Newline)) {
+                index = indexBefore;
+                return false;
+            }
+        } else {
+            ; // Do nothing
         }
-
         if(parseTokens[index].lexeme !== '}') {
             index = indexBefore;
             return false;
         }
         index++;
-
         return true;
     }
 };

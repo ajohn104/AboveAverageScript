@@ -15,7 +15,6 @@ ForLoop = require("./types/ForLoop");
 ForIn = require("./types/ForIn");
 ForColon = require("./types/ForColon");
 For = require("./types/For");
-Assignable = require("./types/Assignable");
 SwitchStmt = require("./types/SwitchStmt");
 Case = require("./types/Case");
 NativeStmt = require("./types/NativeStmt");
@@ -81,8 +80,15 @@ check = function(isExpected) {
 
 callback = undefined;
 error = undefined;
+var debugMode = false;
 
-var parse = function(tkns, call, err) {
+debug = null;
+
+var parse = function(tkns, call, err, dbgMode) {
+    debugMode = (typeof dbgMode !== "undefined")?(dbgMode):(false);
+    debug = debugMode?(function(output){
+        console.log(output);
+    }):(function(output){});
     var parser = new tokenStreamParser(tkns, call, err);
     return parser.parseProgram();
 };
@@ -100,7 +106,7 @@ var tokenStreamParser = function(tkns, call, err) {
             error(parseTokens[index]);
             return false;
         };
-        console.log("End of program block");
+        debug("End of program block");
         
         if(!expect(EndOfFile)) {
             error(parseTokens[index]);
@@ -109,8 +115,6 @@ var tokenStreamParser = function(tkns, call, err) {
         return true;
     };
 };
-
-
 
 var Parser = {
     parse: parse

@@ -2,14 +2,15 @@
 module.exports = {
     is: function() {
         var indexBefore = index;
-        /*console.log("looking for let");
-        console.log("have a:");
-        console.log(parseTokens[index]);*/
+        /*debug("looking for let");
+        debug("have a:");
+        debug(parseTokens[index]);*/
         if(parseTokens[index].lexeme !== 'let') {
             index = indexBefore;
             return false;
         } 
         index++;
+        debug("DeclareStmt: found 'let'. index:" + index);
 
         if(!expect(SetStmt)) {
             index = indexBefore;

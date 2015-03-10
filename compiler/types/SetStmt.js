@@ -2,14 +2,15 @@
 module.exports = {
     is: function() {
         var indexBefore = index;
-
+        debug("SetStmt: looking for first Exp. index:" + index);
         if(!expect(Exp)) {
             index = indexBefore;
             return false;
         }
-
+        debug("SetStmt: found first Exp, looking for '='. index:" + index);
         if(parseTokens[index].lexeme === '=') {
             index++;
+            debug("SetStmt: found '=', looking for Exp. index:" + index);
             if(!expect(Exp)) {
                 index = indexBefore;
                 return false;

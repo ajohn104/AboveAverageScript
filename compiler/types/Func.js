@@ -2,32 +2,32 @@
 module.exports = {
     is: function() {
         var indexBefore = index;
-        console.log("Beginning func testing. index:" + index);
+        debug("Beginning func testing. index:" + index);
         if(parseTokens[index].lexeme !== 'func') {
             index = indexBefore;
             return false;
         }
         index++;
-        console.log("Found 'func', looking for parameters. index:" + index);
+        debug("Found 'func', looking for parameters. index:" + index);
         if(expect(Id)) {
-            console.log("Found Id. Checking for ','. index:" + index);
+            debug("Found Id. Checking for ','. index:" + index);
             while(parseTokens[index].lexeme === ',') {
                 index++;
-                console.log("Found ','. Looking for Id. index:" + index);
+                debug("Found ','. Looking for Id. index:" + index);
                 if(!expect(Id)) {
                     index = indexBefore;
                     return false;
                 }
-                console.log("Found Id. Looking for ','. index:" + index);
+                debug("Found Id. Looking for ','. index:" + index);
             }
         }
-        console.log("End of parameters. Looking for '->'. index:" + index);
+        debug("End of parameters. Looking for '->'. index:" + index);
         if(parseTokens[index].lexeme !== '->') {
             index = indexBefore;
             return false;
         }
         index++;
-        console.log("Found '->'. Looking for single line 'ret'. index:" + index);
+        debug("Found '->'. Looking for single line 'ret'. index:" + index);
         if(parseTokens[index].lexeme === 'ret') {
             index++;
             if(!expect(Exp)) {
@@ -35,36 +35,36 @@ module.exports = {
                 return false;
             }
         } else if(expect(Exp)) {
-            console.log("Single line 'ret' not found. Instead found Single line Exp. index:" + index);
+            debug("Single line 'ret' not found. Instead found Single line Exp. index:" + index);
             ; // Just let it fall through
         } else {
-            console.log("Not single line. checking for indent. index:" + index);
+            debug("Not single line. checking for indent. index:" + index);
             if(!expect(Indent)) {
                 index = indexBefore;
                 return false;
             }
-            console.log("Found indent. Checking for Block. index:" + index);
+            debug("Found indent. Checking for Block. index:" + index);
             expect(Block);
-            console.log("Done with Block search. Looking for return statement. index:" + index + ", lexeme: " + parseTokens[index].lexeme);
+            debug("Done with Block search. Looking for return statement. index:" + index + ", lexeme: " + parseTokens[index].lexeme);
             var indexMid = index;
             if(parseTokens[index].kind === "Newline" && parseTokens[index+1].lexeme === 'ret') {
                 index+=2;
-                console.log("Found newline and ret. index:" + index + ", Lexeme: " + parseTokens[index].lexeme);
+                debug("Found newline and ret. index:" + index + ", Lexeme: " + parseTokens[index].lexeme);
                 expect(Exp);
-                console.log("Found return statement. index:" + index);
+                debug("Found return statement. index:" + index);
             } else {
-                console.log("No newline found or 'ret' found. index:" + index + ", Lexeme: " + parseTokens[index].lexeme);
+                debug("No newline found or 'ret' found. index:" + index + ", Lexeme: " + parseTokens[index].lexeme);
             }
-            console.log("Done with return statement. Looking for Dedent. index:" + index);
+            debug("Done with return statement. Looking for Dedent. index:" + index);
             if(!expect(Dedent)) {
                 index = indexBefore;
                 return false;
             }
-            console.log("Successful end of function. index:" + index + " \n");
+            debug("Successful end of function. index:" + index + " \n");
         }
-        console.log("Finalizing function success. index:" + index);
-        console.log(parseTokens[index]);
-        console.log('\n');
+        debug("Finalizing function success. index:" + index);
+        debug(parseTokens[index]);
+        debug('\n');
         return true;
     }
 };

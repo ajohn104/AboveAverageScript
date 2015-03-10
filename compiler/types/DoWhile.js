@@ -1,4 +1,4 @@
-// DoWhile         ::= 'do' Indent Block Dedent Newline 'while' ':' Exp
+// DoWhile         ::= 'do' Indent Block Dedent Newline 'while' Exp
 module.exports = {
     is: function() {
         var indexBefore = index;
@@ -38,12 +38,6 @@ module.exports = {
             index = indexBefore;
             return false;
         } 
-        index++;
-
-        if(parseTokens[index].lexeme !== ':') {
-            index = indexBefore;
-            return false;
-        }
         index++;
 
         if(!expect(Exp)) {

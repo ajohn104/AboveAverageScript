@@ -34,7 +34,7 @@ module.exports = {
             index = indexBefore;
             return false;
         }
-        console.log("Completed 'if' block. Moving on to elif. index:" + index);
+        debug("Completed 'if' block. Moving on to elif. index:" + index);
         while(parseTokens[index].kind === "Newline" && parseTokens[index+1].lexeme === 'elif') {
             index+=2;
             if(!expect(Exp)) {
@@ -63,7 +63,7 @@ module.exports = {
                 return false;
             }
         }
-        console.log("Completed 'elif' blocks. Moving on to else. index:" + index);
+        debug("Completed 'elif' blocks. Moving on to else. index:" + index);
         if(parseTokens[index].kind === "Newline" && parseTokens[index+1].lexeme === 'else') {
             index+=2;
             
@@ -82,7 +82,7 @@ module.exports = {
                 return false;
             }
         }
-        console.log("Completed 'else' block. Done with IfStmt. index:" + index);
+        debug("Completed 'else' block. Done with IfStmt. index:" + index);
         return true;
     }
 };

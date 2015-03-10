@@ -7,12 +7,25 @@ var files = ["./examples/HelloIndents.avg", "./examples/UnpacksConsumersInlines.
 
 var file = files[1];
 
-var compile = function(fileName) {
-    scan(fileName, scanCall);
+var scanError = function(errorToken) {
+    switch(errorToken.kind) {
+        case "Unused":
+            console.error("Scan Error. Found disallowed reserved word: '" + errorToken.lexeme + "'");
+            break;
+        case "UnexpectedChars":
+            console.error("Scan Error. Found unexpected character(s): '" + errorToken.lexeme + "'");
+            break;
+    }
 };
 
+var compile = function(fileName) {
+    scan(fileName, scanCall, scanError);
+};
+
+var debugParse = false;
 var scanCall = function(tokens) {
-    parse(tokens, parseCall, parseError);
+    var isValidProgram = parse(tokens, parseCall, parseError, debugParse);
+    console.log("Valid Program Entered: " + isValidProgram);
 };
 
 var parseCall = function(stuff) {
@@ -20,9 +33,9 @@ var parseCall = function(stuff) {
 };
 
 var parseError = function(stuff) {
-    console.error("Error token:");
+    console.error("Error on token:");
     console.error(stuff);
-}
+};
 
 var readStdIn = function(args) {
     var arguments = [];
@@ -64,16 +77,14 @@ var readStdIn = function(args) {
                 console.log(toStringFunction(tokens));
             };
         }
+        if(argument.search(/^-parse(:\w+)?$/) >= 0) {
+            var debug = argument.substring(7);
+            if(debug === "debug") {
+                debugParse = true;
+            }
+        }
     }
 };
 
-
-
 readStdIn(process.argv);
 compile(file);
-
-
-
-
-
-//compile(files[1]);

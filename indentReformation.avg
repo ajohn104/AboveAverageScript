@@ -54,7 +54,8 @@ let objIndentMultiline =
     .length
     .toString(16 + y
         .props[9]
-            .length
+            .lengthier
+    )
 
 // Here, Dot Accessors are given to be described in two ways:
 //  -> All-in-one AKA single line
@@ -80,21 +81,21 @@ A[1] = B[1][2][3][4]
 // Expressions
 
 let x = 1 + 2 - 3 * 4 / 5
-let x = 1
+/*let x = 1
     + 2
     - 3
     * 4
     / 5
 let x = 1 +
-    2 +
-    3 +
-    4 +
+    2 -
+    3 *
+    4 /
     5
 let x = 1
-    + 2 +
+    + 2 -
     3
-    + 4 +
-    5
+    * 4 /
+    5*/
 
 // Personally, I'd like these all to be valid. So, I'm going to decipher each and find the pattern.
 

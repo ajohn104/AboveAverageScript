@@ -8,11 +8,11 @@ module.exports = {
             return false;
         }
         index++;
-        console.log("ObjIndentDecl: found 'let', index: " + index );
-        console.log("ObjIndentDecl: checking for ObjIndentAssign");
+        debug("ObjIndentDecl: found 'let', index: " + index );
+        debug("ObjIndentDecl: checking for ObjIndentAssign");
         if(!expect(ObjIndentAssign)) {
             index = indexBefore;
-            console.log("ObjIndentDecl: cannot find '=', index: " + index );
+            debug("ObjIndentDecl: cannot find '=', index: " + index );
             return false;
         }
         return true;

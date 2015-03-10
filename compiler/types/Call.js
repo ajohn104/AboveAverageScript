@@ -2,13 +2,13 @@
 module.exports = {
     is: function() {
         var indexBefore = index;
-        console.log("Starting call test");
+        debug("Starting call test");
         if(parseTokens[index].lexeme !== '(') {
             index = indexBefore;
             return false;
         }
         index++;
-
+        debug("Checking for function arguments. index:" + index);
         if(expect(Exp)) {
             var indexMid = index;
             if(parseTokens[index].lexeme === ',') {
@@ -58,28 +58,8 @@ module.exports = {
 
 
         } else {
-            console.log("Cannot find any arguments to function. Checking for ')'. index:" + index);
+            debug("Cannot find any arguments to function. Checking for ')'. index:" + index);
         }
-
-        /*if(expect(Indent)) {
-
-            while(expect(Newline)) {
-                if(parseTokens[index].lexeme !== ',') {
-                    index = indexBefore;
-                    break;
-                }
-                index++;
-                if(!expect(Exp)) {
-                    index = indexBefore;
-                    break;
-                }
-            }
-
-            if(!expect(Dedent)) {
-                index = indexBefore;
-                return false;
-            }
-        }*/
 
         expect(Newline);
 
@@ -88,7 +68,7 @@ module.exports = {
             return false;
         }
         index++;
-        console.log("Ending successful call on function: " + parseTokens[indexBefore-1].lexeme);
+        debug("Ending successful call on function: " + parseTokens[indexBefore-1].lexeme);
         return true;
     }
 };

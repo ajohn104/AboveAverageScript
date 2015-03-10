@@ -2,7 +2,7 @@
 module.exports = {
     is: function() {
         var indexBefore = index;
-        console.log("Starting for-colon. index:" + index);
+        debug("Starting for-colon. index:" + index);
         if(parseTokens[index].lexeme !== 'for') {
             index = indexBefore;
             return false;
@@ -23,7 +23,7 @@ module.exports = {
             index = indexBefore;
             return false;
         }
-        console.log("Completed for-colon. index:" + index);
+        debug("Completed for-colon. index:" + index);
         return true;
     }
 };

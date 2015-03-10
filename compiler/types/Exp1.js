@@ -2,7 +2,7 @@
 module.exports = {
     is: function() {
         var indexBefore = index;
-        console.log("Starting on exp1. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        debug("Starting on exp1. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
         if(!expect(Exp2)) {
             index = indexBefore;
             return false;
@@ -22,7 +22,7 @@ module.exports = {
                 }
             }
         }
-        console.log("Finalizing exp1 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        debug("Finalizing exp1 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
         return true;
     }
 };

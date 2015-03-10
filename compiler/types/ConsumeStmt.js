@@ -12,13 +12,13 @@ module.exports = {
                 return false;
             }
         }
-        console.log("ConsumeStmt: checking for '<-'. index:" + index + ", lexeme:" + parseTokens[index].lexeme);
+        debug("ConsumeStmt: checking for '<-'. index:" + index + ", lexeme:" + parseTokens[index].lexeme);
         if(parseTokens[index].lexeme !== '<-') {
             index = indexBefore;
             return false;
         }
         index++;
-        console.log("ConsumeStmt: found '<-'. checking for Id. index:" + index + ", lexeme:" + parseTokens[index].lexeme);
+        debug("ConsumeStmt: found '<-'. checking for Id. index:" + index + ", lexeme:" + parseTokens[index].lexeme);
         if(!expect(Id)) {
             index = indexBefore;
             return false;
@@ -63,13 +63,8 @@ module.exports = {
                 expect(Call);
             }
         }
-
-        /*console.log("ConsumeStmt: checking for final ArrayCont. index:" + index + ", lexeme:" + parseTokens[index].lexeme);
-        if(!expect(ArrayCont)) {
-            index = indexBefore;
-            return false;
-        }*/
-        console.log("ConsumeStmt: found ArrayCont. index:" + index + ", lexeme:" + parseTokens[index].lexeme);
+        
+        debug("ConsumeStmt: found ArrayCont. index:" + index + ", lexeme:" + parseTokens[index].lexeme);
         return true;
     }
 };
