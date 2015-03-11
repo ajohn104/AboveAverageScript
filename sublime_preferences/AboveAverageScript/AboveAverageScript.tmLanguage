@@ -633,7 +633,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\$|%|&amp;|\*|\-\-|\-|\+\+|\+|~|===|==|=|&lt;=|&gt;=|&lt;&lt;=|&gt;&gt;=|&gt;&gt;&gt;=|&lt;&gt;|&lt;|&gt;|\?\:|\*=|(?&lt;!\()/=|%=|\+=|\-=|\^=|\b(in|instanceof|of|new|delete|typeof|void|not|and|or)\b</string>
+			<string>\$|%|&amp;|\*|\-\-|\-|\+\+|\+|~|!==|!=|===|==|=|&lt;=|&gt;=|&lt;&lt;=|&gt;&gt;=|&gt;&gt;&gt;=|&lt;&gt;|&lt;|&gt;|\?\:|\*=|(?&lt;!\()/=|%=|\+=|\-=|\^=|\b(in|instanceof|of|new|delete|typeof|void|not|and|or)\b</string>
 			<key>name</key>
 			<string>keyword.operator.js</string>
 		</dict>
@@ -644,8 +644,8 @@
 			<string>constant.language.js</string>
 		</dict>
 		<dict>
-			<key>begin</key>
-			<string>(?&lt;=[=(:]|^|ret|and|or|not)\s*(/)(?![/*+{}?])</string>
+			<key>begin</key><!--|^--><!--That used to be in front of 'ret'-->
+			<string>(?&lt;=[=(:]|ret|and|or|not)\s*(/)(?![/*+{}?])</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
