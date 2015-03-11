@@ -8,7 +8,101 @@ Running on Javascript, _AboveAverageScript_ is a combination of ECMAScript 6, Py
 Logo courtesy (in part) of https://averagechronicles.files.wordpress.com/2013/02/average-logo.png
 -->
 
-But enough about history, you're here for the language. Let's get started.
+##Grammar
+###Macrosyntax
+
+```
+
+    Program         ::= Stmt Block EOF
+    Block           ::= (Newline Stmt)*
+    Stmt            ::= ObjIndentDecl
+                     |  ObjIndentAssign
+                     |  DeclareStmt  
+                     |  AssignStmt
+                     |  NativeStmt
+                     |  SwitchStmt
+                     |  Loop
+                     |  IfStmt
+                     |  ConsumeStmt
+                     |  Exp
+
+    ObjIndentDecl   ::= 'let' ObjIndentAssign
+    ObjIndentAssign ::= Exp '=' Indent (Newline (Property|ObjIndentPropAssign) )+ Dedent
+    ObjIndentPropAssign ::= Exp ':' Indent (Newline (Property|ObjIndentPropAssign) )+ Dedent
+    DeclareStmt     ::= 'let' SetStmt ( ',' Indent Newline SetStmt (',' Newline SetStmt)* Dedent )?
+    SetStmt         ::= Exp (( '=' Exp (',' Indent NewLine Exp '=' Exp (',' NewLine Exp '=' Exp)* Dedent)? ) | ((',' Exp)* '=' Exp (',' Indent Newline Exp (Newline Exp)* Dedent )?) )
+    AssignStmt      ::= Exp (( AssignOp Exp (',' Indent NewLine Exp AssignOp Exp (',' NewLine Exp AssignOp Exp)* Dedent)? ) | ((',' Exp)* AssignOp Exp (',' Indent Newline Exp (Newline Exp)* Dedent )?) )
+    ConsumeStmt     ::= (Exp (',' Exp)*)? '<-' Id (('.' Id)* ArrayCont+ Call?)+
+
+    IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
+    SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Dedent
+    Case            ::= Newline 'case' Exp18 ':' Indent Block Dedent
+    NativeStmt      ::= '***native***'
+
+    Loop            ::= WhileLoop | ForLoop
+    WhileLoop       ::= DoWhile | While
+    DoWhile         ::= 'do' Indent Block Dedent Newline 'while' Exp
+    While           ::= 'while' Exp ':' Indent Block Dedent
+    ForLoop         ::= (ForIn | ForColon | For) ':' Indent Block Dedent
+    ForIn           ::= 'for' Id (',' Id)? 'in' Exp
+    ForColon        ::= 'for' Id ':' Exp
+    For             ::= 'for' ( ('let'? Id '=')? Exp ',')? Exp ',' Exp
+
+    Exp             ::= Exp1 (ForIn | ForColon)*
+    Exp1            ::= Exp2 ('if' Exp2 ('else' Exp2)?)?
+    Exp2            ::= (Exp3 '?' Exp3 ':')? Exp3
+    Exp3            ::= Exp4 ('or' Exp4)*
+    Exp4            ::= Exp5 ('and' Exp5)*
+    Exp5            ::= Exp6 ('|' Exp6)*
+    Exp6            ::= Exp7 ('^' Exp7)*
+    Exp7            ::= Exp8 ('&' Exp8)*
+    Exp8            ::= Exp9 (EqualOp Exp9)*
+    Exp9            ::= Exp10 (CompareOp Exp10)*
+    Exp10           ::= Exp11 (ShiftOp Exp11)*
+    Exp11           ::= Exp12 (AddOp Exp12)*
+    Exp12           ::= Exp13 (MulOp Exp13)*
+    Exp13           ::= PrefixOp? Exp14
+    Exp14           ::= Exp15 PostfixOp?
+    Exp15           ::= 'new'? Exp16 Call?
+    Exp16           ::= Exp17 (ArrayCont Call?)* ( ('.' Exp16 Call?)* | (Indent (Newline '.' Exp16 Call?)+ Dedent)) )?
+    Exp17           ::= Exp18
+    Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
+
+    ArrayLit        ::= ('[' ']') | ArrayCont
+    ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) ']'
+    RegExpLit       ::= '\/[^\/\\]+(?:\\.[^\/\\]*)*\/[igm]{0,3}'
+    Func            ::= 'func' (Id (',' Id)* )? '->' ('ret'? Exp) | (Indent Block? (Newline 'ret' Exp?)? Dedent)
+    ObjectInline    ::= '{' (Property (',' Property)*) | (Indent Newline Property (',' Newline Property)* Dedent Newline) '}'
+    Property        ::= (Id | BoolLit | StringLit) ':' Exp
+    Call            ::= '(' ( Exp (',' Exp)* (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? )? Newline? ')'
+
+```
+
+###Microsyntax
+
+```
+
+    AssignOp        ::= '=' | '+=' |'-=' | '*=' | '/=' | '%=' | '<<=' | '>>=' | '>>>=' | '&=' | '^=' | '|='
+    EqualOp         ::= '!==' | '===' | '!=' | '=='
+    CompareOp       ::= '>=' | '>' | '<=' | '<'
+    ShiftOp         ::= '>>>' | '>>' | '<<'
+    AddOp           ::= '+' | '-'
+    MulOp           ::= '%' | '/' | '*'
+    PrefixOp        ::= '--' | '++' | '-' | '+' | '~' | 'not'
+    PostfixOp       ::= '--' | '++'
+
+    IntLit          ::= '[+-]?((0x[a-fA-F0-9]+)|(\d+(\.\d+)?([eE][+-]?\d+)?))'
+    StringLit       ::= '\"[^\"\\]*(?:\\.[^\"\\]*)*\"|\'[^\'\\]*(?:\\.[^\'\\]*)*\''
+    Id              ::= '[_$a-zA-Z][$\w]*(?=[^$\w]|$)'
+    This            ::= '_'
+    Newline         ::= '\n'
+    Indent          ::= '\i'
+    Dedent          ::= '\d'
+    EOF             ::= '@EOF'
+
+```
+
+Keep in mind that much of the Macrosyntax is rather convoluted due to the relaxed but enforced styling. Because of this, I've omitted the styling for Expressions other than Arrays, Objects, and Property Accessors while I decide what would be best and what would be the most approachable. However, all other indentation is presumably here to stay, though the capture for each may change when the expressions are fully realized.
 
 Here's some basic variable code:
 
