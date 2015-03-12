@@ -1,12 +1,11 @@
 Scanner = require('./scanner');
-var scan = Scanner.scan;
+scan = Scanner.scan;
 Parser = require('./parser');
-var parse = Parser.parse;
+parse = Parser.parse;
 
 var files = ["./examples/HelloIndents.avg", "./examples/UnpacksConsumersInlines.avg", "./examples/arrow_sign.avg", "./examples/testCases.avg"];
 
 var file = files[1];
-
 var scanError = function(errorToken) {
     switch(errorToken.kind) {
         case "Unused":
@@ -45,14 +44,7 @@ var readStdIn = function(args) {
     var fileNames = [];
     for(i in arguments) {
         var argument = arguments[i];
-        if(argument.search(/^-file:all$/) >= 0) {
-            var debug = argument.substring(7);
-            compile = function() {
-                for(var j = 0; j < files.length; j++) {
-                    scan(files[j], scanCall, scanError);
-                }
-            }
-        } else if(argument.search(/^\-file\:\d+$/) >= 0) {
+        if(argument.search(/^\-file\:\d+$/) >= 0) {
             var index = argument.substring(6);
             file = files[index];
             continue;

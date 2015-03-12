@@ -288,23 +288,33 @@ var LineScanner = function() {
     var getUnusedMatch = function(line) {
         return getMatch(line, "Unused", true);
     };
-    // Regex disabled until matches with divide operator dealt with. Shouldn't take long.
     var tokenFunctions = [
         getReservedMatch, getUnusedMatch, getBoolMatch, getCommentMatch,
         /*getRegExpMatch,*/ getNativeMatch, getOperatorMatch, getSeparatorMatch,
         getStrMatch, getIntMatch, getIdMatch
     ];
+    var regexpTokens = ['=', '(', ':', 'ret', 'and', 'or', 'not'];
     this.getNextToken = function(line, contentHasAppeared) {
         var token = null;
         token = getIndentMatch(line);
         if(!contentHasAppeared && token !== null && token.index === 0) {
             return token;
         }
+        
         var tokenOptions = [];
         for(var i = 0; i < tokenFunctions.length; i++) {
             var token = tokenFunctions[i](line);
+            var priority = i;
+            if(priority > 3) priority++;
             if(token !== null) {
-                tokenOptions.push({token:token, priority: i});
+                tokenOptions.push({token:token, priority: priority});
+            }
+        }
+        var lastToken = this.getLastToken();
+        if( (typeof lastToken !== "undefined") && regexpTokens.indexOf(lastToken.lexeme) >= 0) {
+            var token = getRegExpMatch(line);
+            if(token !== null) {
+                tokenOptions.push({token:token, priority: 4});
             }
         }
         var option = null;
