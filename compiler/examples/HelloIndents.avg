@@ -16,5 +16,7 @@ $(func ->
     let color1 = "red",
         color2 = "white",
         color3 = "blue"
-)
 
+    if finished:
+        ret "It's over. Sorry."
+)

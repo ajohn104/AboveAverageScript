@@ -1,37 +1,93 @@
 LineByLineReader = require('line-by-line');
-parseTokens = require('./parseTokens');
+Tokens = require('./tokens');
 
-/*
- * I'm aware this could be a lot shorter, and a lot of code should be in functions. However
- * I felt it was more important for me to be able to read it line by line, and have it work
- * in the end, then make it shorter. So it will be shorter soon. And now it is. I'm probably
- * going to get rid of this soon, but I'm keeping it around for reference for a tad longer.
- */
-
-
-var scan = function(file, callback) {
+var scan = function(file, callback, error) {
     reader = new LineByLineReader(file, {encoding: 'utf8'});
     var scanner = new LineScanner();
-    var parseTokens = [];
+    var tokens = [];
     reader.on('error', function(error) {
         console.log("Error on line " + scanner.currentLine + ". Error: " + error);
     });
     reader.on('line', function(line) {
-        scanner.nextLine(line);
-        
-    });
-    reader.once('end', function() {
-        parseTokens = scanner.complete();
-        if(typeof callback !== "undefined") {
-            callback(parseTokens);
+        reader.pause();
+        var allValid = scanner.nextLine(line);
+        if(!allValid) {
+            error(scanner.errorToken);
+        } else {
+            reader.resume();
         }
     });
-}
+    reader.once('end', function() {
+        tokens = scanner.complete();
+        if(typeof callback !== "undefined") {
+            callback(tokens);
+        }
+    });
+};
 
-var parseTokensToStringFull = function(parseTokens){
+var parseTokensToStringFull = function(tokens){
     var str = "";
-    for(var i = 0; i < parseTokens.length; i++ ) {
-        str += parseTokens[i]['kind'] + "( '" + parseTokens[i]['lexeme'] + "' ), ";
+    for(var i = 0; i < tokens.length; i++ ) {
+        str += tokens[i]['kind'] + "( '" + tokens[i]['lexeme'] + "' ), ";
+    }
+    return str;
+};
+
+var parseTokensToStringPretty = function(tokens) {
+    var str = "";
+    for(var i = 0; i < tokens.length; i++ ) {
+        if(tokens[i]['kind'] === 'Newline') {
+            str += "\n\'\\n\'";
+        } else if(tokens[i]['kind'] === "Indent") {
+            str += " \'\\i\'";
+        } else {
+            str += " \'"+ tokens[i]['lexeme'] + "\'";
+        }
+    }
+    return str;
+};
+
+var parseTokensToStringBest = function(tokens) {
+    var str = "";
+    for(var i = 0; i < tokens.length; i++ ) {
+        var abbr = null;
+        var token = tokens[i];
+        for(var j = 0; j < Tokens.kinds.length; j++) {
+            var pair = Tokens.kinds[j];
+            if(pair.kind === token.kind) {
+                abbr = pair.abbr;
+                break;
+            }
+        }
+        if(abbr === null) {
+            var lexeme = token['lexeme'];
+            lexeme = (lexeme === Tokens['Indent'][0])?'\\t':lexeme;
+            str += (lexeme === "\\n")?'\n':'';
+            var spacing = (lexeme === "\\n")?'':' ';
+            str += spacing + "\'" + lexeme + "\'";
+        } else {
+            str += " " + abbr + "(\'" + tokens[i]['lexeme'] + "\')";
+        }
+    }
+    return str;
+};
+
+var parseTokensToStringSpacially = function(tokens) {
+    var str = "";
+    var indent = "    ";
+    var charCount = 0;
+    for(var i = 0; i < tokens.length; i++ ) {
+        if(tokens[i]['kind'] === 'Newline') {
+            str += "\n";
+            charCount = 0;
+        }
+        var newStr = tokens[i]['kind'] + "('" + tokens[i]['lexeme'] + "'), ";
+        if(newStr.length + charCount > 80) {
+            charCount = indent.length;
+            str += "\n" + indent;
+        }
+        str += tokens[i]['kind'] + "('" + tokens[i]['lexeme'] + "'), ";
+        charCount += newStr.length;
     }
     return str;
 };
@@ -40,302 +96,263 @@ var LineScanner = function() {
     this.currentLine = null;
     this.lineNumber = 0;
     this.inMultilineComment = false;
-    this.parseTokens = [];
+    this.tokens = [];
+    this.indentsInPreviousLine = 0;
+    this.errorToken = null;
     this.nextLine = function(line) {
+        var contentHasAppeared = false;
         this.lineNumber++;
-        var chars = line.split("");
-        var currentToken = "";
-        var escaped = false;
-        var inNumber = false;
-        var inString = false;
-        var openQuote = "";
-        var radixAppeared = false;
-        var exponentialAppeared = false;
-        var inHex = false;
-        var isOther = false;
-        var isWord = false;
-        var isOperator = false;
-        for(var i = 0; i < chars.length; i++) {
-            if(this.inMultilineComment) {
-                if(chars.length > i + 1 && chars[i] == "*" && chars[i+1] === "/") {
-                    i++;    // To skip the '/'
+        var charAt = 1;
+        var indentsOnThisLine = [];
+        while(line.length > 0) {
+            if(!this.inMultilineComment) {
+                var token = this.getNextToken(line, contentHasAppeared);
+                if(token === null) {
+                    break;
+                }
+                if(this.isSinglelineComment(token)) {
+                    line = "";
+                    break;
+                } 
+                if(this.isMultilineComment(token)) {
+                    this.inMultilineComment = true;
+                    line = line.substring(2);
+                    charAt += 2;
+                    continue;
+                }
+                if(this.isIndent(token) && !contentHasAppeared) {
+                    charAt+= token.index;
+                    token.column = charAt;
+                    var tokenIndex = token.index;
+                    delete token.index;
+                    indentsOnThisLine.push(token);
+                    line = line.substring(token.lexeme.length + tokenIndex);
+                    charAt += token.lexeme.length;
+                    continue;
+                }
+                var hasAppearedBefore = contentHasAppeared;
+                contentHasAppeared = (!this.isIndent(token))?true:contentHasAppeared;
+                if(hasAppearedBefore !== contentHasAppeared) {
+                    for(var k = indentsOnThisLine.length; k < this.indentsInPreviousLine; k++) {
+                        var prev = this.tokens.pop();
+                        this.tokens.push({kind:"Dedent", lexeme:"\\d", line: this.lineNumber});
+                        this.tokens.push(prev);
+                    }
+                    for(var l = this.indentsInPreviousLine; l < indentsOnThisLine.length; l++) {
+                        var prev = this.tokens.pop();
+                        this.tokens.push({kind:"Indent", lexeme:"\\i", line: this.lineNumber});
+                        this.tokens.push(prev);
+                    }
+                    this.indentsInPreviousLine = indentsOnThisLine.length;
+                }
+                if(token.kind === "UnexpectedChars" || token.kind === "Unused") {
+                    this.errorToken = token;
+                    return false;
+                }
+                token.line = this.lineNumber;
+                charAt += token.index;
+                token.column = charAt;
+                var tokenIndex = token.index;
+                delete token.index;
+                this.tokens.push(token);
+                line = line.substring(token.lexeme.length + tokenIndex);
+                charAt += token.lexeme.length;
+                continue;
+            } else {
+                var characterNumber = line.indexOf(Tokens.Comment[2]);
+                if(characterNumber >= 0) {
                     this.inMultilineComment = false;
-                    continue;
+                    line = line.substring(characterNumber+2);
+                    charAt += characterNumber+2;
                 } else {
-                    continue;
-                }
-            }
-            if(inString) {
-                // Checks for end of string
-                var isCloseQuote = chars[i] === openQuote;
-                if(!isCloseQuote || escaped) {
-                    currentToken+=chars[i];
-                    escaped = false;
-                    continue;
-                } else {
-                    currentToken+= chars[i];
-                    var token = {kind: "StrLit", lexeme:currentToken, line: this.lineNumber, character:i};
-                    this.parseTokens.push(token);
-                    inString = false;
-                    escaped = false;
-                    currentToken = "";
-                    continue;
-                }
-            }
-            else if(inNumber) {
-                // Check to see if number should be hex specific
-                if( currentToken.length === 1 && currentToken[0] == "0" && chars[i] == "x") {
-                    inHex = true;
-                    currentToken+=chars[i];
-                    continue;
-                } else {
-                    // If in hex, the number should end on non hex
-                    if(inHex) {
-                        // If it is an acceptable hex value, add it.
-                        if(chars[i].match(/[0-9a-fA-F]/)) {
-                            currentToken+=chars[i];
-                            continue;
-                        } else if(chars[i].match(/[eE]/)) {
-                            // another exp really is an error, but I'm allowing it here
-                            if(exponentialAppeared) {
-                                var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                                this.parseTokens.push(token);
-                                inNumber = false;
-                                exponentialAppeared = false;
-                                i--;
-                                currentToken = "";
-                                continue;
-                            } else {
-                                currentToken+= chars[i];
-                                exponentialAppeared = true;
-                                continue;
-                            }
-                        } else {
-                            var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                            this.parseTokens.push(token);
-                            inNumber = false;
-                            exponentialAppeared = false;
-                            i--;
-                            currentToken = "";
-                            continue;
-                        }
-                    } else {
-                        if(chars[i].match(/[0-9]/)) {
-                            currentToken+=chars[i];
-                            continue;
-                        } else if(chars[i].match(/[eE]/)) {
-                            // another exp really is an error, but I'm allowing it here
-                            if(exponentialAppeared) {
-                                var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                                this.parseTokens.push(token);
-                                inNumber = false;
-                                exponentialAppeared = false;
-                                radixAppeared = false;
-                                i--;
-                                currentToken = "";
-                                continue;
-                            } else {
-                                currentToken+= chars[i];
-                                exponentialAppeared = true;
-                                continue;
-                            }
-                        } else if(chars[i].match(/\./)) {
-                            // Also an error. Allowing it for now.
-                            if(radixAppeared || exponentialAppeared) {
-                                var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                                this.parseTokens.push(token);
-                                inNumber = false;
-                                radixAppeared = false;
-                                i--;
-                                currentToken = "";
-                                continue;
-                            } else {
-                                currentToken+= chars[i];
-                                radixAppeared = true;
-                                continue;
-                            }
-                        } else {
-                            var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                            this.parseTokens.push(token);
-                            inNumber = false;
-                            exponentialAppeared = false;
-                            radixAppeared = false;
-                            i--;
-                            currentToken = "";
-                            continue;
-                        }
-                    }
-                }   
-            } else if(isOther) {
-                if(isWord) {
-                    if(chars[i].match(/[_$a-zA-Z0-9]/)) {
-                        currentToken+= chars[i];
-                        continue;
-                    } else {
-                        var type = "";
-                        type = (isAVGReserved(currentToken)?"Reserved":type);
-                        type = (isECMAReserved(currentToken)?"Unused":type);
-                        type = (isWordOperator(currentToken)?"Operator":type);
-                        type = (type === ""?"ID":type);
-                        var token = {kind: type, lexeme: currentToken, line: this.lineNumber, character:i};
-                        this.parseTokens.push(token);
-                        isWord = false;
-                        isOther = false;
-                        i--;
-                        currentToken = "";
-                        continue;
-                    }
-                } else {
-                    var newToken = currentToken + chars[i];
-                    if(canBeOperator(newToken)) {
-                        currentToken+= chars[i];
-                        continue;
-                    } else {
-                        var token = {kind: "Operator", lexeme: currentToken, line: this.lineNumber, character:i};
-                        this.parseTokens.push(token);
-                        isOperator = false;
-                        isOther = false;
-                        i--;
-                        currentToken = "";
-                        continue;
-                    }
-                }
-            } else {    // Starting a new word.
-                if(chars.length > i + 1 && chars[i] == "/") {
-                    if(chars[i+1] === "/") {
-                        return; // The rest of the line is a comment
-                    } else if(chars[i+1] === "*") {
-                        this.inMultilineComment = true;
-                        i++; // to skip the *
-                        continue;
-                    }
-                }
-                if(chars[i].match(/[0-9]/)) {
-                    inNumber = true;
-                    currentToken += chars[i];
-                    continue;
-                } else if(chars[i].match(/[\'\"]/)) {
-                    inString = true;
-                    openQuote = chars[i];
-                    currentToken += chars[i];
-                    continue;
-                } else {
-                    // Immediate check for ***native*** to make life easier
-                    if(chars[i] === "*" && chars.length > i + "***native***".length) {
-                        var word = "";
-                        for(var j = i; j < i + "***native***".length; j++) {
-                            word+=chars[j];
-                        }
-                        if(word === "***native***") {
-                            var token = {kind: "Reserved", lexeme: "***native***", line: this.lineNumber, character:i};
-                            this.parseTokens.push(token);
-                            i+="***native***".length-1; // i will be inc after continue, so the -1 fixes that
-                            continue;
-                        }
-                    }
-                    // The few solo parseTokens, hardcoded:
-                    if(parseTokens.AlwaysSolo.indexOf(chars[i]) >= 0) {
-                        var token = {kind: "ControlSymbol", lexeme: chars[i], line: this.lineNumber, character:i};
-                        this.parseTokens.push(token);
-                        continue;
-                    } else {
-                        isOther = true;
-                        currentToken += chars[i];
-                        if(chars[i].match(/[_$a-zA-Z]/)) {
-                            isWord = true;
-                        } else if(canBeOperator(currentToken)) {
-                            isOperator = true;  // Except ***native***
-                        } else {
-                            currentToken = "";
-                            isOther = false;
-                            // This is a character not allowed by the language
-                        }
-                        continue;
-                    }
-                }
-                
-            }
-            
-        }
-        if(currentToken !== "") {
-            if(inString) {
-                // Should output error or something. Strings are not multiline
-                currentToken = "";
-                inString = false;
-            } else if(inNumber) {
-                var token = {kind: "IntLit", lexeme: currentToken, line: this.lineNumber, character:i};
-                this.parseTokens.push(token);
-                inNumber = false;
-                exponentialAppeared = false;
-                radixAppeared = false;
-                currentToken = "";
-                return;
-            } else if(isOther) {
-                if(isWord) {
-                    var type = "";
-                    type = (isAVGReserved(currentToken)?"Reserved":type);
-                    type = (isECMAReserved(currentToken)?"Unused":type);
-                    type = (type === ""?"ID":type);
-                    var token = {kind: type, lexeme: currentToken, line: this.lineNumber, character:i};
-                    this.parseTokens.push(token);
-                    isWord = false;
-                    isOther = false;
-                    currentToken = "";
-                } else {
-                    var token = {kind: "Operator", lexeme: currentToken, line: this.lineNumber, character:i};
-                    this.parseTokens.push(token);
-                    isOperator = false;
-                    isOther = false;
-                    currentToken = "";
+                    line = "";
+                    break;
                 }
             }
         }
-    }
+        var lastToken = this.getLastToken();
+        if(!this.inMultilineComment && typeof lastToken !== "undefined" && !this.isNewline(lastToken)) {
+            var token = {kind: "Newline", lexeme:"\\n", line: this.lineNumber+1};
+            this.tokens.push(token);
+        }
+        return true;
+    };
+    this.getLastToken = function() {
+        return this.tokens[this.tokens.length-1];
+    };
+    this.isNewline = function(token) {
+        return token.lexeme === "\\n";
+    };
+    this.isSinglelineComment = function(token) {
+        return token.lexeme === Tokens.Comment[0];
+    };
+    this.isMultilineComment = function(token) {
+        return token.lexeme === Tokens.Comment[1];
+    };
+    this.isIndent = function(token) {
+        return token.lexeme === Tokens.Indent[0];
+    };
+    var getBestMatch = function(line, array, wordBreak) {
+        wordBreak = (typeof wordBreak === "undefined")?false:wordBreak;
+        var index = -1;
+        var arrayIndex = -1;
+        for(var i = 0; i < array.length; i++) {
+            var token = array[i];
+            var tokenIndex;
+            if(wordBreak) {
+                tokenIndex = line.search(new RegExp(token + "\\b"));
+            } else {        // I know I could have used the ?: here, but I wanted to ensure laziness.
+                tokenIndex = line.indexOf(token);
+            }
+            if(index === -1 || (tokenIndex >= 0 && tokenIndex < index)) {
+                index = tokenIndex;
+                arrayIndex = i;
+            }
+        }
+        return {index: index, arrayIndex:arrayIndex};
+    };
+    var getMatch = function(line, kind, wordBreak) {
+        var matchIndexes = getBestMatch(line, Tokens[kind], wordBreak);
+        var matchIndex = matchIndexes['index'];
+        if(matchIndex === -1) return null;
+        var size = Tokens[kind][matchIndexes['arrayIndex']].length;
+        var match = line.substring(matchIndex, matchIndex + size);
+        var token = {kind: kind, lexeme: match, index: matchIndex};
+        return token;
+    };
+    var getMatchReg = function(line, kind, regexStr) {
+        var start = null;
+        var matches = line.match(new RegExp(regexStr));
+        if(matches === null) return null;
+        var match = matches[0], 
+            matchIndex = matches['index'];
+        var token = {kind: kind, lexeme: match, index: matchIndex};
+        return token;
+    };
+    var getOperatorMatch = function(line) {
+        var matchIndex, size;
+        matchIndex = getBestMatch(line, Tokens.OneCharacterOperators)['index'];
+        if(matchIndex >= 0) size = 1;
+        [Tokens.TwoCharacterOperators, Tokens.ThreeCharacterOperators, Tokens.FourCharacterOperators]
+            .forEach(function(array, newSize) {
+                newSize += 2;
+                var newMatchIndex = getBestMatch(line, array)['index'];
+                if(newMatchIndex !== -1 && newMatchIndex <= matchIndex) {
+                    matchIndex = newMatchIndex;
+                    size = newSize;
+                }
+            });
+        var newMatchIndexes = getBestMatch(line, Tokens.WordOperators, true);
+        if(newMatchIndexes['index'] !== -1 && newMatchIndexes['index'] <= matchIndex) {
+            matchIndex = newMatchIndexes['index'];
+            size = Tokens.WordOperators[newMatchIndexes['arrayIndex']].length;
+        }
+        
+        if(matchIndex === -1) return null;
+        var match = line.substring(matchIndex, matchIndex + size);
+        var token = {kind: "Operator", lexeme: match, index: matchIndex};
+        return token;
+    };
+    var getSeparatorMatch = function(line) {
+        return getMatch(line, "Separator");
+    };
+    var getIdMatch = function(line) {
+        return getMatchReg(line, "Id", "[_$a-zA-Z][$\\w]*(?=[^$\\w]|$)");
+    };
+    var getIntMatch = function(line) {
+        return getMatchReg(line, "IntLit", "[+-]?((0x[a-fA-F0-9]+)|(\\d+(\\.\\d+)?([eE][+-]?\\d+)?))");
+    };
+    // newest string literal regex courtesy of arcain from StackOverflow
+    var getStrMatch = function(line) {      
+        return getMatchReg(line, "StrLit", "\\\"[^\\\"\\\\]*(?:\\\\.[^\\\"\\\\]*)*\\\"|\\\'[^\\\'\\\\]*(?:\\\\.[^\\\'\\\\]*)*\\\'");
+    };
+    // Slightly adapted from the string regex...
+    var getRegExpMatch = function(line) {
+        return getMatchReg(line, "RegExpLit", "\\/[^\\/\\\\]+(?:\\\\.[^\\/\\\\]*)*\\/[igm]{0,3}");
+    };
+    var getBoolMatch = function(line) {
+        return getMatch(line, "BoolLit", true);
+    };
+    var getCommentMatch = function(line) {
+        return getMatch(line, "Comment");
+    };
+    var getIndentMatch = function(line) {
+        return getMatch(line, "Indent");
+    };
+    var getNativeMatch = function(line) {
+        return getMatch(line, "Native");
+    };
+    var getReservedMatch = function(line) {
+        return getMatch(line, "Reserved", true);
+    };
+    var getUnusedMatch = function(line) {
+        return getMatch(line, "Unused", true);
+    };
+    // Regex disabled until matches with divide operator dealt with. Shouldn't take long.
+    var tokenFunctions = [
+        getReservedMatch, getUnusedMatch, getBoolMatch, getCommentMatch,
+        /*getRegExpMatch,*/ getNativeMatch, getOperatorMatch, getSeparatorMatch,
+        getStrMatch, getIntMatch, getIdMatch
+    ];
+    this.getNextToken = function(line, contentHasAppeared) {
+        var token = null;
+        token = getIndentMatch(line);
+        if(!contentHasAppeared && token !== null && token.index === 0) {
+            return token;
+        }
+        var tokenOptions = [];
+        for(var i = 0; i < tokenFunctions.length; i++) {
+            var token = tokenFunctions[i](line);
+            if(token !== null) {
+                tokenOptions.push({token:token, priority: i});
+            }
+        }
+        var option = null;
+        for(var j = 0; j < tokenOptions.length; j++) {
+            var newToken = tokenOptions[j];
+            if(option === null) {
+                option = newToken;
+                continue;
+            }
+            var betterIndex = newToken.token.index < option.token.index;
+            var betterPriority = (newToken.token.index === option.token.index) && (newToken.priority < option.priority);
+            if(betterIndex || betterPriority) {
+                option = newToken;
+            }
+        }
+
+        var cutout = line.substring(0, (option !== null)?(option.token.index):(line.length));
+        if(cutout.length > 0 && cutout.search(/^\x20+$/) === -1) {
+            // Error report goes here. Unexpected characters, basically.
+            // This should only be entered if the next token found has non-space characters
+            // between it and the previous token (or beginning of line). Note: a tab is NOT
+            // considered to be a space character. In other words, tabs are not allowed.
+            return {kind: "UnexpectedChars", lexeme: cutout, index: 0};
+        }
+        if(option === null) {
+            return null;
+        }
+        return option.token;
+    };
     this.complete = function() {
-        return this.parseTokens;
-    }
-    // As it happens, we can be greedy when checking for operators.
-    // If an operator is suddenly cut short, it will definitely still
-    // refer to a valid operator
-    var canBeOperator = function(operatorPart) {
-        for(i in parseTokens.Operators) {
-            if(parseTokens.Operators[i].indexOf(operatorPart) === 0) {
-                return true;
-            }
+        for(var i = 0; i < this.indentsInPreviousLine; i++) {
+            var prev = this.tokens.pop();
+            this.tokens.push({kind:"Dedent", lexeme:"\\d", line: this.lineNumber});
+            this.tokens.push(prev);
         }
-        return false;
-    };
-
-    var isWordOperator = function(word) {
-        for(i in parseTokens.Operators) {
-            if(parseTokens.Operators[i] === word) {
-                return true;
-            }
+        if(this.tokens[this.tokens.length-1].kind === "Newline") {
+            this.tokens.pop();
         }
-        return false;
-    }
-
-    var isAVGReserved = function(word) {
-        for(i in parseTokens.Reserved) {
-            if(parseTokens.Reserved[i] === word) {
-                return true;
-            }
-        }
-        return false;
-    };
-
-    var isECMAReserved = function(word) {
-        for(i in parseTokens.Unused) {
-            if(parseTokens.Unused[i] === word) {
-                return true;
-            }
-        }
-        return false;
+        this.tokens.push({kind: "EndOfFile", lexeme:"@EOF"});
+        return this.tokens;
     };
 };
 var Scanner = {
     scan: scan,
-    parseTokensToStringFull: parseTokensToStringFull
+    parseTokensToStringFull: parseTokensToStringFull,
+    parseTokensToStringPretty: parseTokensToStringPretty,
+    parseTokensToStringBest: parseTokensToStringBest,
+    parseTokensToStringSpacially: parseTokensToStringSpacially
 }
 
 module.exports = Scanner;

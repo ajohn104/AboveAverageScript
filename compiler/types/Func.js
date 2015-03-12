@@ -1,4 +1,4 @@
-// Func            ::= 'func' (Id (',' Id)* )? '->' ('ret'? Exp) | (Indent Block? (Newline 'ret' Exp?)? Dedent)
+// Func            ::= 'func' (Id (',' Id)* )? '->' ('ret'? Exp) | (Indent Block Dedent)
 module.exports = {
     is: function() {
         var indexBefore = index;
@@ -44,18 +44,11 @@ module.exports = {
                 return false;
             }
             debug("Found indent. Checking for Block. index:" + index);
-            expect(Block);
-            debug("Done with Block search. Looking for return statement. index:" + index + ", lexeme: " + parseTokens[index].lexeme);
-            var indexMid = index;
-            if(parseTokens[index].kind === "Newline" && parseTokens[index+1].lexeme === 'ret') {
-                index+=2;
-                debug("Found newline and ret. index:" + index + ", Lexeme: " + parseTokens[index].lexeme);
-                expect(Exp);
-                debug("Found return statement. index:" + index);
-            } else {
-                debug("No newline found or 'ret' found. index:" + index + ", Lexeme: " + parseTokens[index].lexeme);
+            if(!expect(Block)) {
+                index = indexBefore;
+                return false;
             }
-            debug("Done with return statement. Looking for Dedent. index:" + index);
+            debug("Found Block. Looking for Dedent. index:" + index + ", lexeme: " + parseTokens[index].lexeme);
             if(!expect(Dedent)) {
                 index = indexBefore;
                 return false;

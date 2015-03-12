@@ -6,6 +6,7 @@ DeclareStmt = require("./types/DeclareStmt");
 SetStmt = require("./types/SetStmt");
 AssignStmt = require("./types/AssignStmt");
 ConsumeStmt = require("./types/ConsumeStmt");
+ReturnStmt = require("./types/ReturnStmt");
 IfStmt = require("./types/IfStmt");
 Loop = require("./types/Loop");
 WhileLoop = require("./types/WhileLoop");
@@ -88,6 +89,7 @@ var parse = function(tkns, call, err, dbgMode) {
     debugMode = (typeof dbgMode !== "undefined")?(dbgMode):(false);
     debug = debugMode?(function(output){
         console.log(output);
+        
     }):(function(output){});
     var parser = new tokenStreamParser(tkns, call, err);
     return parser.parseProgram();

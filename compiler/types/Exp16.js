@@ -1,4 +1,4 @@
-// Exp16           ::= Exp17 (ArrayCont Call?)* ( ('.' Exp16 Call?)* | (Indent (Newline '.' Exp16 Call?)+ Dedent)) )?
+// Exp16           ::= Exp17 Call? (ArrayCont Call?)* ( ('.' Exp16)* | (Indent (Newline '.' Exp16)+ Dedent)) )?
 module.exports = {
     is: function() {
         var indexBefore = index;
@@ -7,6 +7,8 @@ module.exports = {
             index = indexBefore;
             return false;
         }
+
+        expect(Call);
 
         while(expect(ArrayCont)) {
             expect(Call);
@@ -20,7 +22,6 @@ module.exports = {
                     index = indexBefore;
                     return false;
                 }
-                expect(Call);
             }
         } else if(expect(Indent)) {
             debug("Exp16: found Indent. index:" + index);
@@ -35,61 +36,12 @@ module.exports = {
                     index = indexBefore;
                     return false;
                 }
-                expect(Call);
             }
             if(!expect(Dedent)) {
                 index = indexBefore;
                 return false;
             }
-        }
-        /*var isArrCont = function() {
-            var indexMid = index;
-            if(!expect(ArrayCont)) {
-                index = indexMid;
-                return false;
-            }
-            expect(Call);
-            return true;
-        };
-        var isOneLineProp = function() {
-            var indexMid = index;
-            if(parseTokens[index].lexeme !== '.') return false;
-            while(parseTokens[index].lexeme === '.') {
-                index++;
-                if(!expect(Exp17)) {
-                    index = indexMid;
-                    return false;
-                }
-                expect(Call);
-            }
-            return true;
-        };
-        var isIndentProps = function() {
-            var indexMid = index;
-            if(!expect(Indent)) {
-                index = indexMid;
-                return false;
-            }
-            if(parseTokens[index].lexeme !== "\\n" || parseTokens[index+1].lexeme !== '.') {
-                index = indexMid;
-                return false;
-            }
-            while(expect(Newline) && parseTokens[index].lexeme === '.') {
-                index++;
-                if(!expect(Exp17)) {
-                    index = indexMid;
-                    return false;
-                }
-                expect(Call);
-            }
-            if(!expect(Dedent)) {
-                index = indexMid;
-                return false;
-            }
-            return true;
-        };
-        while(isArrCont() || isOneLineProp() || isIndentProps());*/
-        
+        }        
         debug("Finalizing exp16 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
         return true;
     }

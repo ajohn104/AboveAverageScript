@@ -50,9 +50,13 @@ module.exports = {
             found |= expect(ConsumeStmt);
         } 
         if(!found) {
-            debug("ConsumeStmt failed\nTrying Exp");
-            found |= expect(Exp);
+            debug("ConsumeStmt failed\nTrying ReturnStmt");
+            found |= expect(ReturnStmt);
         } 
+        if(!found) {
+            debug("ReturnStmt failed\nTrying Exp");
+            found |= expect(Exp);
+        }
         if(!found) {
             debug("Exp failed");
         }
