@@ -1,28 +1,28 @@
 // Block           ::= (Newline Stmt)*
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
         
-        debug("Beginning block search. index:" + index + " \n");
+        debug("Beginning block search. envir.index:" + envir.index + " \n");
         debug("Current token:");
-        debug(parseTokens[index]);
+        debug(parseTokens[envir.index]);
         debug("Previous token:");
-        debug(parseTokens[index-1]);
+        debug(parseTokens[envir.index-1]);
         debug('\n');
         
-        var indexMid = index;
-        while(expect(Newline)) {
-            if(!expect(Stmt)) {
+        var indexMid = envir.index;
+        while(at(envir.Newline)) {
+            if(!at(envir.Stmt)) {
                 debug("Block search stopped.\n");
-                index = indexMid;
+                envir.index = indexMid;
                 break;
             }
-            indexMid = index;
+            indexMid = envir.index;
         }
         
-        debug("Ending block search. index:" + index + " \n");
+        debug("Ending block search. envir.index:" + envir.index + " \n");
         debug("Current token is now:");
-        debug(parseTokens[index]);
+        debug(parseTokens[envir.index]);
         debug('\n');
         
         return true;

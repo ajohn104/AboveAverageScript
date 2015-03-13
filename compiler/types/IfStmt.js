@@ -1,88 +1,88 @@
 // IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        if(parseTokens[index].lexeme !== 'if') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== 'if') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
 
-        if(!expect(Exp)) {
-            index = indexBefore;
-            return false;
-        }
-
-        if(parseTokens[index].lexeme !== ':') {
-            index = indexBefore;
-            return false;
-        }
-        index++;
-
-        if(!expect(Indent)) {
-            index = indexBefore;
+        if(!at(envir.Exp)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(!expect(Block)) {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== ':') {
+            envir.index = indexBefore;
+            return false;
+        }
+        envir.index++;
+
+        if(!at(envir.Indent)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(!expect(Dedent)) {
-            index = indexBefore;
+        if(!at(envir.Block)) {
+            envir.index = indexBefore;
             return false;
         }
-        debug("Completed 'if' block. Moving on to elif. index:" + index);
-        while(parseTokens[index].kind === "Newline" && parseTokens[index+1].lexeme === 'elif') {
-            index+=2;
-            if(!expect(Exp)) {
-                index = indexBefore;
+
+        if(!at(envir.Dedent)) {
+            envir.index = indexBefore;
+            return false;
+        }
+        debug("Completed 'if' block. Moving on to elif. envir.index:" + envir.index);
+        while(parseTokens[envir.index].kind === "Newline" && parseTokens[envir.index+1].lexeme === 'elif') {
+            envir.index+=2;
+            if(!at(envir.Exp)) {
+                envir.index = indexBefore;
                 return false;
             }
 
-            if(parseTokens[index].lexeme !== ':') {
-                index = indexBefore;
+            if(parseTokens[envir.index].lexeme !== ':') {
+                envir.index = indexBefore;
                 return false;
             }
-            index++;
+            envir.index++;
 
-            if(!expect(Indent)) {
-                index = indexBefore;
-                return false;
-            }
-
-            if(!expect(Block)) {
-                index = indexBefore;
+            if(!at(envir.Indent)) {
+                envir.index = indexBefore;
                 return false;
             }
 
-            if(!expect(Dedent)) {
-                index = indexBefore;
+            if(!at(envir.Block)) {
+                envir.index = indexBefore;
+                return false;
+            }
+
+            if(!at(envir.Dedent)) {
+                envir.index = indexBefore;
                 return false;
             }
         }
-        debug("Completed 'elif' blocks. Moving on to else. index:" + index);
-        if(parseTokens[index].kind === "Newline" && parseTokens[index+1].lexeme === 'else') {
-            index+=2;
+        debug("Completed 'elif' blocks. Moving on to else. envir.index:" + envir.index);
+        if(parseTokens[envir.index].kind === "Newline" && parseTokens[envir.index+1].lexeme === 'else') {
+            envir.index+=2;
             
-            if(!expect(Indent)) {
-                index = indexBefore;
+            if(!at(envir.Indent)) {
+                envir.index = indexBefore;
                 return false;
             }
 
-            if(!expect(Block)) {
-                index = indexBefore;
+            if(!at(envir.Block)) {
+                envir.index = indexBefore;
                 return false;
             }
 
-            if(!expect(Dedent)) {
-                index = indexBefore;
+            if(!at(envir.Dedent)) {
+                envir.index = indexBefore;
                 return false;
             }
         }
-        debug("Completed 'else' block. Done with IfStmt. index:" + index);
+        debug("Completed 'else' block. Done with IfStmt. envir.index:" + envir.index);
         return true;
     }
 };

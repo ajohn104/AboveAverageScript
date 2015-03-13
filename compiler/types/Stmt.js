@@ -11,51 +11,51 @@
  *               
  */
 module.exports = {
-    is: function() {
+    is: function(at, parseTokens, envir, debug) {
         debug("Beginning statement search with token:");
-        debug(parseTokens[index]);
-        debug("index:" + index + " \n");
+        debug(parseTokens[envir.index]);
+        debug("index:" + envir.index + " \n");
         debug("Trying ObjIndentDecl")
-        var found = expect(ObjIndentDecl);
+        var found = at(envir.ObjIndentDecl);
         if(!found) {
             debug("ObjIndentDecl failed\nTrying ObjIndentAssign");
-            found |= expect(ObjIndentAssign);
+            found |= at(envir.ObjIndentAssign);
         } 
         if(!found) {
             debug("ObjIndentAssign failed\nTrying DeclareStmt");
-            found |= expect(DeclareStmt);
+            found |= at(envir.DeclareStmt);
         } 
         if(!found) {
             debug("DeclareStmt failed\nTrying AssignStmt");
-            found |= expect(AssignStmt);
+            found |= at(envir.AssignStmt);
         } 
         if(!found) {
             debug("AssignStmt failed\nTrying NativeStmt");
-            found |= expect(NativeStmt);
+            found |= at(envir.NativeStmt);
         } 
         if(!found) {
             debug("NativeStmt failed\nTrying SwitchStmt");
-            found |= expect(SwitchStmt);
+            found |= at(envir.SwitchStmt);
         } 
         if(!found) {
             debug("SwitchStmt failed\nTrying Loop");
-            found |= expect(Loop);
+            found |= at(envir.Loop);
         } 
         if(!found) {
             debug("Loop failed\nTrying IfStmt");
-            found |= expect(IfStmt);
+            found |= at(envir.IfStmt);
         }
         if(!found) {
             debug("IfStmt failed\nTrying ConsumeStmt");
-            found |= expect(ConsumeStmt);
+            found |= at(envir.ConsumeStmt);
         } 
         if(!found) {
             debug("ConsumeStmt failed\nTrying ReturnStmt");
-            found |= expect(ReturnStmt);
+            found |= at(envir.ReturnStmt);
         } 
         if(!found) {
             debug("ReturnStmt failed\nTrying Exp");
-            found |= expect(Exp);
+            found |= at(envir.Exp);
         }
         if(!found) {
             debug("Exp failed");
@@ -63,8 +63,8 @@ module.exports = {
 
         debug("Completed statement search. Status: " + found);
         debug("next token to be searched:");
-        debug(parseTokens[index]);
-        debug("index:" + index + " \n");
+        debug(parseTokens[envir.index]);
+        debug("index:" + envir.index + " \n");
         return found;
     }
 };

@@ -1,39 +1,39 @@
 // SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Dedent
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        if(parseTokens[index].lexeme !== 'switch') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== 'switch') {
+            envir.index = indexBefore;
             return false;
         } 
-        index++;
+        envir.index++;
 
-        if(!expect(Exp)) {
-            index = indexBefore;
+        if(!at(envir.Exp)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(parseTokens[index].lexeme !== ':') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== ':') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
 
-        if(!expect(Indent)) {
-            index = indexBefore;
-            return false;
-        }
-
-        if(!expect(Case)) {
-            index = indexBefore;
+        if(!at(envir.Indent)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        while(expect(Case));
+        if(!at(envir.Case)) {
+            envir.index = indexBefore;
+            return false;
+        }
 
-        if(!expect(Dedent)) {
-            index = indexBefore;
+        while(at(envir.Case));
+
+        if(!at(envir.Dedent)) {
+            envir.index = indexBefore;
             return false;
         }
 

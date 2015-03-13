@@ -1,70 +1,70 @@
 // ConsumeStmt     ::= (Exp (',' Exp)*)? '<-' Id (('.' Id)* ArrayCont+ Call?)+
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        expect(Exp);
+        at(envir.Exp);
 
-        while(parseTokens[index].lexeme === ',') {
-            index++;
-            if(!expect(Exp)) {
-                index = indexBefore;
+        while(parseTokens[envir.index].lexeme === ',') {
+            envir.index++;
+            if(!at(envir.Exp)) {
+                envir.index = indexBefore;
                 return false;
             }
         }
-        debug("ConsumeStmt: checking for '<-'. index:" + index + ", lexeme:" + parseTokens[index].lexeme);
-        if(parseTokens[index].lexeme !== '<-') {
-            index = indexBefore;
+        debug("ConsumeStmt: checking for '<-'. envir.index:" + envir.index + ", lexeme:" + parseTokens[envir.index].lexeme);
+        if(parseTokens[envir.index].lexeme !== '<-') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
-        debug("ConsumeStmt: found '<-'. checking for Id. index:" + index + ", lexeme:" + parseTokens[index].lexeme);
-        if(!expect(Id)) {
-            index = indexBefore;
+        envir.index++;
+        debug("ConsumeStmt: found '<-'. checking for Id. envir.index:" + envir.index + ", lexeme:" + parseTokens[envir.index].lexeme);
+        if(!at(envir.Id)) {
+            envir.index = indexBefore;
             return false;
         }
         
-        if(parseTokens[index].lexeme === '.' || expect(ArrayCont)) {
-            if(parseTokens[index].lexeme === '.') {
-                while(parseTokens[index].lexeme === '.') {
-                    index++;
-                    if(!expect(Id)) {
-                        index = indexBefore;
+        if(parseTokens[envir.index].lexeme === '.' || at(envir.ArrayCont)) {
+            if(parseTokens[envir.index].lexeme === '.') {
+                while(parseTokens[envir.index].lexeme === '.') {
+                    envir.index++;
+                    if(!at(envir.Id)) {
+                        envir.index = indexBefore;
                         return false;
                     }
                     
                 }
-                if(!expect(ArrayCont)) {
-                    index = indexBefore;
+                if(!at(envir.ArrayCont)) {
+                    envir.index = indexBefore;
                     return false;
                 }
-                while(expect(ArrayCont));
-                expect(Call);
+                while(at(envir.ArrayCont));
+                at(envir.Call);
             }
         } else {
-            index = indexBefore;
+            envir.index = indexBefore;
             return false;
         }
-        while(parseTokens[index].lexeme === '.' || expect(ArrayCont)) {
-            if(parseTokens[index].lexeme === '.') {
-                while(parseTokens[index].lexeme === '.') {
-                    index++;
-                    if(!expect(Exp16)) {
-                        index = indexBefore;
+        while(parseTokens[envir.index].lexeme === '.' || at(envir.ArrayCont)) {
+            if(parseTokens[envir.index].lexeme === '.') {
+                while(parseTokens[envir.index].lexeme === '.') {
+                    envir.index++;
+                    if(!at(envir.Exp16)) {
+                        envir.index = indexBefore;
                         return false;
                     }
                     
                 }
-                if(!expect(ArrayCont)) {
-                    index = indexBefore;
+                if(!at(envir.ArrayCont)) {
+                    envir.index = indexBefore;
                     return false;
                 }
-                while(expect(ArrayCont));
-                expect(Call);
+                while(at(envir.ArrayCont));
+                at(envir.Call);
             }
         }
         
-        debug("ConsumeStmt: found ArrayCont. index:" + index + ", lexeme:" + parseTokens[index].lexeme);
+        debug("ConsumeStmt: found ArrayCont. envir.index:" + envir.index + ", lexeme:" + parseTokens[envir.index].lexeme);
         return true;
     }
 };

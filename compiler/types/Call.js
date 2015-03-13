@@ -1,73 +1,73 @@
 // Call            ::= '(' ( Exp (',' Exp)* (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? )? Newline? ')'
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
         debug("Starting call test");
-        if(parseTokens[index].lexeme !== '(') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== '(') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
-        debug("Checking for function arguments. index:" + index);
-        if(expect(Exp)) {
-            var indexMid = index;
-            if(parseTokens[index].lexeme === ',') {
-                index++;
-                if(expect(Exp)) {
-                    indexMid = index;
-                    while(parseTokens[index].lexeme === ',') {
-                        index++;
-                        if(!expect(Exp)) {
-                            index = indexMid;
+        envir.index++;
+        debug("Checking for function arguments. envir.index:" + envir.index);
+        if(at(envir.Exp)) {
+            var indexMid = envir.index;
+            if(parseTokens[envir.index].lexeme === ',') {
+                envir.index++;
+                if(at(envir.Exp)) {
+                    indexMid = envir.index;
+                    while(parseTokens[envir.index].lexeme === ',') {
+                        envir.index++;
+                        if(!at(envir.Exp)) {
+                            envir.index = indexMid;
                             break;
                         }
-                        indexMid = index;
+                        indexMid = envir.index;
                     }
                 }
             }
-            if(parseTokens[index].lexeme === ',') {
-                index++;
-                if(!expect(Indent)) {
-                    index = indexMid;
+            if(parseTokens[envir.index].lexeme === ',') {
+                envir.index++;
+                if(!at(envir.Indent)) {
+                    envir.index = indexMid;
                     return false;
                 }
 
-                if(!expect(Newline)) {
-                    index = indexMid;
+                if(!at(envir.Newline)) {
+                    envir.index = indexMid;
                     return false;
                 }
 
-                if(!expect(Exp)) {
-                    index = indexMid;
+                if(!at(envir.Exp)) {
+                    envir.index = indexMid;
                     return false;
                 }
 
-                while(parseTokens[index].kind === "Newline" && parseTokens[index+1].lexeme === ",") {
-                    index+=2;
-                    if(!expect(Exp)) {
-                        index = indexBefore;
+                while(parseTokens[envir.index].kind === "Newline" && parseTokens[envir.index+1].lexeme === ",") {
+                    envir.index+=2;
+                    if(!at(envir.Exp)) {
+                        envir.index = indexBefore;
                         return false;
                     }
                 }
 
-                if(!expect(Dedent)) {
-                    index = indexBefore;
+                if(!at(envir.Dedent)) {
+                    envir.index = indexBefore;
                     return false;
                 }
             }
 
 
         } else {
-            debug("Cannot find any arguments to function. Checking for ')'. index:" + index);
+            debug("Cannot find any arguments to function. Checking for ')'. envir.index:" + envir.index);
         }
 
-        expect(Newline);
+        at(envir.Newline);
 
-        if(parseTokens[index].lexeme !== ')') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== ')') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
         debug("Ending successful call on function: " + parseTokens[indexBefore-1].lexeme);
         return true;
     }

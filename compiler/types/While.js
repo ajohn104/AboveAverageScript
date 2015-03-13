@@ -1,37 +1,37 @@
 // While           ::= 'while' Exp ':' Indent Block Dedent
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
         debug("Checking for while loop");
-        if(parseTokens[index].lexeme !== 'while') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== 'while') {
+            envir.index = indexBefore;
             return false;
         } 
-        index++;
+        envir.index++;
 
-        if(!expect(Exp)) {
-            index = indexBefore;
+        if(!at(envir.Exp)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(parseTokens[index].lexeme !== ':') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== ':') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
 
-        if(!expect(Indent)) {
-            index = indexBefore;
-            return false;
-        }
-
-        if(!expect(Block)) {
-            index = indexBefore;
+        if(!at(envir.Indent)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(!expect(Dedent)) {
-            index = indexBefore;
+        if(!at(envir.Block)) {
+            envir.index = indexBefore;
+            return false;
+        }
+
+        if(!at(envir.Dedent)) {
+            envir.index = indexBefore;
             return false;
         }
 

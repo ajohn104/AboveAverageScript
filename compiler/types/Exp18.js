@@ -1,43 +1,43 @@
 // Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
 module.exports = {
-    is: function() {
-        debug("Starting on exp18. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        debug("Starting on exp18. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        var indexBefore = envir.index;
         var isParenthesizedExpr = false;
-        if(parseTokens[index].lexeme === '(') {
-            index++;
-            if(!expect(Exp)) {
-                index = indexBefore;
+        if(parseTokens[envir.index].lexeme === '(') {
+            envir.index++;
+            if(!at(envir.Exp)) {
+                envir.index = indexBefore;
                 isParenthesizedExpr = false;
             }
-            debug("Found exp within possible ParenthesizedExpr. Looking for ')'. index:" + index);
+            debug("Found exp within possible ParenthesizedExpr. Looking for ')'. envir.index:" + envir.index);
 
-            debug("Checking for newline. index:" + index);
-            if(expect(Newline)) {
-                debug("Found newline. index:" + index);
+            debug("Checking for newline. envir.index:" + envir.index);
+            if(at(envir.Newline)) {
+                debug("Found newline. envir.index:" + envir.index);
             } // I think this is it.
 
-            if(parseTokens[index].lexeme !== ')') {
-                index = indexBefore;
+            if(parseTokens[envir.index].lexeme !== ')') {
+                envir.index = indexBefore;
                 isParenthesizedExpr = false;
             }
-            debug("Found ')'. Completed ParenthesizedExpr. index:" + index);
-            index++;
+            debug("Found ')'. Completed ParenthesizedExpr. envir.index:" + envir.index);
+            envir.index++;
             isParenthesizedExpr = true;
         }
         var found = isParenthesizedExpr
-                 || expect(Id)
-                 || expect(BoolLit)
-                 || expect(IntLit)
-                 || expect(StringLit)
-                 || expect(Func)
-                 || expect(ArrayLit)
-                 || expect(ObjectInline)
-                 || expect(This)
-                 || expect(RegExpLit);
-        var accessIndex = index;
-        if(index === 0) accessIndex = 0;
-        debug("Finalizing exp18, found:" + found + ", index:" + index + ', lexeme: ' + parseTokens[accessIndex].lexeme);
+                 || at(envir.Id)
+                 || at(envir.BoolLit)
+                 || at(envir.IntLit)
+                 || at(envir.StringLit)
+                 || at(envir.Func)
+                 || at(envir.ArrayLit)
+                 || at(envir.ObjectInline)
+                 || at(envir.This)
+                 || at(envir.RegExpLit);
+        var accessIndex = envir.index;
+        if(envir.index === 0) accessIndex = 0;
+        debug("Finalizing exp18, found:" + found + ", envir.index:" + envir.index + ', lexeme: ' + parseTokens[accessIndex].lexeme);
         return found;
     }
 };

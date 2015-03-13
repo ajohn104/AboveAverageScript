@@ -1,21 +1,21 @@
 // Exp3            ::= Exp4 ('or' Exp4)*
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Starting on exp3. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
-        if(!expect(Exp4)) {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Starting on exp3. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        if(!at(envir.Exp4)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        while(parseTokens[index].lexeme === 'or') {
-            index++;
-            if(!expect(Exp4)) {
-                index = indexBefore;
+        while(parseTokens[envir.index].lexeme === 'or') {
+            envir.index++;
+            if(!at(envir.Exp4)) {
+                envir.index = indexBefore;
                 return false;
             }
         }
-        debug("Finalizing exp3 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        debug("Finalizing exp3 success. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
         return true;
     }
 };

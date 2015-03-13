@@ -1,5 +1,5 @@
-LineByLineReader = require('line-by-line');
-Tokens = require('./tokens');
+var LineByLineReader = require('line-by-line');
+var Tokens = require('./tokens');
 
 var scan = function(file, callback, error) {
     reader = new LineByLineReader(file, {encoding: 'utf8'});

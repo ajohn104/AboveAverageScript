@@ -1,13 +1,13 @@
 // AddOp           ::= '+' | '-'
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
         var ops = ['+', '-'];
-        if(ops.indexOf(parseTokens[index].lexeme) === -1) {
-            index = indexBefore;
+        if(ops.indexOf(parseTokens[envir.index].lexeme) === -1) {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
 
         return true;
     }

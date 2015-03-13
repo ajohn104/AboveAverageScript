@@ -1,48 +1,48 @@
 // Exp16           ::= Exp17 Call? (ArrayCont Call?)* ( ('.' Exp16)* | (Indent (Newline '.' Exp16)+ Dedent)) )?
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Starting on exp16. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
-        if(!expect(Exp17)) {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Starting on exp16. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        if(!at(envir.Exp17)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        expect(Call);
+        at(envir.Call);
 
-        while(expect(ArrayCont)) {
-            expect(Call);
+        while(at(envir.ArrayCont)) {
+            at(envir.Call);
         }
 
-        if(parseTokens[index].lexeme === '.') {
-            while(parseTokens[index].lexeme === '.') {
-                debug("Exp16: found '.' operator. index:" + index);
-                index++;
-                if(!expect(Exp16)) {
-                    index = indexBefore;
+        if(parseTokens[envir.index].lexeme === '.') {
+            while(parseTokens[envir.index].lexeme === '.') {
+                debug("Exp16: found '.' operator. envir.index:" + envir.index);
+                envir.index++;
+                if(!at(envir.Exp16)) {
+                    envir.index = indexBefore;
                     return false;
                 }
             }
-        } else if(expect(Indent)) {
-            debug("Exp16: found Indent. index:" + index);
-            if(parseTokens[index].lexeme !== '\\n' || parseTokens[index+1].lexeme !== '.') {
-                index = indexBefore;
+        } else if(at(envir.Indent)) {
+            debug("Exp16: found Indent. envir.index:" + envir.index);
+            if(parseTokens[envir.index].lexeme !== '\\n' || parseTokens[envir.index+1].lexeme !== '.') {
+                envir.index = indexBefore;
                 return false;
             }
-            while(parseTokens[index].lexeme === '\\n' && parseTokens[index+1].lexeme === '.') {
-                index+=2;
-                debug("Exp16: found Newline and '.' operator. index:" + index + ", lexeme: " + parseTokens[index].lexeme);
-                if(!expect(Exp16)) {
-                    index = indexBefore;
+            while(parseTokens[envir.index].lexeme === '\\n' && parseTokens[envir.index+1].lexeme === '.') {
+                envir.index+=2;
+                debug("Exp16: found Newline and '.' operator. envir.index:" + envir.index + ", lexeme: " + parseTokens[envir.index].lexeme);
+                if(!at(envir.Exp16)) {
+                    envir.index = indexBefore;
                     return false;
                 }
             }
-            if(!expect(Dedent)) {
-                index = indexBefore;
+            if(!at(envir.Dedent)) {
+                envir.index = indexBefore;
                 return false;
             }
         }        
-        debug("Finalizing exp16 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        debug("Finalizing exp16 success. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
         return true;
     }
 };

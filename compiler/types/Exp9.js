@@ -1,20 +1,20 @@
 // Exp9            ::= Exp10 (CompareOp Exp10)*
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Starting on exp9. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
-        if(!expect(Exp10)) {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Starting on exp9. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        if(!at(envir.Exp10)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        while(expect(CompareOp)) {
-            if(!expect(Exp10)) {
-                index = indexBefore;
+        while(at(envir.CompareOp)) {
+            if(!at(envir.Exp10)) {
+                envir.index = indexBefore;
                 return false;
             }
         }
-        debug("Finalizing exp9 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        debug("Finalizing exp9 success. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
         return true;
     }
 };

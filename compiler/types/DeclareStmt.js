@@ -1,48 +1,48 @@
 // DeclareStmt     ::= 'let' SetStmt ( ',' Indent Newline SetStmt (',' Newline SetStmt)* Dedent )?
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
         /*debug("looking for let");
         debug("have a:");
-        debug(parseTokens[index]);*/
-        if(parseTokens[index].lexeme !== 'let') {
-            index = indexBefore;
+        debug(parseTokens[envir.index]);*/
+        if(parseTokens[envir.index].lexeme !== 'let') {
+            envir.index = indexBefore;
             return false;
         } 
-        index++;
-        debug("DeclareStmt: found 'let'. index:" + index);
+        envir.index++;
+        debug("DeclareStmt: found 'let'. envir.index:" + envir.index);
 
-        if(!expect(SetStmt)) {
-            index = indexBefore;
+        if(!at(envir.SetStmt)) {
+            envir.index = indexBefore;
             return false;
         }
-        if(parseTokens[index].lexeme === ',') {
-            index++;
-            if(!expect(Indent)) {
-                index = indexBefore;
+        if(parseTokens[envir.index].lexeme === ',') {
+            envir.index++;
+            if(!at(envir.Indent)) {
+                envir.index = indexBefore;
                 return false;
             }
-            if(!expect(Newline)) {
-                index = indexBefore;
+            if(!at(envir.Newline)) {
+                envir.index = indexBefore;
                 return false;
             }
-            if(!expect(SetStmt)) {
-                index = indexBefore;
+            if(!at(envir.SetStmt)) {
+                envir.index = indexBefore;
                 return false;
             }
-            while(parseTokens[index].lexeme === ',') {
-                index++;
-                if(!expect(Newline)) {
-                    index = indexBefore;
+            while(parseTokens[envir.index].lexeme === ',') {
+                envir.index++;
+                if(!at(envir.Newline)) {
+                    envir.index = indexBefore;
                     return false;
                 }
-                if(!expect(SetStmt)) {
-                    index = indexBefore;
+                if(!at(envir.SetStmt)) {
+                    envir.index = indexBefore;
                     return false;
                 }
             }
-            if(!expect(Dedent)) {
-                index = indexBefore;
+            if(!at(envir.Dedent)) {
+                envir.index = indexBefore;
                 return false;
             }
         }

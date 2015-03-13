@@ -1,9 +1,9 @@
 // BoolLit         ::= 'true' | 'false'
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        if(parseTokens[index].lexeme === 'true' || parseTokens[index].lexeme === 'false') {
-            index++;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        if(parseTokens[envir.index].lexeme === 'true' || parseTokens[envir.index].lexeme === 'false') {
+            envir.index++;
             return true;
         }
         

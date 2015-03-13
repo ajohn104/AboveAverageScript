@@ -1,14 +1,14 @@
 // ReturnStmt      ::= 'ret' Exp?
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        if(parseTokens[index].lexeme !== 'ret') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== 'ret') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
-        expect(Exp);
+        envir.index++;
+        at(envir.Exp);
         return true;
     }
 };

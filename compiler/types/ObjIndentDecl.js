@@ -1,18 +1,18 @@
 // ObjIndentDecl   ::= 'let' ObjIndentAssign
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        if(parseTokens[index].lexeme !== 'let') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== 'let') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
-        debug("ObjIndentDecl: found 'let', index: " + index );
+        envir.index++;
+        debug("ObjIndentDecl: found 'let', envir.index: " + envir.index );
         debug("ObjIndentDecl: checking for ObjIndentAssign");
-        if(!expect(ObjIndentAssign)) {
-            index = indexBefore;
-            debug("ObjIndentDecl: cannot find '=', index: " + index );
+        if(!at(envir.ObjIndentAssign)) {
+            envir.index = indexBefore;
+            debug("ObjIndentDecl: cannot find '=', envir.index: " + envir.index );
             return false;
         }
         return true;

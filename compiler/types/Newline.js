@@ -1,12 +1,12 @@
 // Newline         ::= '\n'
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        if(parseTokens[index].lexeme !== '\\n') {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        if(parseTokens[envir.index].lexeme !== '\\n') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
         return true;
     }
 };

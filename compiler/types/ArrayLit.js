@@ -1,17 +1,17 @@
 // ArrayLit        ::= ('[' ']') | ArrayCont
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        if(parseTokens[index].lexeme === '[') {
-            index++;
-            if(parseTokens[index].lexeme === ']') {
-                index++;
+        if(parseTokens[envir.index].lexeme === '[') {
+            envir.index++;
+            if(parseTokens[envir.index].lexeme === ']') {
+                envir.index++;
                 return true;
             }
-            index = indexBefore;
+            envir.index = indexBefore;
         }
 
-        return expect(ArrayCont);
+        return at(envir.ArrayCont);
     }
 };

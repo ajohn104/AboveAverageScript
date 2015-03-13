@@ -1,21 +1,21 @@
 // Exp6            ::= Exp7 ('^' Exp7)*
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Starting on exp6. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
-        if(!expect(Exp7)) {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Starting on exp6. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        if(!at(envir.Exp7)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        while(parseTokens[index].lexeme === '^') {
-            index++;
-            if(!expect(Exp7)) {
-                index = indexBefore;
+        while(parseTokens[envir.index].lexeme === '^') {
+            envir.index++;
+            if(!at(envir.Exp7)) {
+                envir.index = indexBefore;
                 return false;
             }
         }
-        debug("Finalizing exp6 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        debug("Finalizing exp6 success. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
         return true;
     }
 };

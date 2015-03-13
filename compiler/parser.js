@@ -1,89 +1,76 @@
-Block = require('./types/Block');          
-Stmt = require("./types/Stmt");
-ObjIndentDecl = require("./types/ObjIndentDecl");
-ObjIndentAssign = require("./types/ObjIndentAssign");
-DeclareStmt = require("./types/DeclareStmt");
-SetStmt = require("./types/SetStmt");
-AssignStmt = require("./types/AssignStmt");
-ConsumeStmt = require("./types/ConsumeStmt");
-ReturnStmt = require("./types/ReturnStmt");
-IfStmt = require("./types/IfStmt");
-Loop = require("./types/Loop");
-WhileLoop = require("./types/WhileLoop");
-DoWhile = require("./types/DoWhile");
-While = require("./types/While");
-ForLoop = require("./types/ForLoop");
-ForIn = require("./types/ForIn");
-ForColon = require("./types/ForColon");
-For = require("./types/For");
-SwitchStmt = require("./types/SwitchStmt");
-Case = require("./types/Case");
-NativeStmt = require("./types/NativeStmt");
-Exp = require("./types/Exp");
-Exp1 = require("./types/Exp1");
-Exp2 = require("./types/Exp2");
-Exp3 = require("./types/Exp3");
-Exp4 = require("./types/Exp4");
-Exp5 = require("./types/Exp5");
-Exp6 = require("./types/Exp6");
-Exp7 = require("./types/Exp7");
-Exp8 = require("./types/Exp8");
-Exp9 = require("./types/Exp9");
-Exp10 = require("./types/Exp10");
-Exp11 = require("./types/Exp11");
-Exp12 = require("./types/Exp12");
-Exp13 = require("./types/Exp13");
-Exp14 = require("./types/Exp14");
-Exp15 = require("./types/Exp15");
-Exp16 = require("./types/Exp16");
-Exp17 = require("./types/Exp17");
-Exp18 = require("./types/Exp18");
-BoolLit = require("./types/BoolLit");
-IntLit = require("./types/IntLit");
-StringLit = require("./types/StringLit");
-Func = require("./types/Func");
-ObjectInline = require("./types/ObjectInline");
-Property = require("./types/Property");
-ArrayLit = require("./types/ArrayLit");
-ArrayCont = require("./types/ArrayCont");
-AssignOp = require("./types/AssignOp");
-EqualOp = require("./types/EqualOp");
-CompareOp = require("./types/CompareOp");
-ShiftOp = require("./types/ShiftOp");
-AddOp = require("./types/AddOp");
-MulOp = require("./types/MulOp");
-PrefixOp = require("./types/PrefixOp");
-PostfixOp = require("./types/PostfixOp");
-Call = require("./types/Call");
-Id = require("./types/Id");
-This = require("./types/This");
-Newline = require("./types/Newline");
-Indent = require("./types/Indent");
-Dedent = require("./types/Dedent");
-RegExpLit = require("./types/RegExpLit");
-EndOfFile = require("./types/EndOfFile");
-ObjIndentPropAssign = require("./types/ObjIndentPropAssign");
+var envir = {};
+envir.Block = require('./types/Block');          
+envir.Stmt = require("./types/Stmt");
+envir.ObjIndentDecl = require("./types/ObjIndentDecl");
+envir.ObjIndentAssign = require("./types/ObjIndentAssign");
+envir.DeclareStmt = require("./types/DeclareStmt");
+envir.SetStmt = require("./types/SetStmt");
+envir.AssignStmt = require("./types/AssignStmt");
+envir.ConsumeStmt = require("./types/ConsumeStmt");
+envir.ReturnStmt = require("./types/ReturnStmt");
+envir.IfStmt = require("./types/IfStmt");
+envir.Loop = require("./types/Loop");
+envir.WhileLoop = require("./types/WhileLoop");
+envir.DoWhile = require("./types/DoWhile");
+envir.While = require("./types/While");
+envir.ForLoop = require("./types/ForLoop");
+envir.ForIn = require("./types/ForIn");
+envir.ForColon = require("./types/ForColon");
+envir.For = require("./types/For");
+envir.SwitchStmt = require("./types/SwitchStmt");
+envir.Case = require("./types/Case");
+envir.NativeStmt = require("./types/NativeStmt");
+envir.Exp = require("./types/Exp");
+envir.Exp1 = require("./types/Exp1");
+envir.Exp2 = require("./types/Exp2");
+envir.Exp3 = require("./types/Exp3");
+envir.Exp4 = require("./types/Exp4");
+envir.Exp5 = require("./types/Exp5");
+envir.Exp6 = require("./types/Exp6");
+envir.Exp7 = require("./types/Exp7");
+envir.Exp8 = require("./types/Exp8");
+envir.Exp9 = require("./types/Exp9");
+envir.Exp10 = require("./types/Exp10");
+envir.Exp11 = require("./types/Exp11");
+envir.Exp12 = require("./types/Exp12");
+envir.Exp13 = require("./types/Exp13");
+envir.Exp14 = require("./types/Exp14");
+envir.Exp15 = require("./types/Exp15");
+envir.Exp16 = require("./types/Exp16");
+envir.Exp17 = require("./types/Exp17");
+envir.Exp18 = require("./types/Exp18");
+envir.BoolLit = require("./types/BoolLit");
+envir.IntLit = require("./types/IntLit");
+envir.StringLit = require("./types/StringLit");
+envir.Func = require("./types/Func");
+envir.ObjectInline = require("./types/ObjectInline");
+envir.Property = require("./types/Property");
+envir.ArrayLit = require("./types/ArrayLit");
+envir.ArrayCont = require("./types/ArrayCont");
+envir.AssignOp = require("./types/AssignOp");
+envir.EqualOp = require("./types/EqualOp");
+envir.CompareOp = require("./types/CompareOp");
+envir.ShiftOp = require("./types/ShiftOp");
+envir.AddOp = require("./types/AddOp");
+envir.MulOp = require("./types/MulOp");
+envir.PrefixOp = require("./types/PrefixOp");
+envir.PostfixOp = require("./types/PostfixOp");
+envir.Call = require("./types/Call");
+envir.Id = require("./types/Id");
+envir.This = require("./types/This");
+envir.Newline = require("./types/Newline");
+envir.Indent = require("./types/Indent");
+envir.Dedent = require("./types/Dedent");
+envir.RegExpLit = require("./types/RegExpLit");
+envir.EndOfFile = require("./types/EndOfFile");
+envir.ObjIndentPropAssign = require("./types/ObjIndentPropAssign");
 
-parseTokens = [];
-index = 0;
-parseCont = true;
-expect = function(type) {
-    return type.is();
-};
-check = function(isExpected) {
-    if(isExpected) {
-        parseCont = true;
-    } else {
-        error(parseTokens[index]);
-        parseCont = false;
-    }
-};
 
-callback = undefined;
-error = undefined;
+var callback = undefined;
+var error = undefined;
 var debugMode = false;
 
-debug = null;
+var debug = null;
 
 var parse = function(tkns, call, err, dbgMode) {
     debugMode = (typeof dbgMode !== "undefined")?(dbgMode):(false);
@@ -96,22 +83,29 @@ var parse = function(tkns, call, err, dbgMode) {
 };
 
 var tokenStreamParser = function(tkns, call, err) {
-    parseTokens = tkns;
     callback = call;
     error = err;
+
+    var parseTokens = tkns;
+    envir.index = 0;
+
+    var at = function(type) {
+        return type.is(at, parseTokens, envir, debug);
+    };
+
     this.parseProgram = function() {
-        if(!expect(Stmt)) {
-            error(parseTokens[index]);
+        if(!at(envir.Stmt)) {
+            error(parseTokens[envir.index]);
             return false;
         }
-        if(!expect(Block)) {
-            error(parseTokens[index]);
+        if(!at(envir.Block)) {
+            error(parseTokens[envir.index]);
             return false;
         };
         debug("End of program block");
         
-        if(!expect(EndOfFile)) {
-            error(parseTokens[index]);
+        if(!at(envir.EndOfFile)) {
+            error(parseTokens[envir.index]);
             return false
         }
         return true;

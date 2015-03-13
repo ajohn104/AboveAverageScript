@@ -1,12 +1,12 @@
 // Indent          ::= '\i'
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        if(parseTokens[index].lexeme !== '\\i') {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        if(parseTokens[envir.index].lexeme !== '\\i') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
         return true;
     }
 };

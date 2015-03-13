@@ -1,62 +1,62 @@
 // Func            ::= 'func' (Id (',' Id)* )? '->' ('ret'? Exp) | (Indent Block Dedent)
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Beginning func testing. index:" + index);
-        if(parseTokens[index].lexeme !== 'func') {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Beginning func testing. envir.index:" + envir.index);
+        if(parseTokens[envir.index].lexeme !== 'func') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
-        debug("Found 'func', looking for parameters. index:" + index);
-        if(expect(Id)) {
-            debug("Found Id. Checking for ','. index:" + index);
-            while(parseTokens[index].lexeme === ',') {
-                index++;
-                debug("Found ','. Looking for Id. index:" + index);
-                if(!expect(Id)) {
-                    index = indexBefore;
+        envir.index++;
+        debug("Found 'func', looking for parameters. envir.index:" + envir.index);
+        if(at(envir.Id)) {
+            debug("Found Id. Checking for ','. envir.index:" + envir.index);
+            while(parseTokens[envir.index].lexeme === ',') {
+                envir.index++;
+                debug("Found ','. Looking for Id. envir.index:" + envir.index);
+                if(!at(envir.Id)) {
+                    envir.index = indexBefore;
                     return false;
                 }
-                debug("Found Id. Looking for ','. index:" + index);
+                debug("Found Id. Looking for ','. envir.index:" + envir.index);
             }
         }
-        debug("End of parameters. Looking for '->'. index:" + index);
-        if(parseTokens[index].lexeme !== '->') {
-            index = indexBefore;
+        debug("End of parameters. Looking for '->'. envir.index:" + envir.index);
+        if(parseTokens[envir.index].lexeme !== '->') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
-        debug("Found '->'. Looking for single line 'ret'. index:" + index);
-        if(parseTokens[index].lexeme === 'ret') {
-            index++;
-            if(!expect(Exp)) {
-                index = indexBefore;
+        envir.index++;
+        debug("Found '->'. Looking for single line 'ret'. envir.index:" + envir.index);
+        if(parseTokens[envir.index].lexeme === 'ret') {
+            envir.index++;
+            if(!at(envir.Exp)) {
+                envir.index = indexBefore;
                 return false;
             }
-        } else if(expect(Exp)) {
-            debug("Single line 'ret' not found. Instead found Single line Exp. index:" + index);
+        } else if(at(envir.Exp)) {
+            debug("Single line 'ret' not found. Instead found Single line Exp. envir.index:" + envir.index);
             ; // Just let it fall through
         } else {
-            debug("Not single line. checking for indent. index:" + index);
-            if(!expect(Indent)) {
-                index = indexBefore;
+            debug("Not single line. checking for indent. envir.index:" + envir.index);
+            if(!at(envir.Indent)) {
+                envir.index = indexBefore;
                 return false;
             }
-            debug("Found indent. Checking for Block. index:" + index);
-            if(!expect(Block)) {
-                index = indexBefore;
+            debug("Found indent. Checking for Block. envir.index:" + envir.index);
+            if(!at(envir.Block)) {
+                envir.index = indexBefore;
                 return false;
             }
-            debug("Found Block. Looking for Dedent. index:" + index + ", lexeme: " + parseTokens[index].lexeme);
-            if(!expect(Dedent)) {
-                index = indexBefore;
+            debug("Found Block. Looking for Dedent. envir.index:" + envir.index + ", lexeme: " + parseTokens[envir.index].lexeme);
+            if(!at(envir.Dedent)) {
+                envir.index = indexBefore;
                 return false;
             }
-            debug("Successful end of function. index:" + index + " \n");
+            debug("Successful end of function. envir.index:" + envir.index + " \n");
         }
-        debug("Finalizing function success. index:" + index);
-        debug(parseTokens[index]);
+        debug("Finalizing function success. envir.index:" + envir.index);
+        debug(parseTokens[envir.index]);
         debug('\n');
         return true;
     }

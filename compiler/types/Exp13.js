@@ -1,15 +1,15 @@
 // Exp13           ::= PrefixOp? Exp14
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Starting on exp13. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
-        expect(PrefixOp);
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Starting on exp13. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        at(envir.PrefixOp);
 
-        if(!expect(Exp14)) {
-            index = indexBefore;
+        if(!at(envir.Exp14)) {
+            envir.index = indexBefore;
             return false;
         }
-        debug("Finalizing exp13 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        debug("Finalizing exp13 success. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
         return true;
     }
 };

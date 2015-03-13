@@ -1,13 +1,13 @@
 // NativeStmt      ::= '***native***'
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        if(parseTokens[index].lexeme !== '***native***') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== '***native***') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
 
         return true;
     }

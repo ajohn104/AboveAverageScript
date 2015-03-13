@@ -1,28 +1,28 @@
 // Exp1            ::= Exp2 ('if' Exp2 ('else' Exp2)?)?
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Starting on exp1. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
-        if(!expect(Exp2)) {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Starting on exp1. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        if(!at(envir.Exp2)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(parseTokens[index].lexeme === 'if') {
-            index++;
-            if(!expect(Exp2)) {
-                index = indexBefore;
+        if(parseTokens[envir.index].lexeme === 'if') {
+            envir.index++;
+            if(!at(envir.Exp2)) {
+                envir.index = indexBefore;
                 return false;
             }
-            if(parseTokens[index].lexeme === 'else') {
-                index++;
-                if(!expect(Exp2)) {
-                    index = indexBefore;
+            if(parseTokens[envir.index].lexeme === 'else') {
+                envir.index++;
+                if(!at(envir.Exp2)) {
+                    envir.index = indexBefore;
                     return false;
                 }
             }
         }
-        debug("Finalizing exp1 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        debug("Finalizing exp1 success. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
         return true;
     }
 };

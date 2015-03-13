@@ -1,8 +1,8 @@
 // WhileLoop       ::= DoWhile | While
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        return expect(DoWhile) || expect(While);
+        return at(envir.DoWhile) || at(envir.While);
     }
 };

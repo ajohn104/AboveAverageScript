@@ -1,0 +1,22 @@
+{
+  "name": "aboveaveragescript",
+  "version": "0.0.0",
+  "author": "aljo",
+  "description": "Ever so slightly above average",
+  "keywords": ["aboveaverage", "average"],
+  "bugs": "ajohn104@lion.lmu.edu",
+  "contributors":"aljo",
+  "repository":"https://github.com/ajohn104/AboveAverageScript/tree/master/compiler",
+  "engines":{ "node": ">=0.10.32"},
+  "dependencies": {
+    "underscore": "^1.8.2",
+    "line-by-line": "^0.1.3"
+  },
+  "devDependencies": {
+    "chai": "~1.10.0",
+    "mocha": "^2.1.0"
+  },
+  "scripts": {
+    "test": "mocha ./tests/ --recursive"
+  }
+}

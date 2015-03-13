@@ -1,20 +1,20 @@
 // Exp10           ::= Exp11 (ShiftOp Exp11)*
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Starting on exp10. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
-        if(!expect(Exp11)) {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Starting on exp10. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        if(!at(envir.Exp11)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        while(expect(ShiftOp)) {
-            if(!expect(Exp11)) {
-                index = indexBefore;
+        while(at(envir.ShiftOp)) {
+            if(!at(envir.Exp11)) {
+                envir.index = indexBefore;
                 return false;
             }
         }
-        debug("Finalizing exp10 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        debug("Finalizing exp10 success. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
         return true;
     }
 };

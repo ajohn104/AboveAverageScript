@@ -1,47 +1,47 @@
 // DoWhile         ::= 'do' Indent Block Dedent Newline 'while' Exp
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        if(parseTokens[index].lexeme !== 'do') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== 'do') {
+            envir.index = indexBefore;
             return false;
         } 
-        index++;
+        envir.index++;
 
-        if(!expect(Indent)) {
-            index = indexBefore;
+        if(!at(envir.Indent)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(!expect(Block)) {
-            index = indexBefore;
+        if(!at(envir.Block)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(!expect(Block)) {
-            index = indexBefore;
+        if(!at(envir.Block)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(!expect(Dedent)) {
-            index = indexBefore;
+        if(!at(envir.Dedent)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(!expect(Newline)) {
-            index = indexBefore;
+        if(!at(envir.Newline)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(parseTokens[index].lexeme !== 'while') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== 'while') {
+            envir.index = indexBefore;
             return false;
         } 
-        index++;
+        envir.index++;
 
-        if(!expect(Exp)) {
-            index = indexBefore;
+        if(!at(envir.Exp)) {
+            envir.index = indexBefore;
             return false;
         }
 

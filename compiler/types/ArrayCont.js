@@ -1,58 +1,58 @@
 // ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) ']'
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        if(parseTokens[index].lexeme !== '[') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== '[') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
 
-        if(expect(Exp)) {
-            while(parseTokens[index].lexeme === ',') {
-                index++;
-                if(!expect(Exp)) {
-                    index = indexBefore;
+        if(at(envir.Exp)) {
+            while(parseTokens[envir.index].lexeme === ',') {
+                envir.index++;
+                if(!at(envir.Exp)) {
+                    envir.index = indexBefore;
                     return false;
                 }
             }
-        } else if(expect(Indent)) {
-            if(!expect(Newline)) {
-                index = indexBefore;
+        } else if(at(envir.Indent)) {
+            if(!at(envir.Newline)) {
+                envir.index = indexBefore;
                 return false;
             }
             
-            if(!expect(Exp)) {
-                index = indexBefore;
+            if(!at(envir.Exp)) {
+                envir.index = indexBefore;
                 return false;
             }
-            while(parseTokens[index].lexeme === ',') {
-                index++;
-                expect(Newline);
-                if(!expect(Exp)) {
-                    index = indexBefore;
+            while(parseTokens[envir.index].lexeme === ',') {
+                envir.index++;
+                at(envir.Newline);
+                if(!at(envir.Exp)) {
+                    envir.index = indexBefore;
                     return false;
                 }
             }
-            if(!expect(Dedent)) {
-                index = indexBefore;
+            if(!at(envir.Dedent)) {
+                envir.index = indexBefore;
                 return false;
             }
 
-            if(!expect(Newline)) {
-                index = indexBefore;
+            if(!at(envir.Newline)) {
+                envir.index = indexBefore;
                 return false;
             }
         } else {
-            index = indexBefore;
+            envir.index = indexBefore;
             return false;
         }
-        if(parseTokens[index].lexeme !== ']') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== ']') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
         return true;
     }
 };

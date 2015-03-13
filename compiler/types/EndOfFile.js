@@ -1,13 +1,13 @@
 // EOF             ::= '@EOF'
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
         debug("At of of file");
-        if(parseTokens[index].kind !== 'EndOfFile') {
-            index = indexBefore;
+        if(parseTokens[envir.index].kind !== 'EndOfFile') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
 
         return true;
     }

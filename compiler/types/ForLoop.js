@@ -1,31 +1,31 @@
 // ForLoop         ::= (ForIn | ForColon | For) ':' Indent Block Dedent
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        if(!expect(ForIn) && !expect(ForColon) && !expect(For)) {
-            index = indexBefore;
+        if(!at(envir.ForIn) && !at(envir.ForColon) && !at(envir.For)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(parseTokens[index].lexeme !== ':') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== ':') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
+        envir.index++;
 
-        if(!expect(Indent)) {
-            index = indexBefore;
-            return false;
-        }
-
-        if(!expect(Block)) {
-            index = indexBefore;
+        if(!at(envir.Indent)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(!expect(Dedent)) {
-            index = indexBefore;
+        if(!at(envir.Block)) {
+            envir.index = indexBefore;
+            return false;
+        }
+
+        if(!at(envir.Dedent)) {
+            envir.index = indexBefore;
             return false;
         }
 

@@ -1,24 +1,24 @@
 // Exp17           ::= Exp18
 // removed: ('.' Exp16 Call?)*
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Starting on exp17. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
-        if(!expect(Exp18)) {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Starting on exp17. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        if(!at(envir.Exp18)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        /*while(parseTokens[index].lexeme === '.') {
-            index++;
-            if(!expect(Exp16)) {
-                index = indexBefore;
+        /*while(parseTokens[envir.index].lexeme === '.') {
+            envir.index++;
+            if(!at(Exp16)) {
+                envir.index = indexBefore;
                 return false;
             }
 
-            expect(Call);
+            at(Call);
         }*/
-        debug("Finalizing exp17 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        debug("Finalizing exp17 success. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
         return true;
     }
 };

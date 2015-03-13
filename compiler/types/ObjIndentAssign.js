@@ -1,61 +1,61 @@
 // ObjIndentAssign ::= Exp '=' Indent (Newline (Property|ObjIndentPropAssign) )+ Dedent
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("ObjIndentAssign: checking for Exp, index: " + index );
-        if(!expect(Exp)) {
-            index = indexBefore;
-            debug("ObjIndentAssign: cannot find Exp, index: " + index );
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("ObjIndentAssign: checking for Exp, envir.index: " + envir.index );
+        if(!at(envir.Exp)) {
+            envir.index = indexBefore;
+            debug("ObjIndentAssign: cannot find Exp, envir.index: " + envir.index );
             return false;
         }
-        debug("ObjIndentAssign: found Exp, index: " + index );
-        debug("ObjIndentAssign: checking for '=', index: " + index );
-        if(parseTokens[index].lexeme !== '=') {
-            index = indexBefore;
-            debug("ObjIndentAssign: cannot find '=', index: " + index );
+        debug("ObjIndentAssign: found Exp, envir.index: " + envir.index );
+        debug("ObjIndentAssign: checking for '=', envir.index: " + envir.index );
+        if(parseTokens[envir.index].lexeme !== '=') {
+            envir.index = indexBefore;
+            debug("ObjIndentAssign: cannot find '=', envir.index: " + envir.index );
             return false;
         }
-        index++;
-        debug("ObjIndentAssign: found '=', index: " + index );
-        debug("ObjIndentAssign: checking for Indent, index: " + index );
-        if(!expect(Indent)) {
-            index = indexBefore;
-            debug("ObjIndentAssign: cannot find Indent, index: " + index );
+        envir.index++;
+        debug("ObjIndentAssign: found '=', envir.index: " + envir.index );
+        debug("ObjIndentAssign: checking for Indent, envir.index: " + envir.index );
+        if(!at(envir.Indent)) {
+            envir.index = indexBefore;
+            debug("ObjIndentAssign: cannot find Indent, envir.index: " + envir.index );
             return false;
         }
-        debug("ObjIndentAssign: found Indent, index: " + index );
-        debug("ObjIndentAssign: checking for Newline, index: " + index );
-        if(!expect(Newline)) {
-            index = indexBefore;
-            debug("ObjIndentAssign: cannot find Newline, index: " + index );
+        debug("ObjIndentAssign: found Indent, envir.index: " + envir.index );
+        debug("ObjIndentAssign: checking for Newline, envir.index: " + envir.index );
+        if(!at(envir.Newline)) {
+            envir.index = indexBefore;
+            debug("ObjIndentAssign: cannot find Newline, envir.index: " + envir.index );
             return false;
         }
-        var midIndex = index;
+        var midIndex = envir.index;
         do {
-            debug("ObjIndentAssign: found Newline, index: " + index );
-            debug("ObjIndentAssign: checking for Property, index: " + index );
-            if(expect(Property)) {
+            debug("ObjIndentAssign: found Newline, envir.index: " + envir.index );
+            debug("ObjIndentAssign: checking for Property, envir.index: " + envir.index );
+            if(at(envir.Property)) {
                 // do nothing
-                debug("ObjIndentAssign: found Property, index: " + index );
-            } else if(expect(ObjIndentPropAssign)) {
+                debug("ObjIndentAssign: found Property, envir.index: " + envir.index );
+            } else if(at(envir.ObjIndentPropAssign)) {
                 // do nothing
-                debug("ObjIndentAssign: found ObjIndentPropAssign, index: " + index);
+                debug("ObjIndentAssign: found ObjIndentPropAssign, envir.index: " + envir.index);
             } else {
                 debug("Could not find property.");
-                index = midIndex;
+                envir.index = midIndex;
             }
-            midIndex = index;
-            debug("ObjIndentAssign: found Property, index: " + index );
-            debug("ObjIndentAssign: checking for Newline, index: " + index );
-        } while(expect(Newline));
-        debug("ObjIndentAssign: cannot find Newline. End of properties, index: " + index );
-        debug("ObjIndentAssign: checking for Dedent, index: " + index );
-        if(!expect(Dedent)) {
-            index = indexBefore;
-            debug("ObjIndentAssign: cannot find Dedent, index: " + index );
+            midIndex = envir.index;
+            debug("ObjIndentAssign: found Property, envir.index: " + envir.index );
+            debug("ObjIndentAssign: checking for Newline, envir.index: " + envir.index );
+        } while(at(envir.Newline));
+        debug("ObjIndentAssign: cannot find Newline. End of properties, envir.index: " + envir.index );
+        debug("ObjIndentAssign: checking for Dedent, envir.index: " + envir.index );
+        if(!at(envir.Dedent)) {
+            envir.index = indexBefore;
+            debug("ObjIndentAssign: cannot find Dedent, envir.index: " + envir.index );
             return false;
         }
-        debug("ObjIndentAssign: found Dedent. Completed. index: " + index );
+        debug("ObjIndentAssign: found Dedent. Completed. envir.index: " + envir.index );
         return true;
     }
 };

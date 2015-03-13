@@ -1,29 +1,29 @@
 // ForColon        ::= 'for' Id ':' Exp
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Starting for-colon. index:" + index);
-        if(parseTokens[index].lexeme !== 'for') {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Starting for-colon. envir.index:" + envir.index);
+        if(parseTokens[envir.index].lexeme !== 'for') {
+            envir.index = indexBefore;
             return false;
         } 
-        index++;
+        envir.index++;
 
-        if(!expect(Id)) {
-            index = indexBefore;
+        if(!at(envir.Id)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        if(parseTokens[index].lexeme !== ':') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== ':') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
-        if(!expect(Exp)) {
-            index = indexBefore;
+        envir.index++;
+        if(!at(envir.Exp)) {
+            envir.index = indexBefore;
             return false;
         }
-        debug("Completed for-colon. index:" + index);
+        debug("Completed for-colon. envir.index:" + envir.index);
         return true;
     }
 };

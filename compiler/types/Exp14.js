@@ -1,15 +1,15 @@
 // Exp14           ::= Exp15 PostfixOp?
 module.exports = {
-    is: function() {
-        var indexBefore = index;
-        debug("Starting on exp14. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
-        if(!expect(Exp15)) {
-            index = indexBefore;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
+        debug("Starting on exp14. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        if(!at(envir.Exp15)) {
+            envir.index = indexBefore;
             return false;
         }
 
-        expect(PostfixOp);
-        debug("Finalizing exp14 success. index:" + index + ', lexeme: ' + parseTokens[index].lexeme);
+        at(envir.PostfixOp);
+        debug("Finalizing exp14 success. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
         return true;
     }
 };

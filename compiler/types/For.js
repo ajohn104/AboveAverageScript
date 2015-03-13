@@ -1,68 +1,68 @@
 // For             ::= 'for' ( ('let'? Id '=')? Exp ',')? Exp ',' Exp
 module.exports = {
-    is: function() {
-        var indexBefore = index;
+    is: function(at, parseTokens, envir, debug) {
+        var indexBefore = envir.index;
 
-        if(parseTokens[index].lexeme !== 'for') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== 'for') {
+            envir.index = indexBefore;
             return false;
         } 
-        index++;
+        envir.index++;
 
-        if(parseTokens[index].lexeme === 'let') {
-            index++;
-            if(!expect(Id)) {
-                index = indexBefore;
+        if(parseTokens[envir.index].lexeme === 'let') {
+            envir.index++;
+            if(!at(envir.Id)) {
+                envir.index = indexBefore;
                 return false;
             }
-            if(parseTokens[index].lexeme !== '=') {
-                index = indexBefore;
+            if(parseTokens[envir.index].lexeme !== '=') {
+                envir.index = indexBefore;
                 return false;
             }
-            index++;
-            if(!expect(Exp)) {
-                index = indexBefore;
+            envir.index++;
+            if(!at(envir.Exp)) {
+                envir.index = indexBefore;
                 return false;
             }
-            if(parseTokens[index].lexeme !== ',') {
-                index = indexBefore;
+            if(parseTokens[envir.index].lexeme !== ',') {
+                envir.index = indexBefore;
                 return false;
             }
-            index++;
-        } else if(expect(Id)) {
-            if(parseTokens[index].lexeme !== '=') {
-                index = indexBefore;
+            envir.index++;
+        } else if(at(envir.Id)) {
+            if(parseTokens[envir.index].lexeme !== '=') {
+                envir.index = indexBefore;
                 return false;
             }
-            index++;
-            if(!expect(Exp)) {
-                index = indexBefore;
+            envir.index++;
+            if(!at(envir.Exp)) {
+                envir.index = indexBefore;
                 return false;
             }
-            if(parseTokens[index].lexeme !== ',') {
-                index = indexBefore;
+            if(parseTokens[envir.index].lexeme !== ',') {
+                envir.index = indexBefore;
                 return false;
             }
-            index++;
+            envir.index++;
         } else {
-            if(parseTokens[index].lexeme !== ',') {
-                index = indexBefore;
+            if(parseTokens[envir.index].lexeme !== ',') {
+                envir.index = indexBefore;
                 return false;
             }
-            index++;
+            envir.index++;
         }
 
-        if(!expect(Exp)) {
-            index = indexBefore;
+        if(!at(envir.Exp)) {
+            envir.index = indexBefore;
             return false;
         }
-        if(parseTokens[index].lexeme !== ',') {
-            index = indexBefore;
+        if(parseTokens[envir.index].lexeme !== ',') {
+            envir.index = indexBefore;
             return false;
         }
-        index++;
-        if(!expect(Exp)) {
-            index = indexBefore;
+        envir.index++;
+        if(!at(envir.Exp)) {
+            envir.index = indexBefore;
             return false;
         }
 
