@@ -6,7 +6,7 @@
   "keywords": ["aboveaverage", "average"],
   "bugs": "ajohn104@lion.lmu.edu",
   "contributors":"aljo",
-  "repository":"https://github.com/ajohn104/AboveAverageScript/tree/master/compiler",
+  "repository":"https://github.com/ajohn104/AboveAverageScript",
   "engines":{ "node": ">=0.10.32"},
   "dependencies": {
     "underscore": "^1.8.2",
