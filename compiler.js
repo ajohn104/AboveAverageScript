@@ -15,7 +15,7 @@ var scanError = function(errorToken) {
             console.error("Scan Error. Found unexpected character(s): '" + errorToken.lexeme + "'");
             break;
     }
-};
+};    
 
 var compile = function(fileName, finalCall) {
     scan(fileName, scanCall, scanError);

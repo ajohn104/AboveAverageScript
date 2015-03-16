@@ -99,9 +99,9 @@
 				</dict>
 			</dict>
 			<key>comment</key>
-			<string>match stuff like: Sound.prototype.play = func() { … }</string>
+			<string>match stuff like: Sound.prototype.play = func -> … </string>
 			<key>match</key>
-			<string>([a-zA-Z_?.$][\w?.$]*)\.(prototype)\.([a-zA-Z_?.$][\w?.$]*)\s*(=)\s*(func)?\s*(\()(.*?)(\))</string>
+			<string>([a-zA-Z_?.$][\w?.$]*)\.(prototype)\.([a-zA-Z_?.$][\w?.$]*)\s*(=)\s*(func)?\s*((.*?)(?=\-&gt;))</string>
 			<key>name</key>
 			<string>meta.function.prototype.js</string>
 		</dict>
@@ -176,9 +176,9 @@
 				</dict>
 			</dict>
 			<key>comment</key>
-			<string>match stuff like: Sound.play = func() { … }</string>
+			<string>match stuff like: Sound.play = func -> … </string>
 			<key>match</key>
-			<string>([a-zA-Z_?.$][\w?.$]*)\.([a-zA-Z_?.$][\w?.$]*)\s*(=)\s*(func)\s*(\()(.*?)(\))</string>
+			<string>([a-zA-Z_?.$][\w?.$]*)\.([a-zA-Z_?.$][\w?.$]*)\s*(=)\s*(func)\s*((.*?)(?=\-&gt;))</string>
 			<key>name</key>
 			<string>meta.function.js</string>
 		</dict>
@@ -217,13 +217,14 @@
 				</dict>
 			</dict>
 			<key>comment</key>
-			<string>match stuff like: play = func() { … }</string>
+			<string>match stuff like: play = func -> … </string>
 			<key>match</key>
-			<string>([a-zA-Z_?$][\w?$]*)\s*(=)\s*(func)\s*(\()(.*?)(\))</string>
+			<string>([a-zA-Z_?$][\w?$]*)\s*(=)\s*(func)\s*((.*?)(?=\-&gt;))</string>
 			<key>name</key>
 			<string>meta.function.js</string>
 		</dict>
-		<dict>
+		<!-- NO! NEIN -->
+		<!-- <dict>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
@@ -253,12 +254,12 @@
 				</dict>
 			</dict>
 			<key>comment</key>
-			<string>match regular function like: func myFunc(arg) { … }</string>
+			<string>match regular function like: func myFunc arg -> … </string>
 			<key>match</key>
-			<string>\b(func)\s+([a-zA-Z_$]\w*)?\s*(\()(.*?)(\))</string>
+			<string>\b(func)\s+([a-zA-Z_$]\w*)?\s*((.*?)(?=\-&gt;))</string>
 			<key>name</key>
 			<string>meta.function.js</string>
-		</dict>
+		</dict> -->
 		<dict>
 			<key>captures</key>
 			<dict>
@@ -289,9 +290,9 @@
 				</dict>
 			</dict>
 			<key>comment</key>
-			<string>match stuff like: foobar: func() { … }</string>
+			<string>match stuff like: foobar: func -> … </string>
 			<key>match</key>
-			<string>\b([a-zA-Z_?.$][\w?.$]*)\s*:\s*\b(func)?\s*(\()(.*?)(\))</string>
+			<string>\b([a-zA-Z_?.$][\w?.$]*)\s*:\s*\b(func)?\s*((.*?)(?=\-&gt;))</string>
 			<key>name</key>
 			<string>meta.function.json.js</string>
 		</dict>
@@ -360,9 +361,9 @@
 				</dict>
 			</dict>
 			<key>comment</key>
-			<string>Attempt to match "foo": func</string>
+			<string>Attempt to match "foo": func -> </string>
 			<key>match</key>
-			<string>(?:((')([^']*)('))|((")([^"]*)(")))\s*:\s*\b(func)?\s*(\()([^)]*)(\))</string>
+			<string>(?:((')([^']*)('))|((")([^"]*)(")))\s*:\s*\b(func)?\s*(([^)]*)(?=\-&gt;))</string>
 			<!-- <string>(?:((')(.*?)('))|((")(.*?)(")))\s*:\s*\b(func)?\s*(\()(.*?)(\))</string> -->
 			<key>name</key>
 			<string>meta.function.json.js</string>
@@ -549,7 +550,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(stop|case|catch|skip|default|do|elif|else|end|finally|for|goto|if|import|package|ret|switch|throw|try|while)\b</string>
+			<string>\b(stop|case|catch|skip|default|do|elif|else|end|finally|for|goto|if|import|package|ret|switch|throw|try|while|\-&gt;)\b</string>
 			<key>name</key>
 			<string>keyword.control.js</string>
 		</dict>
@@ -597,7 +598,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(s(h(ift|ow(Mod(elessDialog|alDialog)|Help))|croll(X|By(Pages|Lines)?|Y|To)?|t(op|rike)|i(n|zeToContent|debar|gnText)|ort|u(p|b(str(ing)?)?)|pli(ce|t)|e(nd|t(Re(sizable|questHeader)|M(i(nutes|lliseconds)|onth)|Seconds|Ho(tKeys|urs)|Year|Cursor|Time(out)?|Interval|ZOptions|Date|UTC(M(i(nutes|lliseconds)|onth)|Seconds|Hours|Date|FullYear)|FullYear|Active)|arch)|qrt|lice|avePreferences|mall)|h(ome|andleEvent)|navigate|c(har(CodeAt|At)|o(s|n(cat|textual|firm)|mpile)|eil|lear(Timeout|Interval)?|a(ptureEvents|ll)|reate(StyleSheet|Popup|EventObject))|t(o(GMTString|S(tring|ource)|U(TCString|pperCase)|Lo(caleString|werCase))|est|a(n|int(Enabled)?))|i(s(NaN|Finite)|ndexOf|talics)|d(isableExternalCapture|ump|etachEvent)|u(n(shift|taint|escape|watch)|pdateCommands)|j(oin|avaEnabled)|p(o(p|w)|ush|lugins.refresh|a(ddings|rse(Int|Float)?)|r(int|ompt|eference))|is|len|del|defaults|isUndef|type|e(scape|nableExternalCapture|val|lementFromPoint|x(p|ec(Script|Command)?))|valueOf|UTC|queryCommand(State|Indeterm|Enabled|Value)|f(i(nd|le(ModifiedDate|Size|CreatedDate|UpdatedDate)|xed)|o(nt(size|color)|rward)|loor|romCharCode)|watch|l(ink|o(ad|g)|astIndexOf)|a(sin|nchor|cos|t(tachEvent|ob|an(2)?)|pply|lert|b(s|ort))|r(ou(nd|teEvents)|e(size(By|To)|calc|turnValue|place|verse|l(oad|ease(Capture|Events)))|andom)|g(o|et(ResponseHeader|M(i(nutes|lliseconds)|onth)|Se(conds|lection)|Hours|Year|Time(zoneOffset)?|Da(y|te)|UTC(M(i(nutes|lliseconds)|onth)|Seconds|Hours|Da(y|te)|FullYear)|FullYear|A(ttention|llResponseHeaders)))|m(in|ove(B(y|elow)|To(Absolute)?|Above)|ergeAttributes|a(tch|rgins|x))|b(toa|ig|o(ld|rderWidths)|link|ack))\b(?=\()</string>
+			<string>\b(s(h(ift|ow(Mod(elessDialog|alDialog)|Help))|croll(X|By(Pages|Lines)?|Y|To)?|t(op|rike)|i(n|zeToContent|debar|gnText)|ort|u(p|b(str(ing)?)?)|pli(ce|t)|e(nd|t(Re(sizable|questHeader)|M(i(nutes|lliseconds)|onth)|Seconds|Ho(tKeys|urs)|Year|Cursor|Time(out)?|Interval|ZOptions|Date|UTC(M(i(nutes|lliseconds)|onth)|Seconds|Hours|Date|FullYear)|FullYear|Active)|arch)|qrt|lice|avePreferences|mall)|h(ome|andleEvent)|navigate|c(har(CodeAt|At)|o(s|n(cat|textual|firm)|mpile)|eil|lear(Timeout|Interval)?|a(ptureEvents|ll)|reate(StyleSheet|Popup|EventObject))|t(o(GMTString|S(tring|ource)|U(TCString|pperCase)|Lo(caleString|werCase))|est|a(n|int(Enabled)?))|i(s(NaN|Finite)|ndexOf|talics)|d(isableExternalCapture|ump|etachEvent)|u(n(shift|taint|escape|watch)|pdateCommands)|j(oin|avaEnabled)|p(o(p|w)|ush|lugins.refresh|a(ddings|rse(Int|Float)?)|r(int|ompt|eference))|is|len|del|defaults|isUndef|range|laz(y|(ier))|size|type|e(scape|nableExternalCapture|val|lementFromPoint|x(p|ec(Script|Command)?))|valueOf|UTC|queryCommand(State|Indeterm|Enabled|Value)|f(i(nd|le(ModifiedDate|Size|CreatedDate|UpdatedDate)|xed)|o(nt(size|color)|rward)|loor|romCharCode)|watch|l(ink|o(ad|g)|astIndexOf)|a(sin|nchor|cos|t(tachEvent|ob|an(2)?)|pply|lert|b(s|ort))|r(ou(nd|teEvents)|e(size(By|To)|calc|turnValue|place|verse|l(oad|ease(Capture|Events)))|andom)|g(o|et(ResponseHeader|M(i(nutes|lliseconds)|onth)|Se(conds|lection)|Hours|Year|Time(zoneOffset)?|Da(y|te)|UTC(M(i(nutes|lliseconds)|onth)|Seconds|Hours|Da(y|te)|FullYear)|FullYear|A(ttention|llResponseHeaders)))|m(in|ove(B(y|elow)|To(Absolute)?|Above)|ergeAttributes|a(tch|rgins|x))|b(toa|ig|o(ld|rderWidths)|link|ack))\b(?=\()</string>
 			<key>name</key>
 			<string>support.function.js</string>
 		</dict>
@@ -633,7 +634,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\$|%|&amp;|\*|\-\-|\-|\+\+|\+|~|!==|!=|===|==|=|&lt;=|&gt;=|&lt;&lt;=|&gt;&gt;=|&gt;&gt;&gt;=|&lt;&gt;|&lt;|&gt;|\?\:|\*=|(?&lt;!\()/=|%=|\+=|\-=|\^=|\b(in|instanceof|of|new|delete|typeof|void|not|and|or)\b</string>
+			<string>(\$|%|&amp;|&lt;-|\*|\-\-|\-(?!&gt;)|\+\+|\+|~|!==|!=|===|==|=|&lt;=|&gt;=|&lt;&lt;=|&gt;&gt;=|&gt;&gt;&gt;=|&lt;&gt;|&lt;|((?:^|\-)(\>))|\?\:|\*=|(?&lt;!\()/=|%=|\+=|\-=|\^=|&amp;=|\b(in|instanceof|of|new|delete|typeof|void|not|and|or)\b)</string>
 			<key>name</key>
 			<string>keyword.operator.js</string>
 		</dict>
