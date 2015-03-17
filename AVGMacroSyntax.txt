@@ -22,8 +22,9 @@ ConsumeStmt     ::= (Exp (',' Exp)*)? '<-' Id (('.' Id)* ArrayCont+ Call?)+
 ReturnStmt      ::= 'ret' Exp?
 
 IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
-SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Dedent
+SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Defaults? Dedent
 Case            ::= Newline 'case' Exp18 ':' Indent Block Dedent
+Defaults        ::= Newline 'default' ':' Indent Block Dedent
 NativeStmt      ::= '***native***'
 
 Loop            ::= WhileLoop | ForLoop

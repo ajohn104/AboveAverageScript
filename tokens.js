@@ -17,7 +17,7 @@ var Tokens = {
     Reserved:
         ["let", "_", "for", "in", "end", "if", "elif",
          "else", "stop", "skip", "do", "while", "ret",
-         "switch", "case", "new", "func"],
+         "switch", "case", "new", "func", "default"],
     Comment: 
         ["//", "/*", "*/"],
     Native:
@@ -25,10 +25,9 @@ var Tokens = {
     BoolLit: 
         ["true", "false"],
     Unused:
-        ["break", "class", "const", "continue", "debugger", 
-        "default", "delete", "export", "extends", "function", 
-        "import", "instanceof", "super", "this", "typeof", 
-        "var", "void", "with", "return", "try", "catch", "throw", "finally"]
+        ["break", "class", "const", "continue", "debugger", "delete", "export",
+         "extends", "function", "import", "instanceof", "super", "this", "typeof", 
+         "var", "void", "with", "return", "try", "catch", "throw", "finally"]
 };
 
 // ErrUC = Error: Unexpected Characters, ErrUR = Error: Unused Reserved

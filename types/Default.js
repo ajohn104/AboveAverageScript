@@ -1,23 +1,23 @@
-// SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Defaults? Dedent
+// Defaults        ::= Newline 'default' ':' Indent Block Dedent
 module.exports = {
     is: function(at, parseTokens, envir, debug) {
         var indexBefore = envir.index;
 
-        if(parseTokens[envir.index].lexeme !== 'switch') {
+        if(!at(envir.Newline)) {
+            envir.index = indexBefore;
+            return false;
+        }
+
+        if(parseTokens[envir.index].lexeme !== 'default') {
             envir.index = indexBefore;
             return false;
         } 
         envir.index++;
 
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore;
-            return false;
-        }
-
         if(parseTokens[envir.index].lexeme !== ':') {
             envir.index = indexBefore;
             return false;
-        }
+        } 
         envir.index++;
 
         if(!at(envir.Indent)) {
@@ -25,14 +25,10 @@ module.exports = {
             return false;
         }
 
-        if(!at(envir.Case)) {
+        if(!at(envir.Block)) {
             envir.index = indexBefore;
             return false;
         }
-
-        while(at(envir.Case));
-
-        at(envir.Defaults);
 
         if(!at(envir.Dedent)) {
             envir.index = indexBefore;

@@ -19,6 +19,7 @@ envir.ForColon = require("./types/ForColon");
 envir.For = require("./types/For");
 envir.SwitchStmt = require("./types/SwitchStmt");
 envir.Case = require("./types/Case");
+envir.Defaults = require("./types/Default");
 envir.NativeStmt = require("./types/NativeStmt");
 envir.Exp = require("./types/Exp");
 envir.Exp1 = require("./types/Exp1");
