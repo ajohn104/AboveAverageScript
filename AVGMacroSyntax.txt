@@ -10,6 +10,7 @@ Stmt            ::= ObjIndentDecl
                  |  IfStmt
                  |  ConsumeStmt
                  |  ReturnStmt
+                 |  ControlStmt
                  |  Exp
 
 ObjIndentDecl   ::= 'let' ObjIndentAssign
@@ -20,6 +21,7 @@ SetStmt         ::= Exp (( '=' Exp (',' Indent NewLine Exp '=' Exp (',' NewLine 
 AssignStmt      ::= Exp (( AssignOp Exp (',' Indent NewLine Exp AssignOp Exp (',' NewLine Exp AssignOp Exp)* Dedent)? ) | ((',' Exp)* AssignOp Exp (',' Indent Newline Exp (Newline Exp)* Dedent )?) )
 ConsumeStmt     ::= (Exp (',' Exp)*)? '<-' Id (('.' Id)* ArrayCont+ Call?)+
 ReturnStmt      ::= 'ret' Exp?
+ControlStmt     ::= 'stop' | 'skip'
 
 IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
 SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Defaults? Dedent

@@ -7,6 +7,8 @@
  *               |  Loop
  *               |  IfStmt
  *               |  ConsumeStmt
+ *               |  ReturnStmt
+ *               |  ControlStmt
  *               |  Exp
  *               
  */
@@ -54,7 +56,11 @@ module.exports = {
             found |= at(envir.ReturnStmt);
         } 
         if(!found) {
-            debug("ReturnStmt failed\nTrying Exp");
+            debug("ReturnStmt failed\nTrying ControlStmt");
+            found |= at(envir.ControlStmt);
+        } 
+        if(!found) {
+            debug("ControlStmt failed\nTrying Exp");
             found |= at(envir.Exp);
         }
         if(!found) {

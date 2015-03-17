@@ -8,6 +8,7 @@ envir.SetStmt = require("./types/SetStmt");
 envir.AssignStmt = require("./types/AssignStmt");
 envir.ConsumeStmt = require("./types/ConsumeStmt");
 envir.ReturnStmt = require("./types/ReturnStmt");
+envir.ControlStmt = require("./types/ControlStmt");
 envir.IfStmt = require("./types/IfStmt");
 envir.Loop = require("./types/Loop");
 envir.WhileLoop = require("./types/WhileLoop");
