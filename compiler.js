@@ -3,7 +3,8 @@ var scan = Scanner.scan;
 var Parser = require('./parser');
 var parse = Parser.parse;
 
-var files = ["./examples/HelloIndents.avg", "./examples/UnpacksConsumersInlines.avg", "./examples/arrow_sign.avg", "./examples/testCases.avg"];
+var files = ["./examples/HelloIndents.avg", "./examples/UnpacksConsumersInlines.avg", "./examples/arrow_sign.avg", "./examples/testCases.avg",
+    "./examples/syntaxTests.avg"];
 
 var file = files[1];
 var scanError = function(errorToken) {
@@ -95,9 +96,9 @@ var readStdIn = function(args) {
 
 readStdIn(process.argv);
 
-var finalCallBack = function(){};
+var finalCallBack = function(valid){console.log("file: " + file);console.log("IsValid: " + valid)};
 
 module.exports = function(file, finalCall) {
-    finalCallBack = finalCall;
+    finalCallBack = (typeof finalCall !== "undefined")?finalCall:finalCallBack;
     compile(file);
 };
