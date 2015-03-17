@@ -4,6 +4,6 @@
 
 ]]></content>
     <tabTrigger>proto</tabTrigger>
-    <scope>source.js</scope>
+    <scope>source.avg</scope>
     <description>Prototype</description>
 </snippet>

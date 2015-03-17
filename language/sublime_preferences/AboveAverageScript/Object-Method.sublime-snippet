@@ -4,6 +4,6 @@
 ${10:
 ,}]]></content>
     <tabTrigger>:f</tabTrigger>
-    <scope>source.js</scope>
+    <scope>source.avg</scope>
     <description>Object Method</description>
 </snippet>

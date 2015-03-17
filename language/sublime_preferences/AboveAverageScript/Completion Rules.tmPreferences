@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
     <key>scope</key>
-    <string>source.js</string>
+    <string>source.avg</string>
     <key>settings</key>
     <dict>
-        <key>cancelCompletion</key>
-        <string>^\s*(\{?\s*(else|elif|ret|do|\-&gt;)|(func)\s*[a-zA-Z_0-9]+)$</string>
+        <key>cancelCompletion</key><!--added if|-->
+        <string>^\s*(\{?\s*(if|else|elif|ret|do|\-&gt;)|(func)\s*[a-zA-Z_0-9]+)$</string>
     </dict>
 </dict>
 </plist>
