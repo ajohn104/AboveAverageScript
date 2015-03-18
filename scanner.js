@@ -1,23 +1,25 @@
-var LineByLineReader = require('line-by-line');
 var Tokens = require('./tokens');
-
+var fs = require('fs'),
+    byline = require('byline');
+ 
 var scan = function(file, callback, error) {
-    reader = new LineByLineReader(file, {encoding: 'utf8'});
+    var stream = fs.createReadStream(file);
+    stream = byline.createStream(stream, { encoding: 'utf8', keepEmptyLines: true });
+
     var scanner = new LineScanner();
     var tokens = [];
-    reader.on('error', function(error) {
-        console.log("Error on line " + scanner.currentLine + ". Error: " + error);
-    });
-    reader.on('line', function(line) {
-        reader.pause();
-        var allValid = scanner.nextLine(line);
-        if(!allValid) {
-            error(scanner.errorToken);
-        } else {
-            reader.resume();
+    
+    stream.on('readable', function() {
+        var line;
+        while (null !== (line = stream.read())) {
+            var allValid = scanner.nextLine(line);
+            if(!allValid) {
+                error(scanner.errorToken);
+                return;
+            }
         }
     });
-    reader.once('end', function() {
+    stream.on('end', function() {
         tokens = scanner.complete();
         if(typeof callback !== "undefined") {
             callback(tokens);

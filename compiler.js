@@ -4,7 +4,7 @@ var Parser = require('./parser');
 var parse = Parser.parse;
 
 var files = ["./examples/HelloIndents.avg", "./examples/UnpacksConsumersInlines.avg", "./examples/arrow_sign.avg", "./examples/testCases.avg",
-    "./examples/syntaxTests.avg"];
+    "./examples/syntaxTests.avg", "./language/scratch/syntaxFix.avg"];
 
 var file = files[1];
 var scanError = function(errorToken) {

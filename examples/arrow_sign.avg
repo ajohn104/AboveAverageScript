@@ -112,8 +112,3 @@
     window.Sprites = defaults(window.Sprites, {})
     Object.defineProperties(window.Sprites)
 )()
-
-
-/*, {
-        "ArrowSign": {  value: ArrowSign  }
-    }*/
