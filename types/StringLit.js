@@ -1,8 +1,8 @@
 // StringLit       ::= '\"[^\"\\]*(?:\\.[^\"\\]*)*\"|\'[^\'\\]*(?:\\.[^\'\\]*)*\''
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
-        if(parseTokens[envir.index].kind !== 'StrLit') {
+        if(envir.parseTokens[envir.index].kind !== 'StrLit') {
             envir.index = indexBefore;
             return false;
         }

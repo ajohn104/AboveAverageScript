@@ -1,6 +1,6 @@
 // ObjIndentPropAssign ::= Exp ':' Indent (Newline (Property|ObjIndentPropAssign) )+ Dedent
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
         debug("ObjIndentPropAssign: checking for Exp, envir.index: " + envir.index );
         if(!at(envir.Exp)) {
@@ -10,12 +10,11 @@ module.exports = {
         }
         debug("ObjIndentPropAssign: found Exp, envir.index: " + envir.index );
         debug("ObjIndentPropAssign: checking for ':', envir.index: " + envir.index );
-        if(parseTokens[envir.index].lexeme !== ':') {
+        if(!at(':')) {
             envir.index = indexBefore;
             debug("ObjIndentPropAssign: cannot find ':', envir.index: " + envir.index );
             return false;
         }
-        envir.index++;
         debug("ObjIndentPropAssign: found ':', envir.index: " + envir.index );
         debug("ObjIndentPropAssign: checking for Indent, envir.index: " + envir.index );
         if(!at(envir.Indent)) {
@@ -43,6 +42,7 @@ module.exports = {
             } else {
                 debug("Could not find property.");
                 envir.index = midIndex;
+                break;
             }
             midIndex = envir.index;
             debug("ObjIndentPropAssign: found Property, envir.index: " + envir.index );

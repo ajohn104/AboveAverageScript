@@ -1,24 +1,22 @@
 // IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
 
-        if(parseTokens[envir.index].lexeme !== 'if') {
+        if(!at('if')) {
             envir.index = indexBefore;
             return false;
         }
-        envir.index++;
 
         if(!at(envir.Exp)) {
             envir.index = indexBefore;
             return false;
         }
 
-        if(parseTokens[envir.index].lexeme !== ':') {
+        if(!at(':')) {
             envir.index = indexBefore;
             return false;
         }
-        envir.index++;
 
         if(!at(envir.Indent)) {
             envir.index = indexBefore;
@@ -35,18 +33,17 @@ module.exports = {
             return false;
         }
         debug("Completed 'if' block. Moving on to elif. envir.index:" + envir.index);
-        while(parseTokens[envir.index].kind === "Newline" && parseTokens[envir.index+1].lexeme === 'elif') {
+        while(envir.parseTokens[envir.index].kind === "Newline" && envir.parseTokens[envir.index+1].lexeme === 'elif') {
             envir.index+=2;
             if(!at(envir.Exp)) {
                 envir.index = indexBefore;
                 return false;
             }
 
-            if(parseTokens[envir.index].lexeme !== ':') {
+            if(!at(':')) {
                 envir.index = indexBefore;
                 return false;
             }
-            envir.index++;
 
             if(!at(envir.Indent)) {
                 envir.index = indexBefore;
@@ -64,7 +61,7 @@ module.exports = {
             }
         }
         debug("Completed 'elif' blocks. Moving on to else. envir.index:" + envir.index);
-        if(parseTokens[envir.index].kind === "Newline" && parseTokens[envir.index+1].lexeme === 'else') {
+        if(envir.parseTokens[envir.index].kind === "Newline" && envir.parseTokens[envir.index+1].lexeme === 'else') {
             envir.index+=2;
             
             if(!at(envir.Indent)) {

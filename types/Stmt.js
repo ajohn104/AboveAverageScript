@@ -13,9 +13,9 @@
  *               
  */
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         debug("Beginning statement search with token:");
-        debug(parseTokens[envir.index]);
+        debug(envir.parseTokens[envir.index]);
         debug("index:" + envir.index + " \n");
         debug("Trying ObjIndentDecl")
         var found = at(envir.ObjIndentDecl);
@@ -69,7 +69,7 @@ module.exports = {
 
         debug("Completed statement search. Status: " + found);
         debug("next token to be searched:");
-        debug(parseTokens[envir.index]);
+        debug(envir.parseTokens[envir.index]);
         debug("index:" + envir.index + " \n");
         return found;
     }

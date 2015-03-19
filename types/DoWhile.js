@@ -1,13 +1,12 @@
 // DoWhile         ::= 'do' Indent Block Dedent Newline 'while' Exp
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
 
-        if(parseTokens[envir.index].lexeme !== 'do') {
+        if(!at('do')) {
             envir.index = indexBefore;
             return false;
-        } 
-        envir.index++;
+        }
 
         if(!at(envir.Indent)) {
             envir.index = indexBefore;
@@ -34,11 +33,10 @@ module.exports = {
             return false;
         }
 
-        if(parseTokens[envir.index].lexeme !== 'while') {
+        if(!at('while')) {
             envir.index = indexBefore;
             return false;
-        } 
-        envir.index++;
+        }
 
         if(!at(envir.Exp)) {
             envir.index = indexBefore;

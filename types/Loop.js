@@ -1,8 +1,6 @@
 // Loop            ::= WhileLoop | ForLoop
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
-        var indexBefore = envir.index;
-        
+    is: function(at, next, envir, debug) {
         return at(envir.WhileLoop) || at(envir.ForLoop);
     }
 };

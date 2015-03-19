@@ -1,18 +1,16 @@
 // Func            ::= 'func' (Id (',' Id)* )? '->' ('ret'? Exp) | (Indent Block Dedent)
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
         debug("Beginning func testing. envir.index:" + envir.index);
-        if(parseTokens[envir.index].lexeme !== 'func') {
+        if(!at('func')) {
             envir.index = indexBefore;
             return false;
         }
-        envir.index++;
         debug("Found 'func', looking for parameters. envir.index:" + envir.index);
         if(at(envir.Id)) {
             debug("Found Id. Checking for ','. envir.index:" + envir.index);
-            while(parseTokens[envir.index].lexeme === ',') {
-                envir.index++;
+            while(at(',')) {
                 debug("Found ','. Looking for Id. envir.index:" + envir.index);
                 if(!at(envir.Id)) {
                     envir.index = indexBefore;
@@ -22,14 +20,12 @@ module.exports = {
             }
         }
         debug("End of parameters. Looking for '->'. envir.index:" + envir.index);
-        if(parseTokens[envir.index].lexeme !== '->') {
+        if(!at('->')) {
             envir.index = indexBefore;
             return false;
         }
-        envir.index++;
         debug("Found '->'. Looking for single line 'ret'. envir.index:" + envir.index);
-        if(parseTokens[envir.index].lexeme === 'ret') {
-            envir.index++;
+        if(at('ret')) {
             if(!at(envir.Exp)) {
                 envir.index = indexBefore;
                 return false;
@@ -48,7 +44,7 @@ module.exports = {
                 envir.index = indexBefore;
                 return false;
             }
-            debug("Found Block. Looking for Dedent. envir.index:" + envir.index + ", lexeme: " + parseTokens[envir.index].lexeme);
+            debug("Found Block. Looking for Dedent. envir.index:" + envir.index + ", lexeme: " + envir.parseTokens[envir.index].lexeme);
             if(!at(envir.Dedent)) {
                 envir.index = indexBefore;
                 return false;
@@ -56,7 +52,7 @@ module.exports = {
             debug("Successful end of function. envir.index:" + envir.index + " \n");
         }
         debug("Finalizing function success. envir.index:" + envir.index);
-        debug(parseTokens[envir.index]);
+        debug(envir.parseTokens[envir.index]);
         debug('\n');
         return true;
     }

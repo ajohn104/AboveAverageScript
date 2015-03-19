@@ -1,11 +1,10 @@
 // Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
-        debug("Starting on exp18. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+    is: function(at, next, envir, debug) {
+        debug("Starting on exp18. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
         var indexBefore = envir.index;
         var isParenthesizedExpr = false;
-        if(parseTokens[envir.index].lexeme === '(') {
-            envir.index++;
+        if(at('(')) {
             if(!at(envir.Exp)) {
                 envir.index = indexBefore;
                 isParenthesizedExpr = false;
@@ -17,12 +16,11 @@ module.exports = {
                 debug("Found newline. envir.index:" + envir.index);
             } // I think this is it.
 
-            if(parseTokens[envir.index].lexeme !== ')') {
+            if(!at(')')) {
                 envir.index = indexBefore;
                 isParenthesizedExpr = false;
             }
             debug("Found ')'. Completed ParenthesizedExpr. envir.index:" + envir.index);
-            envir.index++;
             isParenthesizedExpr = true;
         }
         var found = isParenthesizedExpr
@@ -37,7 +35,7 @@ module.exports = {
                  || at(envir.RegExpLit);
         var accessIndex = envir.index;
         if(envir.index === 0) accessIndex = 0;
-        debug("Finalizing exp18, found:" + found + ", envir.index:" + envir.index + ', lexeme: ' + parseTokens[accessIndex].lexeme);
+        debug("Finalizing exp18, found:" + found + ", envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[accessIndex].lexeme);
         return found;
     }
 };

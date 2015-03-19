@@ -1,17 +1,15 @@
 // ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) ']'
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
 
-        if(parseTokens[envir.index].lexeme !== '[') {
+        if(!at('[')) {
             envir.index = indexBefore;
             return false;
         }
-        envir.index++;
 
         if(at(envir.Exp)) {
-            while(parseTokens[envir.index].lexeme === ',') {
-                envir.index++;
+            while(at(',')) {
                 if(!at(envir.Exp)) {
                     envir.index = indexBefore;
                     return false;
@@ -27,8 +25,7 @@ module.exports = {
                 envir.index = indexBefore;
                 return false;
             }
-            while(parseTokens[envir.index].lexeme === ',') {
-                envir.index++;
+            while(at(',')) {
                 at(envir.Newline);
                 if(!at(envir.Exp)) {
                     envir.index = indexBefore;
@@ -48,11 +45,10 @@ module.exports = {
             envir.index = indexBefore;
             return false;
         }
-        if(parseTokens[envir.index].lexeme !== ']') {
+        if(!at(']')) {
             envir.index = indexBefore;
             return false;
         }
-        envir.index++;
         return true;
     }
 };

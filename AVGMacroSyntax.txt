@@ -40,7 +40,7 @@ For             ::= 'for' ( ('let'? Id '=')? Exp ',')? Exp ',' Exp
 
 Exp             ::= Exp1 (ForIn | ForColon)*
 Exp1            ::= Exp2 ('if' Exp2 ('else' Exp2)?)?
-Exp2            ::= (Exp3 '?' Exp3 ':')? Exp3
+Exp2            ::= Exp3 ('?' Exp3 ':' Exp3)?
 Exp3            ::= Exp4 ('or' Exp4)*
 Exp4            ::= Exp5 ('and' Exp5)*
 Exp5            ::= Exp6 ('|' Exp6)*

@@ -67,6 +67,7 @@ envir.RegExpLit = require("./types/RegExpLit");
 envir.EndOfFile = require("./types/EndOfFile");
 envir.ObjIndentPropAssign = require("./types/ObjIndentPropAssign");
 
+envir.Lexeme = require("./types/Lexeme")(envir);
 
 var callback = undefined;
 var error = undefined;
@@ -88,26 +89,47 @@ var tokenStreamParser = function(tkns, call, err) {
     callback = call;
     error = err;
 
-    var parseTokens = tkns;
+    envir.parseTokens = tkns;
     envir.index = 0;
 
-    var at = function(type) {
-        return type.is(at, parseTokens, envir, debug);
+    // Array type check thanks to user113716 from StackOverflow
+    var isArray = function(obj) {
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    }
+
+    var at = function(expected) {
+        if(isArray(expected)) {
+            for(var i = 0; i < expected.length; i++) {
+                if(at(expected[i])) return true;
+            }
+            return false;
+        }
+        if(typeof expected === 'string') {
+            return envir.Lexeme(expected).is(at, next, envir, debug);
+        }
+        return expected.is(at, next, envir, debug);
+    };
+
+    var next = function(expected) {
+        var indexBefore = envir.index;
+        var found = at(expected);
+        envir.index = indexBefore;
+        return found;
     };
 
     this.parseProgram = function() {
         if(!at(envir.Stmt)) {
-            error(parseTokens[envir.index]);
+            error(envir.parseTokens[envir.index]);
             return false;
         }
         if(!at(envir.Block)) {
-            error(parseTokens[envir.index]);
+            error(envir.parseTokens[envir.index]);
             return false;
         };
         debug("End of program block");
         
         if(!at(envir.EndOfFile)) {
-            error(parseTokens[envir.index]);
+            error(envir.parseTokens[envir.index]);
             return false
         }
         return true;

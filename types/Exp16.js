@@ -1,8 +1,8 @@
 // Exp16           ::= Exp17 Call? (ArrayCont Call?)* ( ('.' Exp16)* | (Indent (Newline '.' Exp16)+ Dedent)) )?
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
-        debug("Starting on exp16. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        debug("Starting on exp16. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
         if(!at(envir.Exp17)) {
             envir.index = indexBefore;
             return false;
@@ -14,10 +14,9 @@ module.exports = {
             at(envir.Call);
         }
 
-        if(parseTokens[envir.index].lexeme === '.') {
-            while(parseTokens[envir.index].lexeme === '.') {
+        if(next('.')) {
+            while(at('.')) {
                 debug("Exp16: found '.' operator. envir.index:" + envir.index);
-                envir.index++;
                 if(!at(envir.Exp16)) {
                     envir.index = indexBefore;
                     return false;
@@ -25,13 +24,13 @@ module.exports = {
             }
         } else if(at(envir.Indent)) {
             debug("Exp16: found Indent. envir.index:" + envir.index);
-            if(parseTokens[envir.index].lexeme !== '\\n' || parseTokens[envir.index+1].lexeme !== '.') {
+            if(!(at(envir.Newline) && at('.') && at(envir.Exp16))) {
                 envir.index = indexBefore;
                 return false;
             }
-            while(parseTokens[envir.index].lexeme === '\\n' && parseTokens[envir.index+1].lexeme === '.') {
+            while(envir.parseTokens[envir.index] === '\\n' && envir.parseTokens[envir.index+1] === '.') {
                 envir.index+=2;
-                debug("Exp16: found Newline and '.' operator. envir.index:" + envir.index + ", lexeme: " + parseTokens[envir.index].lexeme);
+                debug("Exp16: found Newline and '.' operator. envir.index:" + envir.index + ", lexeme: " + envir.parseTokens[envir.index].lexeme);
                 if(!at(envir.Exp16)) {
                     envir.index = indexBefore;
                     return false;
@@ -42,7 +41,7 @@ module.exports = {
                 return false;
             }
         }        
-        debug("Finalizing exp16 success. envir.index:" + envir.index + ', lexeme: ' + parseTokens[envir.index].lexeme);
+        debug("Finalizing exp16 success. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
         return true;
     }
 };

@@ -1,24 +1,22 @@
 // SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Defaults? Dedent
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
 
-        if(parseTokens[envir.index].lexeme !== 'switch') {
+        if(!at('switch')) {
             envir.index = indexBefore;
             return false;
-        } 
-        envir.index++;
+        }
 
         if(!at(envir.Exp)) {
             envir.index = indexBefore;
             return false;
         }
 
-        if(parseTokens[envir.index].lexeme !== ':') {
+        if(!at(':')) {
             envir.index = indexBefore;
             return false;
         }
-        envir.index++;
 
         if(!at(envir.Indent)) {
             envir.index = indexBefore;

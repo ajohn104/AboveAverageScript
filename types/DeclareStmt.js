@@ -1,23 +1,19 @@
 // DeclareStmt     ::= 'let' SetStmt ( ',' Indent Newline SetStmt (',' Newline SetStmt)* Dedent )?
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
-        /*debug("looking for let");
-        debug("have a:");
-        debug(parseTokens[envir.index]);*/
-        if(parseTokens[envir.index].lexeme !== 'let') {
+
+        if(!at('let')) {
             envir.index = indexBefore;
             return false;
         } 
-        envir.index++;
         debug("DeclareStmt: found 'let'. envir.index:" + envir.index);
 
         if(!at(envir.SetStmt)) {
             envir.index = indexBefore;
             return false;
         }
-        if(parseTokens[envir.index].lexeme === ',') {
-            envir.index++;
+        if(at(',')) {
             if(!at(envir.Indent)) {
                 envir.index = indexBefore;
                 return false;
@@ -30,8 +26,7 @@ module.exports = {
                 envir.index = indexBefore;
                 return false;
             }
-            while(parseTokens[envir.index].lexeme === ',') {
-                envir.index++;
+            while(at(',')) {
                 if(!at(envir.Newline)) {
                     envir.index = indexBefore;
                     return false;
@@ -49,3 +44,50 @@ module.exports = {
         return true;
     }
 };
+
+// DeclareStmt     ::= 'let' (ExpList '=' (ObjInd | ExpList)) | (SetEqual (',' Indent Newline SetEqual (',' Newline SetEqual)* Dedent ) )
+/*module.exports = {
+    is: function(at, next, envir, debug) {
+        var indexBefore = envir.index;
+
+        if(!at('let')) {
+            envir.index = indexBefore;
+            return false;
+        } 
+        debug("DeclareStmt: found 'let'. envir.index:" + envir.index);
+
+        if(!at(envir.SetStmt)) {
+            envir.index = indexBefore;
+            return false;
+        }
+        if(at(',')) {
+            if(!at(envir.Indent)) {
+                envir.index = indexBefore;
+                return false;
+            }
+            if(!at(envir.Newline)) {
+                envir.index = indexBefore;
+                return false;
+            }
+            if(!at(envir.SetStmt)) {
+                envir.index = indexBefore;
+                return false;
+            }
+            while(at(',')) {
+                if(!at(envir.Newline)) {
+                    envir.index = indexBefore;
+                    return false;
+                }
+                if(!at(envir.SetStmt)) {
+                    envir.index = indexBefore;
+                    return false;
+                }
+            }
+            if(!at(envir.Dedent)) {
+                envir.index = indexBefore;
+                return false;
+            }
+        }
+        return true;
+    }
+};*/

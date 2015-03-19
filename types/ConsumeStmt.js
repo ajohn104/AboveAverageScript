@@ -1,70 +1,64 @@
 // ConsumeStmt     ::= (Exp (',' Exp)*)? '<-' Id (('.' Id)* ArrayCont+ Call?)+
+
+// ConsumeStmt     ::= (Exp (',' Exp)*)? '<-' Id ((('.' Id)? Call?)* ArrayCont)+
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
 
         at(envir.Exp);
 
-        while(parseTokens[envir.index].lexeme === ',') {
-            envir.index++;
+        while(at(',')) {
             if(!at(envir.Exp)) {
                 envir.index = indexBefore;
                 return false;
             }
         }
-        debug("ConsumeStmt: checking for '<-'. envir.index:" + envir.index + ", lexeme:" + parseTokens[envir.index].lexeme);
-        if(parseTokens[envir.index].lexeme !== '<-') {
+        debug("ConsumeStmt: checking for '<-'. envir.index:" + envir.index + ", lexeme:" + envir.parseTokens[envir.index].lexeme);
+        if(!at('<-')) {
             envir.index = indexBefore;
             return false;
         }
-        envir.index++;
-        debug("ConsumeStmt: found '<-'. checking for Id. envir.index:" + envir.index + ", lexeme:" + parseTokens[envir.index].lexeme);
+        debug("ConsumeStmt: found '<-'. checking for Id. envir.index:" + envir.index + ", lexeme:" + envir.parseTokens[envir.index].lexeme);
         if(!at(envir.Id)) {
             envir.index = indexBefore;
             return false;
         }
+
+
+        while(next('.') || next(envir.Call)) {
+            if(at('.')) {
+                if(!at(envir.Id)) {
+                    envir.index = indexBefore;
+                    return false;
+                }
+            } else {
+                at(envir.Call);
+            }
+        }
+
+        if(!at(envir.ArrayCont)) {
+            envir.index = indexBefore;
+            return false;
+        }
         
-        if(parseTokens[envir.index].lexeme === '.' || at(envir.ArrayCont)) {
-            if(parseTokens[envir.index].lexeme === '.') {
-                while(parseTokens[envir.index].lexeme === '.') {
-                    envir.index++;
+        while(next('.') || next(envir.Call) || next(envir.ArrayCont)) {
+            while(next('.') || next(envir.Call)) {
+                if(at('.')) {
                     if(!at(envir.Id)) {
                         envir.index = indexBefore;
                         return false;
                     }
-                    
+                } else {
+                    at(envir.ArrayCont);
                 }
-                if(!at(envir.ArrayCont)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-                while(at(envir.ArrayCont));
-                at(envir.Call);
             }
-        } else {
-            envir.index = indexBefore;
-            return false;
-        }
-        while(parseTokens[envir.index].lexeme === '.' || at(envir.ArrayCont)) {
-            if(parseTokens[envir.index].lexeme === '.') {
-                while(parseTokens[envir.index].lexeme === '.') {
-                    envir.index++;
-                    if(!at(envir.Exp16)) {
-                        envir.index = indexBefore;
-                        return false;
-                    }
-                    
-                }
-                if(!at(envir.ArrayCont)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-                while(at(envir.ArrayCont));
-                at(envir.Call);
+            if(!at(envir.ArrayCont)) {
+                envir.index = indexBefore;
+                return false;
             }
         }
         
-        debug("ConsumeStmt: found ArrayCont. envir.index:" + envir.index + ", lexeme:" + parseTokens[envir.index].lexeme);
+        debug("ConsumeStmt: found ArrayCont. envir.index:" + envir.index + ", lexeme:" + envir.parseTokens[envir.index].lexeme);
         return true;
     }
 };

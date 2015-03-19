@@ -1,6 +1,6 @@
 // ForLoop         ::= (ForIn | ForColon | For) ':' Indent Block Dedent
 module.exports = {
-    is: function(at, parseTokens, envir, debug) {
+    is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
 
         if(!at(envir.ForIn) && !at(envir.ForColon) && !at(envir.For)) {
@@ -8,11 +8,10 @@ module.exports = {
             return false;
         }
 
-        if(parseTokens[envir.index].lexeme !== ':') {
+        if(!at(':')) {
             envir.index = indexBefore;
             return false;
         }
-        envir.index++;
 
         if(!at(envir.Indent)) {
             envir.index = indexBefore;
