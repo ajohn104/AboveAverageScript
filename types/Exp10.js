@@ -1,4 +1,4 @@
-// Exp10           ::= Exp11 (ShiftOp Exp11)*
+// Exp10           ::= Exp11 (CompareOp Exp11)*
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -8,7 +8,7 @@ module.exports = {
             return false;
         }
 
-        while(at(envir.ShiftOp)) {
+        while(at(envir.CompareOp)) {
             if(!at(envir.Exp11)) {
                 envir.index = indexBefore;
                 return false;

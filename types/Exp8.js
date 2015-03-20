@@ -1,4 +1,4 @@
-// Exp8            ::= Exp9 (EqualOp Exp9)*
+// Exp8            ::= Exp9 ('&' Exp9)*
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -8,7 +8,7 @@ module.exports = {
             return false;
         }
 
-        while(at(envir.EqualOp)) {
+        while(at('&')) {
             if(!at(envir.Exp9)) {
                 envir.index = indexBefore;
                 return false;

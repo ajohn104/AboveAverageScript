@@ -1,4 +1,4 @@
-// Exp12           ::= Exp13 (MulOp Exp13)*
+// Exp12           ::= Exp13 (AddOp Exp13)*
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -8,7 +8,7 @@ module.exports = {
             return false;
         }
 
-        while(at(envir.MulOp)) {
+        while(at(envir.AddOp)) {
             if(!at(envir.Exp13)) {
                 envir.index = indexBefore;
                 return false;

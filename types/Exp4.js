@@ -1,4 +1,4 @@
-// Exp4            ::= Exp5 ('and' Exp5)*
+// Exp4            ::= Exp5 ('or' Exp5)*
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -8,7 +8,7 @@ module.exports = {
             return false;
         }
 
-        while(at('and')) {
+        while(at('or')) {
             if(!at(envir.Exp5)) {
                 envir.index = indexBefore;
                 return false;

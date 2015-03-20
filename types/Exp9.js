@@ -1,4 +1,4 @@
-// Exp9            ::= Exp10 (CompareOp Exp10)*
+// Exp9            ::= Exp10 (EqualOp Exp10)*
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -8,7 +8,7 @@ module.exports = {
             return false;
         }
 
-        while(at(envir.CompareOp)) {
+        while(at(envir.EqualOp)) {
             if(!at(envir.Exp10)) {
                 envir.index = indexBefore;
                 return false;

@@ -1,4 +1,4 @@
-// Exp6            ::= Exp7 ('^' Exp7)*
+// Exp6            ::= Exp7 ('|' Exp7)*
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -8,7 +8,7 @@ module.exports = {
             return false;
         }
 
-        while(at('^')) {
+        while(at('|')) {
             if(!at(envir.Exp7)) {
                 envir.index = indexBefore;
                 return false;

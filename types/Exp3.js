@@ -1,4 +1,4 @@
-// Exp3            ::= Exp4 ('or' Exp4)*
+// Exp3            ::= Exp4 ('?' Exp4 ':' Exp4)?
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -7,8 +7,15 @@ module.exports = {
             envir.index = indexBefore;
             return false;
         }
-
-        while(at('or')) {
+        if(at('?')) {
+            if(!at(envir.Exp4)) {
+                envir.index = indexBefore;
+                return false;
+            }
+            if(!at(':')) {
+                envir.index = indexBefore;
+                return false;
+            }
             if(!at(envir.Exp4)) {
                 envir.index = indexBefore;
                 return false;

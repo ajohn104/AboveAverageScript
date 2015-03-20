@@ -38,6 +38,7 @@ envir.Exp15 = require("./types/Exp15");
 envir.Exp16 = require("./types/Exp16");
 envir.Exp17 = require("./types/Exp17");
 envir.Exp18 = require("./types/Exp18");
+envir.Exp19 = require("./types/Exp19");
 envir.BoolLit = require("./types/BoolLit");
 envir.IntLit = require("./types/IntLit");
 envir.StringLit = require("./types/StringLit");

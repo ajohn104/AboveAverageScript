@@ -1,1 +1,4 @@
-val <<= true
+for x in z in y in a in b in d: // Just a validity check.
+    close()
+
+close() if tom in list

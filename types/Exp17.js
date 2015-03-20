@@ -1,4 +1,4 @@
-// Exp17           ::= Exp18
+// Exp17           ::= Exp18 Call? (ArrayCont Call?)* ( ('.' Exp17)* | (Indent (Newline '.' Exp17)+ Dedent)) )?
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -7,6 +7,40 @@ module.exports = {
             envir.index = indexBefore;
             return false;
         }
+
+        at(envir.Call);
+
+        while(at(envir.ArrayCont)) {
+            at(envir.Call);
+        }
+
+        if(next('.')) {
+            while(at('.')) {
+                debug("Exp17: found '.' operator. envir.index:" + envir.index);
+                if(!at(envir.Exp17)) {
+                    envir.index = indexBefore;
+                    return false;
+                }
+            }
+        } else if(at(envir.Indent)) {
+            debug("Exp17: found Indent. envir.index:" + envir.index);
+            if(!(at(envir.Newline) && at('.') && at(envir.Exp17))) {
+                envir.index = indexBefore;
+                return false;
+            }
+            while(envir.parseTokens[envir.index] === '\\n' && envir.parseTokens[envir.index+1] === '.') {
+                envir.index+=2;
+                debug("Exp17: found Newline and '.' operator. envir.index:" + envir.index + ", lexeme: " + envir.parseTokens[envir.index].lexeme);
+                if(!at(envir.Exp17)) {
+                    envir.index = indexBefore;
+                    return false;
+                }
+            }
+            if(!at(envir.Dedent)) {
+                envir.index = indexBefore;
+                return false;
+            }
+        }        
         debug("Finalizing exp17 success. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
         return true;
     }

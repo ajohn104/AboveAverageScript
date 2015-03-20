@@ -1,4 +1,4 @@
-// Case            ::= Newline 'case' Exp18 ':' Indent Block Dedent
+// Case            ::= Newline 'case' Exp19 ':' Indent Block Dedent
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -13,7 +13,7 @@ module.exports = {
             return false;
         }
 
-        if(!at(envir.Exp18)) {
+        if(!at(envir.Exp19)) {
             envir.index = indexBefore;
             return false;
         }
