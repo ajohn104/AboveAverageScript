@@ -1,6 +1,4 @@
-/* Stmt         ::= ObjIndentDecl
- *               |  ObjIndentAssign
- *               |  DeclareStmt
+/* Stmt         ::= DeclareStmt
  *               |  AssignStmt
  *               |  NativeStmt 
  *               |  SwitchStmt
@@ -17,16 +15,8 @@ module.exports = {
         debug("Beginning statement search with token:");
         debug(envir.parseTokens[envir.index]);
         debug("index:" + envir.index + " \n");
-        debug("Trying ObjIndentDecl")
-        var found = at(envir.ObjIndentDecl);
-        if(!found) {
-            debug("ObjIndentDecl failed\nTrying ObjIndentAssign");
-            found |= at(envir.ObjIndentAssign);
-        } 
-        if(!found) {
-            debug("ObjIndentAssign failed\nTrying DeclareStmt");
-            found |= at(envir.DeclareStmt);
-        } 
+        debug("Trying DeclareStmt")
+        var found = at(envir.DeclareStmt);
         if(!found) {
             debug("DeclareStmt failed\nTrying AssignStmt");
             found |= at(envir.AssignStmt);

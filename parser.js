@@ -1,10 +1,7 @@
 var envir = {};
 envir.Block = require('./types/Block');          
 envir.Stmt = require("./types/Stmt");
-envir.ObjIndentDecl = require("./types/ObjIndentDecl");
-envir.ObjIndentAssign = require("./types/ObjIndentAssign");
 envir.DeclareStmt = require("./types/DeclareStmt");
-envir.SetStmt = require("./types/SetStmt");
 envir.AssignStmt = require("./types/AssignStmt");
 envir.ConsumeStmt = require("./types/ConsumeStmt");
 envir.ReturnStmt = require("./types/ReturnStmt");
@@ -46,7 +43,8 @@ envir.IntLit = require("./types/IntLit");
 envir.StringLit = require("./types/StringLit");
 envir.Func = require("./types/Func");
 envir.ObjectInline = require("./types/ObjectInline");
-envir.Property = require("./types/Property");
+envir.Prop = require("./types/Prop");
+envir.PropInd = require("./types/PropInd");
 envir.ArrayLit = require("./types/ArrayLit");
 envir.ArrayCont = require("./types/ArrayCont");
 envir.AssignOp = require("./types/AssignOp");
@@ -65,7 +63,10 @@ envir.Indent = require("./types/Indent");
 envir.Dedent = require("./types/Dedent");
 envir.RegExpLit = require("./types/RegExpLit");
 envir.EndOfFile = require("./types/EndOfFile");
-envir.ObjIndentPropAssign = require("./types/ObjIndentPropAssign");
+envir.ExpList = require("./types/ExpList");
+envir.SetAssign = require("./types/SetAssign");
+envir.SetEqual = require("./types/SetEqual");
+envir.ObjInd = require("./types/ObjInd");
 
 envir.Lexeme = require("./types/Lexeme")(envir);
 
@@ -79,7 +80,6 @@ var parse = function(tkns, call, err, dbgMode) {
     debugMode = (typeof dbgMode !== "undefined")?(dbgMode):(false);
     debug = debugMode?(function(output){
         console.log(output);
-        
     }):(function(output){});
     var parser = new tokenStreamParser(tkns, call, err);
     return parser.parseProgram();

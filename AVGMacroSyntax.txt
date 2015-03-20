@@ -1,8 +1,6 @@
 Program         ::= Stmt Block EOF
 Block           ::= (Newline Stmt)*
-Stmt            ::= ObjIndentDecl
-                 |  ObjIndentAssign
-                 |  DeclareStmt  
+Stmt            ::= DeclareStmt  
                  |  AssignStmt
                  |  NativeStmt
                  |  SwitchStmt
@@ -13,15 +11,13 @@ Stmt            ::= ObjIndentDecl
                  |  ControlStmt
                  |  Exp
 
-ObjIndentDecl   ::= 'let' ObjIndentAssign
-ObjIndentAssign ::= Exp '=' Indent (Newline (Property|ObjIndentPropAssign) )+ Dedent
-ObjIndentPropAssign ::= Exp ':' Indent (Newline (Property|ObjIndentPropAssign) )+ Dedent
-DeclareStmt     ::= 'let' SetStmt ( ',' Indent Newline SetStmt (',' Newline SetStmt)* Dedent )?
-SetStmt         ::= Exp (( '=' Exp (',' Indent NewLine Exp '=' Exp (',' NewLine Exp '=' Exp)* Dedent)? ) | ((',' Exp)* '=' Exp (',' Indent Newline Exp (Newline Exp)* Dedent )?) )
-AssignStmt      ::= Exp (( AssignOp Exp (',' Indent NewLine Exp AssignOp Exp (',' NewLine Exp AssignOp Exp)* Dedent)? ) | ((',' Exp)* AssignOp Exp (',' Indent Newline Exp (Newline Exp)* Dedent )?) )
+DeclareStmt     ::= 'let' (ExpList '=' (ObjInd | ExpList)) | (SetEqual (',' Indent Newline SetEqual (',' Newline SetEqual)* Dedent ) )
+AssignStmt      ::= (ExpList AssignOp (ObjInd | ExpList)) | (SetAssign (',' Indent Newline SetAssign (',' Newline SetAssign)* Dedent ) )
 ConsumeStmt     ::= (Exp (',' Exp)*)? '<-' Id (('.' Id)* ArrayCont+ Call?)+
 ReturnStmt      ::= 'ret' Exp?
 ControlStmt     ::= 'stop' | 'skip'
+SetAssign       ::= Exp AssignOp Exp
+SetEqual        ::= Exp '=' Exp
 
 IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
 SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Defaults? Dedent
@@ -60,11 +56,14 @@ Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | F
 
 ArrayLit        ::= ('[' ']') | ArrayCont
 ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) ']'
+ExpList         ::= Exp (',' Exp)*
 RegExpLit       ::= '\/[^\/\\]+(?:\\.[^\/\\]*)*\/[igm]{0,3}'
 Func            ::= 'func' (Id (',' Id)* )? '->' ('ret'? Exp) | (Indent Block Dedent)
 ObjectInline    ::= '{' (Property (',' Property)*) | (Indent Newline Property (',' Newline Property)* Dedent Newline) '}'
-Property        ::= (Id | BoolLit | StringLit) ':' Exp
-Call            ::= '(' ( Exp (',' Exp)* (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? )? Newline? ')'
+ObjInd          ::= Indent (Newline (Prop|PropInd) )+ Dedent
+Prop            ::= (Id | BoolLit | StringLit) ':' Exp
+PropInd         ::= (Id | BoolLit | StringLit) ':' (Exp | ObjInd)
+Call            ::= '(' ( ExpList (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'
 
 AssignOp        ::= '=' | '+=' |'-=' | '*=' | '/=' | '%=' | '<<=' | '>>=' | '>>>=' | '&=' | '^=' | '|='
 EqualOp         ::= '!==' | '===' | '!=' | '=='

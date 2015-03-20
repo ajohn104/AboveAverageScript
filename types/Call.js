@@ -1,4 +1,4 @@
-// Call            ::= '(' ( Exp (',' Exp)* (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'
+// Call            ::= '(' ( ExpList (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -8,22 +8,8 @@ module.exports = {
             return false;
         }
         debug("Checking for function arguments. envir.index:" + envir.index);
-        if(at(envir.Exp)) {
+        if(at(envir.ExpList)) {
             var indexMid = envir.index;
-            if(at(',')) {
-                if(at(envir.Exp)) {
-                    indexMid = envir.index;
-                    while(at(',')) {
-                        if(!at(envir.Exp)) {
-                            envir.index = indexMid;
-                            break;
-                        }
-                        indexMid = envir.index;
-                    }
-                } else {
-                    envir.index = indexMid;
-                }
-            }
             if(at(',')) {
                 if(!at(envir.Indent)) {
                     envir.index = indexBefore;

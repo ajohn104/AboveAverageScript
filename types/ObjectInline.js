@@ -1,4 +1,4 @@
-// ObjectInline    ::= '{' (Property (',' Property)*) | (Indent Newline Property (',' Newline Property)* Dedent Newline) '}'
+// ObjectInline    ::= '{' (Prop (',' Prop)*) | (Indent Newline Prop (',' Newline Prop)* Dedent Newline) '}'
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -8,9 +8,9 @@ module.exports = {
             return false;
         }
 
-        if(at(envir.Property)) {
+        if(at(envir.Prop)) {
             while(at(',')) {
-                if(!at(envir.Property)) {
+                if(!at(envir.Prop)) {
                     envir.index = indexBefore;
                     return false;
                 }
@@ -21,7 +21,7 @@ module.exports = {
                 return false;
             }
             
-            if(!at(envir.Property)) {
+            if(!at(envir.Prop)) {
                 envir.index = indexBefore;
                 return false;
             }
@@ -30,7 +30,7 @@ module.exports = {
                     envir.index = indexBefore;
                     return false;
                 }
-                if(!at(envir.Property)) {
+                if(!at(envir.Prop)) {
                     envir.index = indexBefore;
                     return false;
                 }
