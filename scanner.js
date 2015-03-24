@@ -15,6 +15,7 @@ var scan = function(file, callback, error) {
             var allValid = scanner.nextLine(line);
             if(!allValid) {
                 error(scanner.errorToken);
+                callback = undefined;
                 return;
             }
         }

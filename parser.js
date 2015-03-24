@@ -70,6 +70,8 @@ envir.SetEqual = require("./types/SetEqual");
 envir.ObjInd = require("./types/ObjInd");
 
 envir.Lexeme = require("./types/Lexeme")(envir);
+envir.inIndented = false;
+envir.indentedExp = [];
 
 var callback = undefined;
 var error = undefined;
@@ -92,6 +94,17 @@ var tokenStreamParser = function(tkns, call, err) {
 
     envir.parseTokens = tkns;
     envir.index = 0;
+
+    envir.checkIndent = function() {
+        if(envir.inIndented) {
+            at(envir.Newline);
+        } else {
+            envir.inIndented = at(envir.Indent);
+            if(envir.inIndented) {
+                at(envir.Newline);
+            }
+        }
+    };
 
     // Array type check thanks to user113716 from StackOverflow
     var isArray = function(obj) {

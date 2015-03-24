@@ -17,6 +17,15 @@ $(func ->
         color2 = "white",
         color3 = "blue"
 
+    let obj1, obj2, obj3 =
+        worth: it 
+        "isCrazy": false
+        "isALiar": true
+        numberOfTimesLied: 8
+        lieToMe: func lie ->
+            log("You know, " + lie)
+        _self: _
+
     if finished:
         ret "It's over. Sorry."
 )

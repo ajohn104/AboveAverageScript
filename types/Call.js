@@ -1,4 +1,4 @@
-// Call            ::= '(' ( ExpList (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'
+// Call            ::= '(' ( ExpList (Newline? ',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -10,6 +10,7 @@ module.exports = {
         debug("Checking for function arguments. envir.index:" + envir.index);
         if(at(envir.ExpList)) {
             var indexMid = envir.index;
+            at(envir.Newline);
             if(at(',')) {
                 if(!at(envir.Indent)) {
                     envir.index = indexBefore;

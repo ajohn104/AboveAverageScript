@@ -16,6 +16,7 @@ var scanError = function(errorToken) {
             console.error("Scan Error. Found unexpected character(s): '" + errorToken.lexeme + "'");
             break;
     }
+    finalCallBack(false);
 };    
 
 var compile = function(fileName, finalCall) {

@@ -47,7 +47,9 @@ Exp9            ::= Exp10 (EqualOp Exp10)*
 Exp10           ::= Exp11 (CompareOp Exp11)*
 Exp11           ::= Exp12 (ShiftOp Exp12)*
 Exp12           ::= Exp13 (AddOp Exp13)*
-Exp13           ::= Exp14 (MulOp Exp14)*
+Exp13           ::= Exp14 (MulOp Exp14)* ((Indent Newline (MulOp Exp14Ind)+ Dedent)
+                 |        (MulOp Indent Exp14Ind (Newline? MulOp Exp14Ind)* Dedent)
+                 |        (MulOp Exp14)*)
 Exp14           ::= PrefixOp? Exp15
 Exp15           ::= Exp16 PostfixOp?
 Exp16           ::= 'new'? Exp17 Call?
@@ -55,16 +57,37 @@ Exp17           ::= Exp18 Call? (ArrayCont Call?)* ( ('.' Exp17)* | (Indent (New
 Exp18           ::= Exp19
 Exp19           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
 
+ExpInd          ::= Newline? Exp1Ind (ForIn | ForColon)*
+Exp1Ind         ::= Newline? Exp2Ind (Newline? 'if' Exp2Ind (Newline? 'else' Exp2Ind)?)?
+Exp2Ind         ::= Newline? Exp3Ind (Newline? 'in' Exp3Ind)*
+Exp3Ind         ::= Newline? Exp4Ind (Newline? '?' Exp4Ind Newline? ':' Exp4Ind)?
+Exp4Ind         ::= Newline? Exp5Ind (Newline? 'or' Exp5Ind)*
+Exp5Ind         ::= Newline? Exp6Ind (Newline? 'and' Exp6Ind)*
+Exp6Ind         ::= Newline? Exp7Ind (Newline? '|' Exp7Ind)*
+Exp7Ind         ::= Newline? Exp8Ind (Newline? '^' Exp8Ind)*
+Exp8Ind         ::= Newline? Exp9Ind (Newline? '&' Exp9Ind)*
+Exp9Ind         ::= Newline? Exp10Ind (Newline? EqualOp Exp10Ind)*
+Exp10Ind        ::= Newline? Exp11Ind (Newline? CompareOp Exp11Ind)*
+Exp11Ind        ::= Newline? Exp12Ind (Newline? ShiftOp Exp12Ind)*
+Exp12Ind        ::= Newline? Exp13Ind (Newline? AddOp Exp13Ind)*
+Exp13Ind        ::= Newline? Exp14Ind (Newline? MulOp Exp14Ind)*
+Exp14Ind        ::= Newline? PrefixOp? Exp15Ind
+Exp15Ind        ::= Exp16Ind Newline? PostfixOp?
+Exp16Ind        ::= Newline? 'new'? Exp17Ind Call?
+Exp17Ind        ::= Newline? Exp18Ind Call? (ArrayCont Call?)* ( ('.' Exp17)* | (Indent (Newline '.' Exp17)+ Dedent)) )?
+Exp18Ind        ::= Newline? ExpInd19
+Exp19Ind        ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
+
 ArrayLit        ::= ('[' ']') | ArrayCont
-ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) ']'
-ExpList         ::= Exp (',' Exp)*
+ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) Newline? ']'
+ExpList         ::= Exp (Newline? ',' Exp)*
 RegExpLit       ::= '\/[^\/\\]+(?:\\.[^\/\\]*)*\/[igm]{0,3}'
 Func            ::= 'func' (Id (',' Id)* )? '->' ('ret'? Exp) | (Indent Block Dedent)
 ObjectInline    ::= '{' (Property (',' Property)*) | (Indent Newline Property (',' Newline Property)* Dedent Newline) '}'
 ObjInd          ::= Indent (Newline (Prop|PropInd) )+ Dedent
 Prop            ::= (Id | BoolLit | StringLit) ':' Exp
 PropInd         ::= (Id | BoolLit | StringLit) ':' (Exp | ObjInd)
-Call            ::= '(' ( ExpList (',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'
+Call            ::= '(' ( ExpList (Newline? ',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'
 
 AssignOp        ::= '=' | '+=' |'-=' | '*=' | '/=' | '%=' | '<<=' | '>>=' | '>>>=' | '&=' | '^=' | '|='
 EqualOp         ::= '!==' | '===' | '!=' | '=='

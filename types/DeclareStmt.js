@@ -17,8 +17,10 @@ module.exports = {
                 envir.index = indexMid;
             }
         }
+        debug("DeclareStmt: found ExpList: " + found + ". envir.index:" + envir.index);
 
         if(!found && at(envir.SetEqual)) {
+            debug("DeclareStmt: checking for SetEqual stuff. envir.index:" + envir.index);
             found = true;
             if(found && !at(',')) {
                 found = false;
@@ -47,6 +49,8 @@ module.exports = {
                 envir.index = indexMid;
             }
         }
+
+        debug("DeclareStmt: passed setequal. found: " + found + ". envir.index:" + envir.index);
         if(!found) {
             envir.index = indexBefore;
             return false;

@@ -1,4 +1,4 @@
-// ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) ']'
+// ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) Newline? ']'
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
@@ -45,6 +45,7 @@ module.exports = {
             envir.index = indexBefore;
             return false;
         }
+        at(envir.Newline);
         if(!at(']')) {
             envir.index = indexBefore;
             return false;

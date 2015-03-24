@@ -2,11 +2,13 @@
 module.exports = {
     is: function(at, next, envir, debug) {
         debug("Starting on exp19. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
-        var indexBefore = envir.index;
+        var indexBefore = envir.index; 
+        var indentedBefore = envir.inIndent;
         var isParenthesizedExpr = false;
         if(at('(')) {
             if(!at(envir.Exp)) {
-                envir.index = indexBefore;
+                envir.index = indexBefore; 
+                envir.inIndent = indentedBefore;
                 isParenthesizedExpr = false;
             }
             debug("Found exp within possible ParenthesizedExpr. Looking for ')'. envir.index:" + envir.index);
@@ -17,7 +19,8 @@ module.exports = {
             } // I think this is it.
 
             if(!at(')')) {
-                envir.index = indexBefore;
+                envir.index = indexBefore; 
+                envir.inIndent = indentedBefore;
                 isParenthesizedExpr = false;
             }
             debug("Found ')'. Completed ParenthesizedExpr. envir.index:" + envir.index);
