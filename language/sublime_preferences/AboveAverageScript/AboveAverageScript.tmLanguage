@@ -634,7 +634,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>(\$|%|&amp;|&lt;-|\*|\-\-|\-(?!&gt;)|\+\+|\+|\/|~|!==|!=|===|==|=|&lt;=|&gt;=|&lt;&lt;=|&gt;&gt;=|&gt;&gt;&gt;=|&lt;&gt;|&lt;|((?:^|\-)(\>))|\?\:|\*=|(?&lt;!\()/=|%=|\+=|\-=|\^=|&amp;=|\b(in|instanceof|of|new|delete|typeof|void|not|and|or)\b)</string>
+			<string>(\$|%|&amp;|&lt;-|\*|\-\-|\-(?!&gt;)|\+\+|\+|~|!==|!=|===|==|=|&lt;=|&gt;=|&lt;&lt;=|&gt;&gt;=|&gt;&gt;&gt;=|&lt;&gt;|&lt;|((?:^|\-)(\>))|\?\:|\*=|(?&lt;!\()/=|%=|\+=|\-=|\^=|&amp;=|\b(in|instanceof|of|new|delete|typeof|void|not|and|or)\b)</string>
 			<key>name</key>
 			<string>keyword.operator.js</string>
 		</dict>
