@@ -13,7 +13,7 @@ Stmt            ::= DeclareStmt
 
 DeclareStmt     ::= 'let' (ExpList '=' (ObjInd | ExpList)) | (SetEqual (',' Indent Newline SetEqual (',' Newline SetEqual)* Dedent ) )
 AssignStmt      ::= (ExpList AssignOp (ObjInd | ExpList)) | (SetAssign (',' Indent Newline SetAssign (',' Newline SetAssign)* Dedent ) )
-ConsumeStmt     ::= (Exp (',' Exp)*)? '<-' Id (('.' Id)* ArrayCont+ Call?)+
+ConsumeStmt     ::= ExpList? '<-' Exp
 ReturnStmt      ::= 'ret' Exp?
 ControlStmt     ::= 'stop' | 'skip'
 SetAssign       ::= Exp AssignOp Exp
@@ -51,7 +51,7 @@ Exp13           ::= Exp14 (MulOp Exp14)*
 Exp14           ::= PrefixOp? Exp15
 Exp15           ::= Exp16 PostfixOp?
 Exp16           ::= 'new'? Exp17 Call?
-Exp17           ::= Exp18 Call? (ArrayCont Call?)* ( ('.' Exp17)* | (Indent (Newline '.' Exp17)+ Dedent))?
+Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp17)*
 Exp18           ::= Exp19
 Exp19           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
 
@@ -83,3 +83,5 @@ Newline         ::= '\n'
 Indent          ::= '\i'
 Dedent          ::= '\d'
 EOF             ::= '@EOF'
+
+IntLit          ::= [+-]? ( ( '0x' [a-fA-F0-9]+ ) | ( \d+ ( '.' \d+ )? ( [eE] [+-]? \d+ )? ) )

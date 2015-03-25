@@ -2,7 +2,8 @@
 module.exports = {
     is: function(at, next, envir, debug) {
         debug("Starting on exp. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
-        var indexBefore = envir.index; var indentedBefore = envir.inIndent;
+        var indexBefore = envir.index;
+        var indentedBefore = envir.inIndent;
         envir.indentedExp.push(envir.inIndented);
         envir.inIndented = false;
         

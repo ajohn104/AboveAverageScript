@@ -1,4 +1,4 @@
-// Exp17           ::= Exp18 Call? (ArrayCont Call?)* ( ('.' Exp17)* | (Indent (Newline '.' Exp17)+ Dedent)) )?
+// Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp17)*
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index; 
@@ -9,46 +9,43 @@ module.exports = {
             envir.inIndent = indentedBefore;
             return false;
         }
-
-        at(envir.Call);
-
-        while(at(envir.ArrayCont)) {
-            at(envir.Call);
+        var indented = false;
+        while(next(envir.ArrayCont) || next(envir.Call) || next('.') || next(envir.Indent) || (indented && next(envir.Newline))) {
+            if(indented && at(envir.Newline)) {
+                ; // Just suck it up.
+            } else if(at(envir.ArrayCont)) {
+                ; // Just suck it up.
+            } else if(at(envir.Call)) {
+                ; // Just suck it up.
+            } else if(at('.')) {
+                if(!at(envir.Exp17)) {
+                    envir.index = indexBefore;
+                    return false;
+                }
+            } else if(at(envir.Indent)) {
+                if(indented) {
+                    envir.index = indexBefore;
+                    debug("Serious indent issue in Exp17");
+                    return false;
+                }
+                debug("Exp17: found Indent, grabbing Newline");
+                indented = true;
+                at(envir.Newline);
+                if(!at('.')) {
+                    envir.index = indexBefore;
+                    return false;
+                }
+                if(!at(envir.Exp17)) {
+                    envir.index = indexBefore;
+                    return false;
+                }
+            }
         }
-        var indexMid = envir.index;
-        if(next('.')) {
-            while(at('.')) {
-                debug("Exp17: found '.' operator. envir.index:" + envir.index);
-                if(!at(envir.Exp17)) {
-                    envir.index = indexBefore; 
-                    envir.inIndent = indentedBefore;
-                    return false;
-                }
-            }
-        } else if(at(envir.Indent) && at(envir.Newline) && at('.')) {
-            debug("Exp17: found Indent. envir.index:" + envir.index);
-            if(!at(envir.Exp17)) {
-                envir.index = indexBefore; 
-                envir.inIndent = indentedBefore;
-                return false;
-            }
-            while(envir.parseTokens[envir.index] === '\\n' && envir.parseTokens[envir.index+1] === '.') {
-                envir.index+=2;
-                debug("Exp17: found Newline and '.' operator. envir.index:" + envir.index + ", lexeme: " + envir.parseTokens[envir.index].lexeme);
-                if(!at(envir.Exp17)) {
-                    envir.index = indexBefore; 
-                    envir.inIndent = indentedBefore;
-                    return false;
-                }
-            }
-            if(!at(envir.Dedent)) {
-                envir.index = indexBefore; 
-                envir.inIndent = indentedBefore;
-                return false;
-            }
-        } else {
-            envir.index = indexMid;
-        }   
+        if(indented && !at(envir.Dedent)) {
+            envir.index = indexBefore;
+            return false;
+        }
+        indented = false;
         debug("Finalizing exp17 success. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
         return true;
     }
