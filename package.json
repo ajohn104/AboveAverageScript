@@ -1,13 +1,18 @@
 {
   "name": "aboveaveragescript",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "aljo",
   "description": "Ever so slightly above average",
-  "keywords": ["aboveaverage", "average"],
+  "keywords": [
+    "aboveaverage",
+    "average"
+  ],
   "bugs": "ajohn104@lion.lmu.edu",
-  "contributors":"aljo",
-  "repository":"https://github.com/ajohn104/AboveAverageScript",
-  "engines":{ "node": ">=0.10.32"},
+  "contributors": "aljo",
+  "repository": "https://github.com/ajohn104/AboveAverageScript",
+  "engines": {
+    "node": ">=0.10.32"
+  },
   "dependencies": {
     "underscore": "^1.8.2",
     "byline": "^4.2.1"
