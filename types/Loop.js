@@ -4,3 +4,5 @@ module.exports = {
         return at(envir.WhileLoop) || at(envir.ForLoop);
     }
 };
+
+// Doesn't need an entity. Should be gained from while and for loop.

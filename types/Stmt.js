@@ -14,9 +14,10 @@ module.exports = {
     is: function(at, next, envir, debug) {
         debug("Beginning statement search with token:");
         debug(envir.parseTokens[envir.index]);
-        debug("index:" + envir.index + " \n");
+        debug("index:" + envir.index + "\n");
         debug("Trying DeclareStmt")
         var found = at(envir.DeclareStmt);
+        var isExp = false;
         if(!found) {
             debug("DeclareStmt failed\nTrying AssignStmt");
             found |= at(envir.AssignStmt);
@@ -50,17 +51,23 @@ module.exports = {
             found |= at(envir.ControlStmt);
         } 
         if(!found) {
-            debug("ControlStmt failed\nTrying Exp");
+            debug("ControlStmt failed\nTrying Exp");  // Left off here. Also, nearly no children were done, either.
             found |= at(envir.Exp);
+            isExp = found;
         }
         if(!found) {
             debug("Exp failed");
         }
 
         debug("Completed statement search. Status: " + found);
+        if(found) {
+//            debug("Last found: " + envir.last.toString()); Turned off while under development.
+        }
         debug("next token to be searched:");
         debug(envir.parseTokens[envir.index]);
         debug("index:" + envir.index + " \n");
         return found;
     }
+
+    // No entity needed, since the entity should really be specific to the type of stmt/exp found.
 };

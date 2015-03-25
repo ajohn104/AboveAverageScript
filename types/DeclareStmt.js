@@ -2,7 +2,7 @@
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
-
+        var entity;
         if(!at('let')) {
             envir.index = indexBefore;
             return false;
@@ -12,16 +12,25 @@ module.exports = {
         var indexMid = envir.index;
         if(!found && at(envir.ExpList)) {
             found = true;
+            entity = new DeclareMultVar();
+            entity.leftSideExps = envir.last;
             if(!(at('=') && (at(envir.ObjInd) || at(envir.ExpList)))) {
                 found = false;
                 envir.index = indexMid;
             }
+            if(envir.isArray(envir.last)) {
+                entity.rightSideExps = envir.last;
+            } else {
+                entity.rightSideExps.push(envir.last);
+            } 
         }
         debug("DeclareStmt: found ExpList: " + found + ". envir.index:" + envir.index);
 
         if(!found && at(envir.SetEqual)) {
             debug("DeclareStmt: checking for SetEqual stuff. envir.index:" + envir.index);
             found = true;
+            entity = new DeclareMultiLine();
+            entity.declarepairs.push(envir.last);
             if(found && !at(',')) {
                 found = false;
                 envir.index = indexMid;
@@ -38,8 +47,10 @@ module.exports = {
                 found = false;
                 envir.index = indexMid;
             }
+            entity.declarepairs.push(envir.last);
             indexMid = envir.index;
             while(found && at(',') && at(envir.Newline) && at(envir.SetEqual)) {
+                entity.declarepairs.push(envir.last);
                 indexMid = envir.index;
             }
             envir.index = indexMid;
@@ -55,6 +66,41 @@ module.exports = {
             envir.index = indexBefore;
             return false;
         }
+        envir.last = entity;
         return true;
     }
+};
+
+var DeclareMultVar = function() {
+    this.leftSideExps = [];
+    this.rightSideExps = [];
+    this.toString = function(indentlevel) {
+        indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
+        var indents = envir.indents(indentlevel);
+        var out = indents + "DeclareMultVar ->\n" + indents + "    leftSideExps: [\n";
+        for(var i = 0; i < this.leftSideExps.length; i++) {
+            out += this.leftSideExps[i].toString(indentlevel + 2) + "\n";
+        }
+        out += indents + "    ], rightSideExps: [\n";
+        for(var i = 0; i < this.rightSideExps.length; i++) {
+            out += this.rightSideExps[i].toString(indentlevel + 2) + "\n";
+        }
+        out += indents + "    ]\n" + indents + "]\n";
+        return out;
+    };
+};
+
+var DeclareMultiLine = function() {
+    this.declarepairs = [];
+    this.toString = function(indentlevel) {
+        indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
+        var indents = envir.indents(indentlevel);
+        var out = indents + "DeclareMultiLine -> stmts: [\n";
+        for(var i = 0; i < this.declarepairs.length; i++) {
+            var pair = this.declarepairs[i];
+            out += pair.left.toString(indentlevel + 1) + "=" + pair.right.toString(0) + "\n";
+        }
+        out += envir.indents(indentlevel) + "]";
+        return out;
+    };
 };

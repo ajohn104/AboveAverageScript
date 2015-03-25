@@ -17,7 +17,7 @@ envir.ForColon = require("./types/ForColon");
 envir.For = require("./types/For");
 envir.SwitchStmt = require("./types/SwitchStmt");
 envir.Case = require("./types/Case");
-envir.Defaults = require("./types/Default");
+envir.Default = require("./types/Default");
 envir.NativeStmt = require("./types/NativeStmt");
 envir.Exp = require("./types/Exp");
 envir.Exp1 = require("./types/Exp1");
@@ -73,6 +73,15 @@ envir.Lexeme = require("./types/Lexeme")(envir);
 envir.inIndented = false;
 envir.indentedExp = [];
 
+envir.last = null;
+envir.indents = function(indents) {
+    var str = "";
+    for(var i = 0; i < indents; i++) {
+        str += "  ";
+    }
+    return str;
+};
+
 var callback = undefined;
 var error = undefined;
 var debugMode = false;
@@ -110,6 +119,8 @@ var tokenStreamParser = function(tkns, call, err) {
     var isArray = function(obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
     }
+
+    envir.isArray = isArray;
 
     var at = function(expected) {
         if(isArray(expected)) {

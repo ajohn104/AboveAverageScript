@@ -1,112 +1,3 @@
-// AssignStmt      ::= Exp (( AssignOp Exp (',' Indent NewLine Exp AssignOp Exp (',' NewLine Exp AssignOp Exp)* Dedent)? ) | ((',' Exp)* AssignOp Exp (',' Indent Newline Exp (Newline Exp)* Dedent )?) )
-/*module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
-
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore;
-            return false;
-        }
-
-        if(at(envir.AssignOp)) {
-            if(!at(envir.Exp)) {
-                envir.index = indexBefore;
-                return false;
-            }
-            if(at(',')) {
-                if(!at(envir.Indent)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-                if(!at(envir.Newline)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-                if(!at(envir.Exp)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-                if(!at(envir.AssignOp)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-                if(!at(envir.Exp)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-                while(at(',')) {
-                    if(!at(envir.Newline)) {
-                        envir.index = indexBefore;
-                        return false;
-                    }
-                    if(!at(envir.Exp)) {
-                        envir.index = indexBefore;
-                        return false;
-                    }
-                    if(!at(envir.AssignOp)) {
-                        envir.index = indexBefore;
-                        return false;
-                    }
-                    if(!at(envir.Exp)) {
-                        envir.index = indexBefore;
-                        return false;
-                    }
-                }
-                if(!at(envir.Dedent)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-            }
-        } else if(next(',')) {
-            while(at(',')) {
-                if(!at(envir.Exp)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-            }
-
-            if(!at(envir.AssignOp)) {
-                envir.index = indexBefore;
-                return false;
-            }
-
-            if(!at(envir.Exp)) {
-                envir.index = indexBefore;
-                return false;
-            }
-
-            if(at(',')) {
-                if(!at(envir.Indent)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-                if(!at(envir.Newline)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-                if(!at(envir.Exp)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-                while(at(envir.Newline)) {
-                    if(!at(envir.Exp)) {
-                        envir.index = indexBefore;
-                        return false;
-                    }
-                }
-                if(!at(envir.Dedent)) {
-                    envir.index = indexBefore;
-                    return false;
-                }
-            }
-        } else {
-            envir.index = indexBefore;
-            return false;
-        }
-        return true;
-    }
-};*/
-
 // AssignStmt      ::= (ExpList AssignOp (ObjInd | ExpList)) | (SetAssign (',' Indent Newline SetAssign (',' Newline SetAssign)* Dedent ) )
 module.exports = {
     is: function(at, next, envir, debug) {
@@ -114,16 +5,31 @@ module.exports = {
 
         var found = false;
         var indexMid = envir.index;
+        var entity;
         if(!found && at(envir.ExpList)) {
             found = true;
-            if(!(at(envir.AssignOp) && (at(envir.ObjInd) || at(envir.ExpList)))) {
+            entity = new AssignMultVar();
+            entity.leftSideExps = envir.last;
+            if(!at(envir.AssignOp)) {
                 found = false;
                 envir.index = indexMid;
             }
+            entity.operator = envir.last;
+            if(!(found && (at(envir.ObjInd) || at(envir.ExpList)))) {
+                found = false;
+                envir.index = indexMid;
+            }
+            if(envir.isArray(envir.last)) {
+                entity.rightSideExps = envir.last;
+            } else {
+                entity.rightSideExps.push(envir.last);
+            }
         }
 
-        if(!found && at(envir.SetEqual)) {
+        if(!found && at(envir.SetAssign)) {
             found = true;
+            entity = new AssignMultiLine();
+            entity.assignpairs.push(envir.last);
             if(found && !at(',')) {
                 found = false;
                 envir.index = indexMid;
@@ -136,12 +42,14 @@ module.exports = {
                 found = false;
                 envir.index = indexMid;
             }
-            if(found && !at(envir.SetEqual)) {
+            if(found && !at(envir.SetAssign)) {
                 found = false;
                 envir.index = indexMid;
             }
+            entity.assignpairs.push(envir.last);
             indexMid = envir.index;
-            while(found && at(',') && at(envir.Newline) && at(envir.SetEqual)) {
+            while(found && at(',') && at(envir.Newline) && at(envir.SetAssign)) {
+                entity.assignpairs.push(envir.last);
                 indexMid = envir.index;
             }
             envir.index = indexMid;
@@ -155,6 +63,42 @@ module.exports = {
             envir.index = indexBefore;
             return false;
         }
+        envir.last = entity;
         return true;
     }
+};
+
+var AssignMultVar = function() {
+    this.leftSideExps = [];
+    this.rightSideExps = [];
+    this.operator;
+    this.toString = function(indentlevel) {
+        indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
+        var indents = envir.indents(indentlevel);
+        var out = indents + "AssignMultVar ->\n" + indents + "    leftSideExps: [\n";
+        for(var i = 0; i < this.leftSideExps.length; i++) {
+            out += this.leftSideExps[i].toString(indentlevel + 2) + "\n";
+        }
+        out += indents + "    ], operator: " + this.operator + ", rightSideExps: [\n";
+        for(var i = 0; i < this.rightSideExps.length; i++) {
+            out += this.rightSideExps[i].toString(indentlevel + 2) + "\n";
+        }
+        out += indents + "    ]\n" + indents + "]\n";
+        return out;
+    };
+};
+
+var AssignMultiLine = function() {
+    this.assignpairs = [];
+    this.toString = function(indentlevel) {
+        indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
+        var indents = envir.indents(indentlevel);
+        var out = indents + "AssignMultiLine -> stmts: [\n";
+        for(var i = 0; i < this.assignpairs.length; i++) {
+            var pair = this.assignpairs[i];
+            out += pair.left.toString(indentlevel + 1) + pair.operator + pair.right.toString(0) + "\n";
+        }
+        out += envir.indents(indentlevel) + "]";
+        return out;
+    };
 };
