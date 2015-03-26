@@ -1,7 +1,11 @@
 // NativeStmt      ::= '***native***'
 module.exports = {
     is: function(at, next, envir, debug) {
-        return at('***native***');
+        var found = at('***native***');
+        if(found) {
+            envir.last = new NativeStmt();
+        }
+        return found;
     }
 };
 

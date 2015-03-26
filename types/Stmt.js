@@ -51,17 +51,18 @@ module.exports = {
             found |= at(envir.ControlStmt);
         } 
         if(!found) {
-            debug("ControlStmt failed\nTrying Exp");  // Left off here. Also, nearly no children were done, either.
+            debug("ControlStmt failed\nTrying Exp");  
             found |= at(envir.Exp);
             isExp = found;
         }
+        // Left off at Exp13. Also, nearly no children were done, either.
         if(!found) {
-            debug("Exp failed");
+            debug("Exp failed");  
         }
 
         debug("Completed statement search. Status: " + found);
         if(found) {
-//            debug("Last found: " + envir.last.toString()); Turned off while under development.
+            //debug("Last found: " + envir.last.toString()); //Turned off while under development.
         }
         debug("next token to be searched:");
         debug(envir.parseTokens[envir.index]);

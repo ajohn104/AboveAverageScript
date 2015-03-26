@@ -1,5 +1,5 @@
 var envir = {};
-envir.Block = require('./types/Block');          
+envir.Block = require('./types/Block');                             
 envir.Stmt = require("./types/Stmt");
 envir.DeclareStmt = require("./types/DeclareStmt");
 envir.AssignStmt = require("./types/AssignStmt");
@@ -38,7 +38,6 @@ envir.Exp15 = require("./types/Exp15");
 envir.Exp16 = require("./types/Exp16");
 envir.Exp17 = require("./types/Exp17");
 envir.Exp18 = require("./types/Exp18");
-envir.Exp19 = require("./types/Exp19");
 envir.BoolLit = require("./types/BoolLit");
 envir.IntLit = require("./types/IntLit");
 envir.StringLit = require("./types/StringLit");
@@ -85,14 +84,16 @@ envir.indents = function(indents) {
 var callback = undefined;
 var error = undefined;
 var debugMode = false;
+var outputTree = false;
 
 var debug = null;
 
-var parse = function(tkns, call, err, dbgMode) {
+var parse = function(tkns, call, err, dbgMode, tree) {
     debugMode = (typeof dbgMode !== "undefined")?(dbgMode):(false);
     debug = debugMode?(function(output){
         console.log(output);
     }):(function(output){});
+    outputTree = tree;
     var parser = new tokenStreamParser(tkns, call, err);
     return parser.parseProgram();
 };
@@ -100,7 +101,6 @@ var parse = function(tkns, call, err, dbgMode) {
 var tokenStreamParser = function(tkns, call, err) {
     callback = call;
     error = err;
-
     envir.parseTokens = tkns;
     envir.index = 0;
 
@@ -143,21 +143,39 @@ var tokenStreamParser = function(tkns, call, err) {
     };
 
     this.parseProgram = function() {
+        var entity = new Program();
         if(!at(envir.Stmt)) {
             error(envir.parseTokens[envir.index]);
             return false;
         }
+        entity.stmt = envir.last;
         if(!at(envir.Block)) {
             error(envir.parseTokens[envir.index]);
             return false;
         };
+        entity.block = envir.last;
         debug("End of program block");
-        
         if(!at(envir.EndOfFile)) {
             error(envir.parseTokens[envir.index]);
-            return false
+            return false;
+        }
+        if(outputTree) {
+            console.log(entity.toString(0));
         }
         return true;
+    };
+
+    var Program = function() {
+        this.stmt = null;
+        this.block = null;
+        this.toString = function(indentlevel) {
+            indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
+            var indents = envir.indents(indentlevel);
+            var out = indents + "Program ->\n";
+            out += this.stmt.toString(indentlevel + 1);
+            out += this.block.toString(indentlevel + 1);
+            return out;
+        };
     };
 };
 

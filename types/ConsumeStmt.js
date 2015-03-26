@@ -35,7 +35,7 @@ var ConsumeStmt = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "ConsumeStmt ->\n";
-        out += indents + "    consumer:";
+        out += indents + "  consumer(s):";
         if(this.leftSideExps === null) {
             out += "local scope\n";
         } else {
@@ -43,9 +43,9 @@ var ConsumeStmt = function() {
             for(var i = 0; i < this.leftSideExps.length; i++) {
                 out += this.leftSideExps[i].toString(indentlevel + 2);
             }
-            out += indents + "    ]\n";
+            out += indents + "  ]\n";
         }
-        out += indents + "    left side exp: " + rightSideExp.toString() + "\n";
+        out += indents + "  left side exp: " + this.rightSideExp.toString() + "\n";
         return out;
     };
 };

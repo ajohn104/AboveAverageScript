@@ -9,3 +9,5 @@ module.exports = {
         return true;
     }
 };
+
+// Entity is dealt with by Lexeme.

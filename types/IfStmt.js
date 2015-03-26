@@ -101,12 +101,12 @@ var IfStmt = function() {
     this.toString = function(indentlevel) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = ifEntity.toString(indentlevel);
-        for(var i = 0; i < elifEntities.length; i++) {
-            out += elifEntities[i].toString(indentlevel);
+        var out = this.ifEntity.toString(indentlevel);
+        for(var i = 0; i < this.elifEntities.length; i++) {
+            out += this.elifEntities[i].toString(indentlevel);
         }
-        if(elseEntity !== null) {
-            out += elseEntity.toString(indentlevel);
+        if(this.elseEntity !== null) {
+            out += this.elseEntity.toString(indentlevel);
         }
         return out;
     };
@@ -118,7 +118,7 @@ var If = function() {
     this.toString = function(indentlevel) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "if\n" + indents + "    condition:\n" + this.condition.toString(indentlevel + 1) + "\n";
+        var out = indents + "if condition:" + this.condition.toString() + "\n";
         out += this.block.toString(indentlevel + 1);
         return out;
     };
@@ -130,7 +130,7 @@ var Elif = function() {
     this.toString = function(indentlevel) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "elif\n" + indents + "    condition:\n" + this.condition.toString(indentlevel + 1) + "\n";
+        var out = indents + "elif condition:" + this.condition.toString() + "\n";
         out += this.block.toString(indentlevel + 1);
         return out;
     };

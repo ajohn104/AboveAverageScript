@@ -3,6 +3,7 @@ module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
 
+        var entity = new SwitchStmt();
         if(!at('switch')) {
             envir.index = indexBefore;
             return false;
@@ -12,6 +13,7 @@ module.exports = {
             envir.index = indexBefore;
             return false;
         }
+        entity.condition = envir.last;
 
         if(!at(':')) {
             envir.index = indexBefore;
@@ -27,16 +29,23 @@ module.exports = {
             envir.index = indexBefore;
             return false;
         }
+        entity.cases.push(envir.last);
 
-        while(at(envir.Case));
+        while(at(envir.Case)) {
+            entity.cases.push(envir.last);
+        }
 
-        at(envir.Default);
+        var foundDefault = at(envir.Default);
+        if(foundDefault) {
+            entity.defaultCase = envir.last;
+        }
 
         if(!at(envir.Dedent)) {
             envir.index = indexBefore;
             return false;
         }
 
+        envir.last = entity;
         return true;
     }
 };
@@ -49,13 +58,12 @@ var SwitchStmt = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "SwitchStmt ->\n";
-        out += indents + "    condition: " + this.condition + "\n";
+        out += indents + "  condition: " + this.condition + "\n";
         for(var i = 0; i < this.cases.length; i++) {
             out += this.cases[i].toString(indentlevel + 1);
         }
         out += indents + "]\n";
-        out += indents + "defaultCase: \n" 
         out += this.defaultCase.toString(indentlevel + 1);
         return out;
-    };      // This toString needs work.
+    };
 };

@@ -10,6 +10,7 @@ module.exports = function(envir) {
                     envir.index = indexBefore;
                     return false;
                 }
+                envir.last = this.lexeme;
                 envir.index++;
                 return true;
             }

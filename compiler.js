@@ -25,8 +25,9 @@ var compile = function(fileName, finalCall) {
 
 var debugParse = false;
 var displayValid = false;
+var displayTree = false;
 var scanCall = function(tokens) {
-    var isValidProgram = parse(tokens, parseCall, parseError, debugParse);
+    var isValidProgram = parse(tokens, parseCall, parseError, debugParse, displayTree);
     if(displayValid) console.log("Valid Program Entered: " + isValidProgram);
     finalCallBack(isValidProgram);
 };
@@ -89,6 +90,9 @@ var readStdIn = function(args) {
             if(debug === "debug") {
                 debugParse = true;
             }
+        }
+        if(argument.search(/^-tree/) >= 0) {
+            displayTree = true;
         }
         
     }

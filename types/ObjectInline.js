@@ -2,18 +2,20 @@
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
-
+        var entity = new ObjectInline();
         if(!at('{')) {
             envir.index = indexBefore;
             return false;
         }
 
         if(at(envir.Prop)) {
+            entity.props.push(envir.last);
             while(at(',')) {
                 if(!at(envir.Prop)) {
                     envir.index = indexBefore;
                     return false;
                 }
+                entity.props.push(envir.last);
             }
         } else if(at(envir.Indent)) {
             if(!at(envir.Newline)) {
@@ -25,6 +27,7 @@ module.exports = {
                 envir.index = indexBefore;
                 return false;
             }
+            entity.props.push(envir.last);
             while(at(',')) {
                 if(!at(envir.Newline)) {
                     envir.index = indexBefore;
@@ -34,6 +37,7 @@ module.exports = {
                     envir.index = indexBefore;
                     return false;
                 }
+                entity.props.push(envir.last);
             }
             if(!at(envir.Dedent)) {
                 envir.index = indexBefore;
@@ -51,6 +55,22 @@ module.exports = {
             envir.index = indexBefore;
             return false;
         }
+        envir.last = entity;
         return true;
     }
+};
+
+var ObjectInline = function() {
+    this.props = [];
+    this.toString = function(indentlevel) {
+        indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
+        var indents = envir.indents(indentlevel);
+        var out = indents + "Object ->\n";
+        out += indents + "  props: [\n";
+        for(var i = 0; i < this.props.length; i++) {
+            out += this.props[i].toString(indentlevel + 2) + ",\n";
+        }
+        out = out.substring(0, out.length-1) + indents + "]\n";
+        return out;
+    };
 };

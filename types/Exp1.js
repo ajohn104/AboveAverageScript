@@ -2,11 +2,11 @@
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
-        var indentedBefore = envir.inIndent;
+        var indentedBefore = envir.inIndented;
         debug("Starting on exp1. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
         if(!at(envir.Exp2)) {
             envir.index = indexBefore;
-            envir.inIndent = indentedBefore;
+            envir.inIndented = indentedBefore;
             return false;
         }
         envir.checkIndent();
@@ -14,7 +14,7 @@ module.exports = {
             envir.checkIndent();
             if(!at(envir.Exp2)) {
                 envir.index = indexBefore;
-                envir.inIndent = indentedBefore;
+                envir.inIndented = indentedBefore;
                 return false;
             }
             envir.checkIndent();
@@ -22,7 +22,7 @@ module.exports = {
                 envir.checkIndent();
                 if(!at(envir.Exp2)) {
                     envir.index = indexBefore;
-                    envir.inIndent = indentedBefore;
+                    envir.inIndented = indentedBefore;
                     return false;
                 }
             }
@@ -30,4 +30,22 @@ module.exports = {
         debug("Finalizing exp1 success. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
         return true;
     }
+};
+
+var Exp1 = function() {
+    this.val = null;
+    this.ifexp = null;
+    this.elseexp = null;
+    this.toString = function(indentlevel) {
+        indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
+        var indents = envir.indents(indentlevel);
+        var out = this.val.toString(indentlevel);
+        if(this.ifexp !== null) {
+            out += "if(" + this.ifexp.toString(indentlevel) +")";
+            if(this.elseexp !== null) {
+                out += "else(" + this.elseexp.toString(indentlevel) + ")";
+            }
+        }
+        return out;
+    };
 };

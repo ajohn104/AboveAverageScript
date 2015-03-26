@@ -77,15 +77,17 @@ var DeclareMultVar = function() {
     this.toString = function(indentlevel) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "DeclareMultVar ->\n" + indents + "    leftSideExps: [\n";
+        var out = indents + "DeclareMultVar ->\n";
+        out += indents + "  leftSideExps: [\n";
         for(var i = 0; i < this.leftSideExps.length; i++) {
             out += this.leftSideExps[i].toString(indentlevel + 2) + "\n";
         }
-        out += indents + "    ], rightSideExps: [\n";
-        for(var i = 0; i < this.rightSideExps.length; i++) {
-            out += this.rightSideExps[i].toString(indentlevel + 2) + "\n";
+        out += indents + "  ]\n";
+        out += indents + "  rightSideExps: [\n";
+        for(var j = 0; j < this.rightSideExps.length; j++) {
+            out += this.rightSideExps[j].toString(indentlevel + 2) + "\n";
         }
-        out += indents + "    ]\n" + indents + "]\n";
+        out += indents + "  ]\n" + indents + "]\n";
         return out;
     };
 };
@@ -98,9 +100,9 @@ var DeclareMultiLine = function() {
         var out = indents + "DeclareMultiLine -> stmts: [\n";
         for(var i = 0; i < this.declarepairs.length; i++) {
             var pair = this.declarepairs[i];
-            out += pair.left.toString(indentlevel + 1) + "=" + pair.right.toString(0) + "\n";
+            out += pair.toString(indentlevel+1) + "\n";
         }
-        out += envir.indents(indentlevel) + "]";
+        out += indents + "]";
         return out;
     };
 };

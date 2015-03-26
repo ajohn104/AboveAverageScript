@@ -22,7 +22,7 @@ var ReturnStmt = function() {
     this.toString = function(indentlevel) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "ret " + ((this.exp !== null)?(this.exp.toString(0)):("")) + "\n";
+        var out = indents + "ret" + ((this.exp !== null)?(this.exp.toString(0)):("")) + "\n";
         return out;
     };
 };

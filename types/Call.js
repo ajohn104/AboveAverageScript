@@ -2,6 +2,7 @@
 module.exports = {
     is: function(at, next, envir, debug) {
         var indexBefore = envir.index;
+        var entity = new Call();
         debug("Starting call test");
         if(!at('(')) {
             envir.index = indexBefore;
@@ -9,6 +10,9 @@ module.exports = {
         }
         debug("Checking for function arguments. envir.index:" + envir.index);
         if(at(envir.ExpList)) {
+            for(var j = 0; j < envir.last.length; j++) {
+                entity.args.push(envir.last[j]);
+            }
             var indexMid = envir.index;
             at(envir.Newline);
             if(at(',')) {
@@ -26,6 +30,7 @@ module.exports = {
                     envir.index = indexBefore;
                     return false;
                 }
+                entity.args.push(envir.last);
 
                 while(envir.parseTokens[envir.index].kind === "Newline" && envir.parseTokens[envir.index+1].lexeme === ",") {
                     envir.index+=2;
@@ -33,6 +38,7 @@ module.exports = {
                         envir.index = indexBefore;
                         return false;
                     }
+                    entity.args.push(envir.last);
                 }
 
                 if(!at(envir.Dedent)) {
@@ -52,7 +58,22 @@ module.exports = {
             envir.index = indexBefore;
             return false;
         }
+        envir.last = entity;
         debug("Ending successful call on function: " + envir.parseTokens[indexBefore-1].lexeme);
         return true;
     }
+};
+
+var Call = function() {
+    this.args = [];
+    this.toString = function(indentlevel) {
+        indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
+        var indents = envir.indents(indentlevel);
+        var out = "Call ->(";
+        for(var i = 0; i < this.args.length; i++) {
+            out += "(" + this.args[i].toString() + "),";
+        }
+        out = out.substring(0, out.length-1) + ")";
+        return out;
+    };
 };

@@ -4,3 +4,5 @@ module.exports = {
         return at('\\n');
     }
 };
+
+// entity is dealt with by Lexeme;

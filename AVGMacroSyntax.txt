@@ -21,7 +21,7 @@ SetEqual        ::= Exp '=' Exp
 
 IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
 SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Defaults? Dedent
-Case            ::= Newline 'case' Exp19 ':' Indent Block Dedent
+Case            ::= Newline 'case' Exp18 ':' Indent Block Dedent
 Defaults        ::= Newline 'default' ':' Indent Block Dedent
 NativeStmt      ::= '***native***'
 
@@ -52,8 +52,7 @@ Exp14           ::= PrefixOp? Exp15
 Exp15           ::= Exp16 PostfixOp?
 Exp16           ::= 'new'? Exp17 Call?
 Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp17)*
-Exp18           ::= Exp19
-Exp19           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
+Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
 
 ArrayLit        ::= ('[' ']') | ArrayCont
 ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) Newline? ']'

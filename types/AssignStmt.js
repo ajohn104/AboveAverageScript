@@ -75,15 +75,15 @@ var AssignMultVar = function() {
     this.toString = function(indentlevel) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "AssignMultVar ->\n" + indents + "    leftSideExps: [\n";
+        var out = indents + "AssignMultVar ->\n" + indents + "  leftSideExps: [\n";
         for(var i = 0; i < this.leftSideExps.length; i++) {
             out += this.leftSideExps[i].toString(indentlevel + 2) + "\n";
         }
-        out += indents + "    ], operator: " + this.operator + ", rightSideExps: [\n";
+        out += indents + "  ], operator: " + this.operator + ", rightSideExps: [\n";
         for(var i = 0; i < this.rightSideExps.length; i++) {
             out += this.rightSideExps[i].toString(indentlevel + 2) + "\n";
         }
-        out += indents + "    ]\n" + indents + "]\n";
+        out += indents + "  ]\n" + indents + "]\n";
         return out;
     };
 };
