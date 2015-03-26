@@ -91,7 +91,7 @@ var readStdIn = function(args) {
                 debugParse = true;
             }
         }
-        if(argument.search(/^-tree/) >= 0) {
+        if(argument.search(/^-tree$/) >= 0) {
             displayTree = true;
         }
         
