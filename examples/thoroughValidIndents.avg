@@ -1,0 +1,27 @@
+let x = 1
+x = 1
+let y = 1 + "2"
+y = 1 + "2"
+let z = 1 +
+    2 * 3 
+    / 4 | 5 &
+    6 % 7
+z = y
+    .toString(16)
+    .substring(0, x)
+
+let binary =
+    ONE: "1"
+    ZERO: "0"
+
+let spacing =
+    nothing: func ->
+        click()[
+            4 * 16
+        ].snap()
+            .close()
+            .finish()
+
+8 & ( 9 *
+    0 | 8
+)
