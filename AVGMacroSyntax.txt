@@ -82,5 +82,3 @@ Newline         ::= '\n'
 Indent          ::= '\i'
 Dedent          ::= '\d'
 EOF             ::= '@EOF'
-
-IntLit          ::= [+-]? ( ( '0x' [a-fA-F0-9]+ ) | ( \d+ ( '.' \d+ )? ( [eE] [+-]? \d+ )? ) )

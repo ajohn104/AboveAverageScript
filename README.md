@@ -1,6 +1,6 @@
 #AboveAverageScript
 
-Running on Javascript, _AboveAverageScript_ is a combination of ECMAScript 6, Python, and Lua, with some random changes on the side. It was designed to increase efficiency, and also simply try out a few things to see how they look and feel when reading code.
+Javascript forcefully mutated into a syntactically beautiful language. This is _AboveAverageScript_. Formed from a mixture of ECMAScript 6, Python, and CoffeeScript, _AboveAverageScript_ forces you to space your code perfectly, without confining you to one specific style for doing so. In addition, several new operators await you, allowing you to hastily deal with objects and properties. Give it a shot. Love it or hate it, one thing is for sure: It sure as hell beats writing in Java.
 
 ![AboveAverageScript Logo](./AboveAverageScriptLogo.png)
 
@@ -28,7 +28,7 @@ Logo courtesy (in part) of https://averagechronicles.files.wordpress.com/2013/02
 
     DeclareStmt     ::= 'let' (ExpList '=' (ObjInd | ExpList)) | (SetEqual (',' Indent Newline SetEqual (',' Newline SetEqual)* Dedent ) )
     AssignStmt      ::= (ExpList AssignOp (ObjInd | ExpList)) | (SetAssign (',' Indent Newline SetAssign (',' Newline SetAssign)* Dedent ) )
-    ConsumeStmt     ::= (Exp (',' Exp)*)? '<-' Id (('.' Id)* ArrayCont+ Call?)+
+    ConsumeStmt     ::= ExpList? '<-' Exp
     ReturnStmt      ::= 'ret' Exp?
     ControlStmt     ::= 'stop' | 'skip'
     SetAssign       ::= Exp AssignOp Exp
@@ -36,7 +36,7 @@ Logo courtesy (in part) of https://averagechronicles.files.wordpress.com/2013/02
 
     IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
     SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Defaults? Dedent
-    Case            ::= Newline 'case' Exp19 ':' Indent Block Dedent
+    Case            ::= Newline 'case' Exp18 ':' Indent Block Dedent
     Defaults        ::= Newline 'default' ':' Indent Block Dedent
     NativeStmt      ::= '***native***'
 
@@ -66,9 +66,8 @@ Logo courtesy (in part) of https://averagechronicles.files.wordpress.com/2013/02
     Exp14           ::= PrefixOp? Exp15
     Exp15           ::= Exp16 PostfixOp?
     Exp16           ::= 'new'? Exp17 Call?
-    Exp17           ::= Exp18 Call? (ArrayCont Call?)* ( ('.' Exp17)* | (Indent (Newline '.' Exp17)+ Dedent)) )?
-    Exp18           ::= Exp19
-    Exp19           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
+    Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp17)*
+    Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
 
     ArrayLit        ::= ('[' ']') | ArrayCont
     ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) Newline? ']'
@@ -80,8 +79,6 @@ Logo courtesy (in part) of https://averagechronicles.files.wordpress.com/2013/02
     Prop            ::= (Id | BoolLit | StringLit) ':' Exp
     PropInd         ::= (Id | BoolLit | StringLit) ':' (Exp | ObjInd)
     Call            ::= '(' ( ExpList (Newline? ',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'
-
-    
 
 ```
 
@@ -109,95 +106,86 @@ Logo courtesy (in part) of https://averagechronicles.files.wordpress.com/2013/02
 
 ```
 
-Keep in mind that much of the Macrosyntax is rather convoluted due to the relaxed but enforced styling. Because of this, I've omitted the styling for Expressions other than Arrays, Objects, and Property Accessors while I decide what would be best and what would be the most approachable. However, all other indentation is presumably here to stay, though the capture for each may change when the expressions are fully realized.
+The Macrosyntax doesn't actually capture everything, in particular indents within expressions. The reason being that it isn't context free, and for good reason. If it were based on context, it would completely ruin precedence. So, indents and dedents follow a simple rule: indent before or after any operator, and dedent at the end of an expression. If you enter a parenthesized expression or enter a series of dot accessors, you're in a new expression until it stops. Long story short, just take a look at the examples. You'll see the pattern. It's hard to explain what perfect style means.
 
 Here's some basic variable code:
 
 ```js
 
-    let a = 70;                                  var a = 70;
-    a++;                                         a++;
-    let b = 60;                                  var b = 60;
-    b += a;                                      b += a;
-    let c = (a > b);                             var c = (a > b);
-    let d = not c;                               var d = !c;
-    c, d = d, c;                                 _1 = c, c = d, d = _1;
+    let a = 70                                  var a = 70;
+    a++                                         a++;
+    let b, c = a/20                             _['$t0'] = a/20;
+                                                var b = _['$t0'];
+                                                var c = _['$t0'];
+    a %= c                                      a %= c;
+    b, c = a, b                                 _['$t0'] = a;
+                                                _['$t1'] = b;
+                                                b = _['$t0'];
+                                                c = _['$t1'];
+    let d = a/b,                                var d = a/b;
+        e = b/c,                                var e = b/c;
+        f = c/d                                 var f = c/d;
+    a, b, c, d, e, f >>= 1                      _['$t0'] = 1;
+                                                a >>= _['$t0'], b >>= _['$t0'], c >>= _['$t0'],
+                                                d >>= _['$t0'], e >>= _['$t0'], f >>= _['$t0'];
 
 ```
 
-Just like in Javascript, _AboveAverageScript_ is object oriented, and includes functions as objects.
+_AboveAverageScript_ is still Javascript, and as such is object oriented.
 
 ```js
 
-    let fib = func(a, amount)                    var fib = function(a, amount) {
-        if(a === 0 or a === 1)                       if( a === 0 || a === 1 ) {
-            ret amount;                                  return amount;
-        end;                                         }
-        ret fib(a - 1, amount * a);                  return fib(a - 1, amount * a);
-    end;                                         }
+    let fib = func a, amt ->                                    var fib = function(a, amt) {
+        amt = defaults(amt, 1)                                      amt = defaults(amt, 1);
+        ret amt if a in '01' else fib(a - 1, amt * a)               if('01'.indexOf(a) >= 0) {
+                                                                        return amt;
+                                                                    else {
+                                                                        return fib(a - 1, amt*a);
+                                                                    }
+                                                                }
 
-    let z = fib(3, 1);                           var z = fib(3, 1);
+    let z = fib(3)                                              var z = fib(30;)
 
-    let Chicken = {                              var Chicken = {
-        breed: "Bantam",                             breed: "Bantam",
-        gender: "Male",                              gender: "Male",
-        eggsLaid: 14,                                eggsLaid: 14,
-        cry: func()                                  cry: function() {
-            log("COCKADOODLEDOO!");                      console.log("COCKADOODLEDOO!");
-        end                                          }
-    };                                           };
+    let Chicken =                                               var Chicken = {
+        breed: 'Bantam'                                             breed: 'Bantam',
+        gender: 'Male'                                              gender: 'Male',
+        eggsLaid: 14                                                eggsLaid: 14,
+        cry: func -> log('COCKADOODLEDOO!')                         cry: function() {
+                                                                        log('COCKADOODLEDOO!');
+                                                                    }
 
-    let Circle = func(x, y, radius)              var Circle = function(x, y, radius) {
-        _.x = x;                                     this.x = x;
-        _.y = y;                                     this.y = y;
-        _.radius = radius;                           this.radius = radius;
-        _.setLocation = func(x, y)                   this.setLocation = function(x, y) {
-            _['x', 'y'] = x, y;                          this['x'] = x, this['y'] = y;
-        end;                                         };
-    end;                                         };
+    let Circle = func props ->             // For the translation of the rest of this section, check
+        _['x', 'y', 'radius'] = 0          // the wiki. It can get quite involved when explaining how
+        _ <- props                         // the property consumption ('<-') operator works.
+        _.setLocation = func point ->
+            _ <- point
 
-    let Dot = new Circle(0, 0, 5);               var Dot = new Circle(0, 0, 5);
-    Dot["strokeIsDashed", "color"] =             Dot["strokeIsDashed"] = true, Dot["color"] = "rgb(0,0,0)";
-        true, "rgb(0,0,0)";                      
-    
-    let dotExample = Object.create(Dot);         var dotExample = Object.create(Dot);
-    dotExample.radius = 50;                      dotExample.radius = 50;
-    
-    draw({                                       draw( {
-        x: 6,                                        x: 6, 
-        y: 10,                                       y: 10, 
-        width: 50,                                   width: 50,
-        height: 20,                                  height: 20,
-        color: "red",                                color: "red", 
-        size: 9,                                     size: 9,
-        {                                            {
-            stroke_style: "dashed",                      stroke_style: "dashed", 
-            freq: 0.5,                                   freq: 0.5, 
-            color: "red"                                 color: "red"
-        }                                            }
-     });                                         } );
+    let Ellipse = new Circle({x: 0, y: 0, radius: 5})
+    Ellipse <- {stroke: 'dashed', color: 'rgb(100,200,50)'}
 
 ````
 
-Rather than `this`, _AboveAverageScript_ uses `_` to specify the containing object.
+I'm sure you noticed the funny little operator above, not to mention the odd new syntax for property access. Well, that's part of the new design. In a nutshell, the property consumption operator will look for named properties on the outermost expression of the righthand side, and assign them with the same name to the left hand side as properties. If no named properties are found, then it will simply take ALL properties from the right hand side. Please note that means the right hand side MUST be an object. Now, as for the left hand side, you have a few options. You can put in a series of expressions, whom all of which will recieve the properties. However, if no expression is given, then it will actually assign those variables to the local scope. However, assigning to the local scope tends to be slower (because it prevents modern Javascript engines from optimizing that code fragment), so you're better off not using it too often or too rapidly. As this is a much more involved concept, especially the code it translates to, you can find far more information on the wiki.
 
-An advantage of using _AboveAverageScript_ (by design) is the capability skip unnecessary curly braces, but to still make clear where things start and end. However, semicolons help maintain clarity, so they remain.
+Of course, there was that other thing. The property access that was treated as if it were an array. Well, that's actually the most accurate description I can give. It's just your average property access with square brackets, except that you can list multiple items. Oh, and in case it wasn't clear, _AboveAverageScript_ uses `_` to specify the containing object, opposed to using `this`.
 
-Naturally, you can loop in _AboveAverageScript_:
+Pressing on...
 
 ```js
 
-    let c = false;                               var c = false;
-    let list = [5, 7, 0];                        var list = [5, 7, 0];
-    while( not c )                               while( !c ) {
-        c = true;                                    c = true;
-        for( i in list )                              for( var i in list ) {
-            if( x[i] > 0 )                               if( x[i] > 0 ) {                               
-                x[i]--;                                      x[i]--;
-            end;                                         }
-            c = c and (x[i] === 0);                      c = c && (x[i] === 0);
-        end;                                         }
-    end;                                         }
+    let term = 300,                                                     var term = 300;
+        list = [3, 5, 7, 9],                                            var list = [3, 5, 7, 9];
+        index = 0                                                       var index = 0;
+    while term > 0:                                                     while(term > 0) {
+        for(i, val in list):                                                for(var i = 0; i < list.length; i++) {
+                                                                                var val = list[i];
+            term -= val                                                         term -= val;
+            index = i                                                           index = i;
+            if term <= 0:                                                       if(term <= 0) {
+                stop                                                                break;
+                                                                                }
+                                                                            }
+                                                                        }
 
 ```
 
@@ -205,14 +193,14 @@ Conditionals look a tad different, however.
 
 ```js
 
-    let x = int( input("Please enter a number") );                        var x = int( input("Please enter a number") );   // input function is user defined.
-    if( x > 0 )                                                           if( x > 0 ) {
-        log("Feeling positive?");                                             console.log("Feeling positive?");
-    elif( x === 0 )                                                       } else if( x === 0 ) {
-        log("Zero? Really?");                                                 console.log("Zero? Really?");
+    let x = int(input("Please enter a number"))                           var x = int( input("Please enter a number") );   // input function is user defined.
+    if x > 0:                                                             if( x > 0 ) {
+        log("Feeling positive?")                                              log("Feeling positive?");
+    elif x === 0:                                                         } else if( x === 0 ) {
+        log("Zero? Really?")                                                  log("Zero? Really?");
     else                                                                  } else {
-        log("Don't be so negative");                                          console.log("Don't be so negative");
-    end;                                                                  }
+        log("Don't be so negative")                                          log("Don't be so negative");
+                                                                          }
 
 ```
 
@@ -220,59 +208,10 @@ Comments are casual.
 
 ```js
 
-    let teascript = "Awesome";                                            var teascript = "Awesome";   // Variables should be declared with let.
-    CoffeeScript = "Casual";                                              CoffeeScript = "Casual";     // Variables can be declared without let,
-    $ = "$";                                                              $ = "$";                     // but its far less clear.
+    let teascript = "Awesome"                                             var teascript = "Awesome";   // Variables should be declared with let.
+    CoffeeScript = "Casual"                                               CoffeeScript = "Casual";     // Variables can be declared without let,
+    $ = "$"                                                               $ = "$";                     // but its far less clear.
                             /* Multiline comments are also available! */
-
-```
-
--
-
-_Time for the new stuff._
-
-To start things off, all objects can now be 'unpacked'.
-
-```js
-
-    let point = Circle.getCenter();              var point = Circle.getCenter();
-    let x, y = point['x', 'y'];                  var x = point['x'], y = point['y'];
-
-```
-
-Unpacking can be thought of as a macro, however. Here's an example of why this is the case:
-
-```js
-
-    let dog = {                                  var dog = {
-        sound: 'meow',                               sound: 'meow',
-        makeSound: func()                            makeSound: function() {
-            log(_.sound);                                console.log(this.sound);
-        end,                                         },
-        size: '0.5 lbs',                             size: '0.5 lbs',
-        color: 'tan'                                 color: 'tan'
-    };                                           };              
-    dog['sound', 'size'] = 'woof', '50 lbs';     dog['sound'] = 'woof', dog['size'] = '50 lbs';
-
-```
-
-However, this can also be used to affect many properties in a compact manner:
-
-```js
-
-    let Rectangle = {                                                     var Rectangle = {                   
-        x: 2,                                                                x: 2,
-        y: 3,                                                                y: 3,
-        width: 50,                                                           width: 50,
-        height: 70                                                           height: 70
-    };                                                                    };
-    Rectangle['width', 'height'] *= 4;                                    Rectangle['width'] *= 4,  Rectangle['height'] *= 4;
-
-    let words = ['compact', 'not as cool as TeaScript',                   var words = ['compact', 'not as cool as TeaScript', 
-                 'I am going solo', 'I am Roald Dahl',                                 'I am going solo', 'I am Roald Dahl', 
-                 'AboveAverageScript'];                                                'AboveAverageScript'];
-
-    let sayings = [ "I am " + words[0, 1, 4] ];                           let sayings = [ "I am " + words[0], "I am " + words[1], "I am " + words[4] ];
 
 ```
 
@@ -280,55 +219,50 @@ Moving on. We've all used JQuery at one time or another. Well, since _AboveAvera
 
 ```js
 
-    $(function() {
-        ***native***;
-        log("Now you can use these built-ins in your code without slowing down your webpage!");
-    });
+    $(func ->
+        ***native***
+        log("Now you can use these built-ins in your code without slowing down your webpage!")
+    )
 
 ```
-
-As you may have noticed, 'this' and 'self' are missing. Well, that's because they're far too long. About 3 characters too long to be exact. Instead, 'this' is now '_'.
-
-For now, the conventional Javascript regex creation is disabled, and one must use the Regex object to create regex. 
 
 Here are the current (more pythonic) built-ins:
 
 ```js
 
-    type(x)        // A replacement for typeof, function-ified.
-    defaults(a, b) // A function that helps make default parameters. If a is defined, then it returns a. Otherwise, b is returned.
-    int(x, base)   // A function that is a wrapper for the much more verbose parseInt function
-    float(x)       // A function that is a wrapper for the much more verbose parseFloat function
-    is(x, y)       // A replacement for instanceof, function-ified, translating into 'x instanceof y'
-    log(x)         // A wrapper for console.log
-    del(x, y)      // A replacement for delete, function-ified, translating into 'delete y[x]'
-
-    // Finally, we have len. This is a special built-in that's rather adaptive to the situation.
-
-    len(obj)       // len isn't simply a wrapper for obj.length. Actually, it looks for the length property in the object.
-                   // If it isn't found, it instead returns a count of the enumerable properties in the object. Because of this,
-                   // len actually encourages a universal length property for AVG programmers.
+    type(x)         // A replacement for typeof, function-ified.
+    defaults(a, b)  // A function that helps make default parameters. If a is defined, then it returns a. Otherwise, b is returned.
+    int(x, base)    // A function that is a wrapper for the much more verbose parseInt function
+    float(x)        // A function that is a wrapper for the much more verbose parseFloat function
+    is(x, y)        // A replacement for instanceof, function-ified, translating into 'x instanceof y'
+    log(x)          // A wrapper for console.log
+    error(x)        // A wrapper for console.error
+    del(x, y)       // A replacement for delete, function-ified, translating into 'delete y[x]'
+    len(obj)        // Quite literally a method call instead of saying '.length'
+    size(obj)       // Returns the number of keys the object has.
+    range(x, y, z)  // It works exactly the same way it does in Python. To save space, I'll defer you to their documentation.
+    isUndef(val)    // Returns true if val is undefined. Its like isNaN for undefined.
+    abs(x)          // A wrapper for Math.abs
+    pow(x, y)       // A wrapper for Math.pow
+    lazy(x, *)      // Returns a function that calls x with all of the remaining arguments when called.
+    lazier(x, args) // Returns a function that calls x with the all of the arguments in the array args when called.
 
 ```
 
-Last, but certainly not least, we have the new and improved for loops. 3 new types, all unique.
+Just to make sure everything has been listed, here are all of the available loops.
 
 ```js
 
-    let y = ["true", "false", true, 0, 9, {}];
+    let y = ["true", "false", true, 0, 9, {}]
 
-    // for..in -> iterates over property names of object
-    for(x in y) log(x) end  // prints: 0, 1, 2, 3, 4, 5
-    // so, for( x in y) translates directly into JS. Order is not guaranteed, however.
+    // for val in -> iterates over property values of object
+    log(x) for x in y   // prints: "true", "false", true, 0, 9, {}
 
-    // for..of -> iterates over property values of object
-    for(x of y) log(x) end  // prints: "true", "false", true, 0, 9, {}
-    // so, for(x of y) becomes for(x in y) { x = y[x] }; ...}
+    // for key, val in -> iterates over property values of object
+    log(a, b) for a, b in y   // prints: 0 "true", 1 "false", 2 true, 3 0, 4 9, 5 {}
 
-
-    // for..:  -> iterates over key-value pairs?
-    for(x :  y) log(x) end  // prints: {key: 0, val:"true"}, {key:1, val:"false"}, {key:2, value:true}, {key:3, val:0}, {key:4, val:9}, {key:5, val:{}}
-    // so, for(x : y) becomes for(x in y) { x = { key: x, val: y[x] }; ...user input... }
+    // for key:  -> iterates over key-value pairs?
+    log(x) for x : y   // prints: 0, 1, 2, 3, 4, 5
 
 ```
 
@@ -336,4 +270,4 @@ Minor notes:
 * Camel Casing is preferred  
 * Spacing norm is 4 spaces (NOT TABS)  
 * Expect the (_ever so slightly_) above average
-* Not sure if you should use a semicolon? Use it
+* Not sure if you should use a semicolon? Don't use it. Ever. **Ever.** They have been banned.
