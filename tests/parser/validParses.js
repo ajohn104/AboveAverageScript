@@ -42,5 +42,13 @@ describe('Compiler Tests', function(){
             });
         });
     });
+    context('Compiler Test 6', function() {
+        it('should return true if the file is valid', function(done){
+            compile("./examples/validDecl.avg", function(isValid) {
+                assert(isValid); 
+                done();
+            });
+        });
+    });
     
 });

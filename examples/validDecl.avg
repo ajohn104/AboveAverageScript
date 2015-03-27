@@ -1,0 +1,45 @@
+/* This is designed to be a fairly thorough test of possible declaration statements. */
+/* status: not yet added */
+
+let A = 100
+
+let B = 200 / 100
+
+let C = A / B
+
+let D = C
+    / A
+
+let stopTime = func duration -> close()
+
+let beginTime = func delay ->
+    open()
+
+let Person =
+    name: ""
+    age: 0
+    SSID: 0
+    parents:
+        mom: undefined
+        dad: undefined
+    children: []
+
+let season = { name: "", dateStart: undefined, dateEnd: undefined}
+
+let E, F, G = A, B, C
+
+let K = H,
+    L = I,
+    M = J
+
+let Teacher = {
+    name: "",
+    room: 0,
+    grades: {
+        A: 89,
+        B: 78,
+        C: 68,
+        D: 60
+    },
+    apple: "shiny"
+}
