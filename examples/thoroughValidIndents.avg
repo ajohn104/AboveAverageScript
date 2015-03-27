@@ -9,6 +9,9 @@ let z = 1 +
 z = y
     .toString(16)
     .substring(0, x)
+    + 8 - 9
+    * 6 | 5 and
+    not true
 
 let binary =
     ONE: "1"
