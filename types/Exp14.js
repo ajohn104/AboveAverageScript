@@ -28,7 +28,7 @@ var Exp14 = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = this.prefix + (this.prefix.length > 0?"(":"") + this.val.toString(indentlevel, indLvlHidden) + (this.prefix.length > 0?")":"");
+        var out = this.prefix + (this.prefix.length > 0?"(":"") + this.val.toString(0, indLvlHidden) + (this.prefix.length > 0?")":"");
         return out;
     };
 };

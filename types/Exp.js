@@ -42,10 +42,9 @@ var Exp = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        //console.log("Exp indLvlHidden: " + indLvlHidden);
-        var out = indents + " (" + this.val.toString(indentlevel, indLvlHidden);
+        var out = indents + "(" + this.val.toString(0, indLvlHidden);
         for(var i = 0; i < this.furtherExps.length; i++) {
-            out += "(" + this.furtherExps[i].toString(indentlevel, indLvlHidden) + ")";
+            out += "(" + this.furtherExps[i].toString(0, indLvlHidden) + ")";
         }
         out += ")";
         return out;

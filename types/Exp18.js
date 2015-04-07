@@ -6,12 +6,7 @@ module.exports = {
         var indentedBefore = envir.inIndented;
         var isParenthesizedExpr = false;
         var entity = new Exp18();
-        if(at('(')) {
-            if(!at(envir.Exp)) {
-                envir.index = indexBefore; 
-                envir.inIndented = indentedBefore;
-                isParenthesizedExpr = false;
-            }
+        if(at('(') && at(envir.Exp)) {
             entity.val = envir.last;
             debug("Found exp within possible ParenthesizedExpr. Looking for ')'. envir.index:" + envir.index);
 
@@ -27,6 +22,11 @@ module.exports = {
             }
             debug("Found ')'. Completed ParenthesizedExpr. envir.index:" + envir.index);
             isParenthesizedExpr = true;
+            entity.isParenthesizedExpr = true;
+        } else {
+            envir.index = indexBefore; 
+            envir.inIndented = indentedBefore;
+            isParenthesizedExpr = false;
         }
         var found = isParenthesizedExpr
                  || at(envir.Id)
@@ -51,10 +51,11 @@ module.exports = {
 
 var Exp18 = function() {
     this.val = null;
+    this.isParenthesizedExpr = false;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + this.val.toString(indentlevel+1, indLvlHidden+1);
+        var out = indents + this.val.toString(indentlevel, indLvlHidden);
         return out;
     };
 };

@@ -41,9 +41,9 @@ var Exp1 = function() {
         var indents = envir.indents(indentlevel);
         var out = this.val.toString(indentlevel, indLvlHidden);
         if(this.ifexp !== null) {
-            out += "if(" + this.ifexp.toString(indentlevel, indLvlHidden) +")";
+            out += "if(" + this.ifexp.toString(0, indLvlHidden) +")";
             if(this.elseexp !== null) {
-                out += "else(" + this.elseexp.toString(indentlevel, indLvlHidden) + ")";
+                out += "else(" + this.elseexp.toString(0, indLvlHidden) + ")";
             }
         }
         return out;

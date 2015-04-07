@@ -49,8 +49,8 @@ var Exp3 = function() {
         var indents = envir.indents(indentlevel);
         var out = this.val.toString(indentlevel, indLvlHidden);
         if(this.furtherExps !== null) {
-            out += "?(" + this.furtherExps.firstexp.toString(indentlevel, indLvlHidden) + "):(";
-            out += this.furtherExps.secondexp.toString(indentlevel, indLvlHidden) + ")";
+            out += "?(" + this.furtherExps.firstexp.toString(0, indLvlHidden) + "):(";
+            out += this.furtherExps.secondexp.toString(0, indLvlHidden) + ")";
         }
         return out;
     };

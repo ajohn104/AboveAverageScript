@@ -43,7 +43,7 @@ var Exp9 = function() {
         }
         out += this.val.toString(indentlevel, indLvlHidden);
         for(var i = 0; i < this.furtherExps.length; i++) {
-            out += this.furtherExps[i].operator + this.furtherExps[i].exp.toString(indentlevel, indLvlHidden) + ")";
+            out += this.furtherExps[i].operator + this.furtherExps[i].exp.toString(0, indLvlHidden) + ")";
         }
         return out;
     };

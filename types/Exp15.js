@@ -30,7 +30,7 @@ var Exp15 = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = (this.postfix.length > 0?"(":"") + this.val.toString(indentlevel, indLvlHidden) + (this.postfix.length > 0?")":"") + this.postfix;
+        var out = (this.postfix.length > 0?"(":"") + this.val.toString(0, indLvlHidden) + (this.postfix.length > 0?")":"") + this.postfix;
         return out;
     };
 };

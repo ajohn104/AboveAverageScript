@@ -34,7 +34,7 @@ var Exp16 = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var addparens = (this.prefix.length > 0 || this.postfix.length > 0);
-        var out = this.prefix + (addparens?"(":"") + this.val.toString(indentlevel, indLvlHidden) + (addparens?")":"") + this.postfix;
+        var out = this.prefix + (addparens?"(":"") + this.val.toString(0, indLvlHidden) + (addparens?")":"") + this.postfix;
         return out;
     };
 };
