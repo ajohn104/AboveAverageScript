@@ -44,13 +44,13 @@ module.exports = {
 var Exp3 = function() {
     this.val = null;
     this.furtherExps = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = this.val.toString(indentlevel);
+        var out = this.val.toString(indentlevel, indLvlHidden);
         if(this.furtherExps !== null) {
-            out += "?(" + this.furtherExps.firstexp.toString(indentlevel) + "):(";
-            out += this.furtherExps.secondexp.toString(indentlevel) + ")";
+            out += "?(" + this.furtherExps.firstexp.toString(indentlevel, indLvlHidden) + "):(";
+            out += this.furtherExps.secondexp.toString(indentlevel, indLvlHidden) + ")";
         }
         return out;
     };

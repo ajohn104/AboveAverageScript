@@ -83,15 +83,15 @@ var For = function() {
     this.firstexp = null;
     this.exp = null;
     this.repeatexp = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "(for";
         if(this.firstexp !== null) {
-            out += this.firstexp.toString();
+            out += this.firstexp.toString(0, indLvlHidden);
         }
-        out += this.exp.toString();
-        out += this.repeatexp.toString();
+        out += this.exp.toString(0, indLvlHidden);
+        out += this.repeatexp.toString(0, indLvlHidden);
         out += ")";
         return out;
     };
@@ -101,16 +101,16 @@ var InitialCondition = function() {
     this.let = "";
     this.id = null;
     this.exp = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents;
         if(this.let !== "") {
-            out += "(Declare ->" + this.id + "=" + this.exp.toString() + ")";
+            out += "(Declare ->" + this.id + "=" + this.exp.toString(0, indLvlHidden) + ")";
         } else if(this.id !== null) {
-            out += "(Assign ->" + this.id + "=" + this.exp.toString() + ")";
+            out += "(Assign ->" + this.id + "=" + this.exp.toString(0, indLvlHidden) + ")";
         } else {
-            out += "(" + exp.toString() + ")";
+            out += "(" + exp.toString(0, indLvlHidden) + ")";
         }
         return out;
     };

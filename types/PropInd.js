@@ -26,11 +26,11 @@ module.exports = {
 var PropInd = function() {
     this.leftexp = null;
     this.rightexp = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "Property(key(" + this.leftexp.toString();
-        out += "):val(" + this.rightexp.toString();
+        var out = indents + "Property(key(" + this.leftexp.toString(0, indLvlHidden);
+        out += "):val(" + this.rightexp.toString(0, indLvlHidden);
         out += "))";
         return out;
     };

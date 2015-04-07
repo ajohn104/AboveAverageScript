@@ -31,12 +31,14 @@ module.exports = {
 
 var Block = function() {
     this.stmts = [];
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "Block -> stmts: [\n";
+
+        //console.log("indLvlHidden: " + indLvlHidden);
         for(var i = 0; i < this.stmts.length; i++) {
-            out += this.stmts[i].toString(indentlevel + 1) + "\n";
+            out += this.stmts[i].toString(indentlevel + 1, indLvlHidden+1) + "\n";
         }
         out += indents + "]\n" + envir.indents(indentlevel-1);
         return out;

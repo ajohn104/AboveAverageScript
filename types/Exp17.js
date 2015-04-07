@@ -50,12 +50,12 @@ module.exports = {
 var Exp17 = function() {
     this.val = null;
     this.accessors = [];
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = this.val;
+        var out = this.val.toString(0, indLvlHidden);
         for(var i = 0; i < this.accessors.length; i++) {
-            out += "(" + this.accessors[i].toString() + ")";
+            out += "(" + this.accessors[i].toString(0, indLvlHidden) + ")";
         }
         return out;
     };
@@ -63,7 +63,7 @@ var Exp17 = function() {
 
 var DotAccessor = function(val) {
     this.val = val;
-    this.toString = function(indentlevel) {
-        return ".(" + val.toString(indentlevel) + ")";
+    this.toString = function(indentlevel, indLvlHidden) {
+        return ".(" + val.toString(indentlevel, indLvlHidden) + ")";
     }
 };

@@ -30,14 +30,15 @@ module.exports = {
 
 var ExpList = function() {
     this.exps = [];
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = "([";
         for(var i = 0; i < this.furtherExps.length; i++) {
-            out += this.exps[i].toString(indentlevel) + ",";
+            out += this.exps[i].toString(indentlevel, indLvlHidden) + ",";
         }
-        out = out.substring(0, out.length-1) + "])";
+        var removeCount = (this.furtherExps.length > 0?-1:0);
+        out = out.substring(0, out.length+removeCount) + "])";
         return out;
     };
 };

@@ -47,12 +47,12 @@ module.exports = {
 var DoWhile = function() {
     this.block = null;
     this.condition = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "do..\n";
-        out += this.block.toString(indentlevel+1);
-        out += indents + "..while" + this.condition.toString();
+        out += this.block.toString(indentlevel+1, indLvlHidden+1);
+        out += indents + "..while" + this.condition.toString(0, indLvlHidden);
         return out;
     };
 };

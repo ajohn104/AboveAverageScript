@@ -34,15 +34,16 @@ module.exports = {
 
 var ObjectInd = function() {
     this.props = [];
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "Object ->\n";
         out += indents + "  props: [\n";
         for(var i = 0; i < this.props.length; i++) {
-            out += this.props[i].toString(indentlevel + 2) + ",\n";
+            out += this.props[i].toString(indentlevel + 2, indLvlHidden+2) + ",\n";
         }
-        out = out.substring(0, out.length-2) + "\n" + indents + "]\n";
+        var removeCount = (this.props.length > 0?-2:0);
+        out = out.substring(0, out.length+removeCount) + "\n" + indents + "]\n";
         return out;
     };
 };

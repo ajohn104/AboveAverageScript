@@ -72,16 +72,16 @@ var AssignMultVar = function() {
     this.leftSideExps = [];
     this.rightSideExps = [];
     this.operator;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "AssignMultVar ->\n" + indents + "  leftSideExps: [\n";
         for(var i = 0; i < this.leftSideExps.length; i++) {
-            out += this.leftSideExps[i].toString(indentlevel + 2) + "\n";
+            out += this.leftSideExps[i].toString(indentlevel + 2, indLvlHidden + 2) + "\n";
         }
         out += indents + "  ], operator: " + this.operator + ", rightSideExps: [\n";
         for(var i = 0; i < this.rightSideExps.length; i++) {
-            out += this.rightSideExps[i].toString(indentlevel + 2) + "\n";
+            out += this.rightSideExps[i].toString(indentlevel + 2, indLvlHidden + 2) + "\n";
         }
         out += indents + "  ]\n" + indents + "]\n";
         return out;
@@ -90,13 +90,13 @@ var AssignMultVar = function() {
 
 var AssignMultiLine = function() {
     this.assignpairs = [];
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "AssignMultiLine -> stmts: [\n";
         for(var i = 0; i < this.assignpairs.length; i++) {
             var pair = this.assignpairs[i];
-            out += pair.left.toString(indentlevel + 1) + pair.operator + pair.right.toString(0) + "\n";
+            out += pair.left.toString(indentlevel + 1, indLvlHidden + 1) + pair.operator + pair.right.toString(0, indLvlHidden) + "\n";
         }
         out += envir.indents(indentlevel) + "]";
         return out;

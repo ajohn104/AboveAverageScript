@@ -44,11 +44,11 @@ module.exports = {
 var While = function() {
     this.condition = null;
     this.block = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "while" + this.condition.toString() + "\n";
-        out += this.block.toString(indentlevel+1);
+        var out = indents + "while" + this.condition.toString(0, indLvlHidden) + "\n";
+        out += this.block.toString(indentlevel+1, indLvlHidden+1);
         return out;
     };
 };

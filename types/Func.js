@@ -68,16 +68,17 @@ module.exports = {
 var Func = function() {
     this.parameters = [];
     this.block = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = envir.indents(indLvlHidden);
         var out = "function ->\n";
-        out += indents + "  arguments: [";
+        out += indents + "  parameters: [";
         for(var i = 0; i < this.parameters.length; i++) {
-            out += this.parameters[i].toString() + ",";
+            out += this.parameters[i].toString(0, indLvlHidden) + ",";
         }
-        out = out.substring(0, out.length-1) + "]\n";
-        out += this.block.toString(indentlevel+1);
+        var removeCount = (this.parameters.length > 0?-1:0);
+        out = out.substring(0, out.length + removeCount) + "]\n";
+        out += this.block.toString(indLvlHidden+1, indLvlHidden+1);
         return out;
     };
 };

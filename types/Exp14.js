@@ -6,7 +6,7 @@ module.exports = {
         var entity = new Exp14();
         debug("Starting on exp14. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
         if(at(envir.PrefixOp)) {
-            entity.prefixOp = envir.last;
+            entity.prefix = envir.last;
             envir.checkIndent();
         }
 
@@ -16,18 +16,19 @@ module.exports = {
             return false;
         }
         entity.val = envir.last;
+        envir.last = entity;
         debug("Finalizing exp14 success. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
         return true;
     }
 };
 
 var Exp14 = function() {
-    this.prefixOp = "";
+    this.prefix = "";
     this.val = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = this.prefix + (this.prefix.length > 0?"(":"") + this.val.toString(indentlevel) + (this.prefix.length > 0?")":"");
+        var out = this.prefix + (this.prefix.length > 0?"(":"") + this.val.toString(indentlevel, indLvlHidden) + (this.prefix.length > 0?")":"");
         return out;
     };
 };

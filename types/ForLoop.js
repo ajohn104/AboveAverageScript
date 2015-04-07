@@ -36,11 +36,11 @@ module.exports = {
 var ForLoop = function() {
     this.loop = null;
     this.block = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + this.loop.toString() + "\n";
-        out += this.block.toString(indentlevel+1);
+        var out = indents + this.loop.toString(0, indLvlHidden) + "\n";
+        out += this.block.toString(indentlevel+1, indLvlHidden+1);
         return out;
     };
 };

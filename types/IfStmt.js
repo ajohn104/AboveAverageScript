@@ -98,15 +98,15 @@ var IfStmt = function() {
     this.ifEntity = null;
     this.elifEntities = [];
     this.elseEntity = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = this.ifEntity.toString(indentlevel);
+        var out = this.ifEntity.toString(indentlevel, indLvlHidden);
         for(var i = 0; i < this.elifEntities.length; i++) {
-            out += this.elifEntities[i].toString(indentlevel);
+            out += this.elifEntities[i].toString(indentlevel, indLvlHidden);
         }
         if(this.elseEntity !== null) {
-            out += this.elseEntity.toString(indentlevel);
+            out += this.elseEntity.toString(indentlevel, indLvlHidden);
         }
         return out;
     };
@@ -115,11 +115,11 @@ var IfStmt = function() {
 var If = function() {
     this.condition = null;
     this.block = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "if condition:" + this.condition.toString() + "\n";
-        out += this.block.toString(indentlevel + 1);
+        var out = indents + "if condition:" + this.condition.toString(0, indLvlHidden) + "\n";
+        out += this.block.toString(indentlevel + 1, indLvlHidden+1);
         return out;
     };
 };
@@ -127,21 +127,21 @@ var If = function() {
 var Elif = function() {
     this.condition = null;
     this.block = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "elif condition:" + this.condition.toString() + "\n";
-        out += this.block.toString(indentlevel + 1);
+        var out = indents + "elif condition:" + this.condition.toString(0, indLvlHidden) + "\n";
+        out += this.block.toString(indentlevel + 1, indLvlHidden+1);
         return out;
     };
 };
 
 var Else = function() {
     this.block = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "else\n" + this.block.toString(indentlevel + 1);
+        var out = indents + "else\n" + this.block.toString(indentlevel + 1, indLvlHidden+1);
         return out;
     };
 };

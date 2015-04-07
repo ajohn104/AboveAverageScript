@@ -19,10 +19,10 @@ module.exports = {
 
 var ArrayLit = function() {
     this.array = [];
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = (this.array.length === [])?indents + "[]":this.array.toString(indentlevel);
+        var out = (this.array.length === [])?indents + "[]":this.array.toString(indentlevel, indLvlHidden);
         return out;
     };
 };

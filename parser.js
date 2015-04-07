@@ -160,7 +160,7 @@ var tokenStreamParser = function(tkns, call, err) {
             return false;
         }
         if(outputTree) {
-            console.log(entity.toString(0));
+            console.log(entity.toString(0, 0));
         }
         return true;
     };
@@ -168,12 +168,12 @@ var tokenStreamParser = function(tkns, call, err) {
     var Program = function() {
         this.stmt = null;
         this.block = null;
-        this.toString = function(indentlevel) {
+        this.toString = function(indentlevel, indLvlHidden) {
             indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
             var indents = envir.indents(indentlevel);
             var out = indents + "Program ->\n";
-            out += this.stmt.toString(indentlevel + 1);
-            out += this.block.toString(indentlevel + 1);
+            out += this.stmt.toString(indentlevel + 1, indLvlHidden + 1);
+            out += this.block.toString(indentlevel + 1, indLvlHidden + 1);
             return out;
         };
     };

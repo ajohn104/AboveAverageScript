@@ -12,7 +12,7 @@ module.exports = {
 
 var BoolLit = function() {
     this.val = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = this.val;

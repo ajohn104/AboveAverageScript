@@ -36,14 +36,14 @@ var Exp1 = function() {
     this.val = null;
     this.ifexp = null;
     this.elseexp = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = this.val.toString(indentlevel);
+        var out = this.val.toString(indentlevel, indLvlHidden);
         if(this.ifexp !== null) {
-            out += "if(" + this.ifexp.toString(indentlevel) +")";
+            out += "if(" + this.ifexp.toString(indentlevel, indLvlHidden) +")";
             if(this.elseexp !== null) {
-                out += "else(" + this.elseexp.toString(indentlevel) + ")";
+                out += "else(" + this.elseexp.toString(indentlevel, indLvlHidden) + ")";
             }
         }
         return out;

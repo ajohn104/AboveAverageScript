@@ -26,11 +26,11 @@ module.exports = {
 var SetEqual = function() {
     this.leftexp = null;
     this.rightexp = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "Declare(" + this.leftexp.toString();
-        out += "=" + this.rightexp.toString();
+        var out = indents + "Declare(" + this.leftexp.toString(0, indLvlHidden);
+        out += "=" + this.rightexp.toString(0, indLvlHidden);
         out += ")";
         return out;
     };

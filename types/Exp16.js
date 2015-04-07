@@ -30,11 +30,11 @@ var Exp16 = function() {
     this.prefix = "";
     this.val = null;
     this.postfix = "";
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var addparens = (this.prefix.length > 0 || this.postfix.length > 0);
-        var out = this.prefix + (addparens?"(":"") + this.val.toString(indentlevel) + (addparens?")":"") + this.postfix;
+        var out = this.prefix + (addparens?"(":"") + this.val.toString(indentlevel, indLvlHidden) + (addparens?")":"") + this.postfix;
         return out;
     };
 };

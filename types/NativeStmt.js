@@ -10,7 +10,7 @@ module.exports = {
 };
 
 var NativeStmt = function() {
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "***native***\n"

@@ -54,16 +54,16 @@ var SwitchStmt = function() {
     this.condition  = null;
     this.cases = [];
     this.defaultCase = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "SwitchStmt ->\n";
         out += indents + "  condition: " + this.condition + "\n";
         for(var i = 0; i < this.cases.length; i++) {
-            out += this.cases[i].toString(indentlevel + 1);
+            out += this.cases[i].toString(indentlevel + 1, indLvlHidden+1);
         }
         out += indents + "]\n";
-        out += this.defaultCase.toString(indentlevel + 1);
+        out += this.defaultCase.toString(indentlevel + 1, indLvlHidden+1);
         return out;
     };
 };

@@ -33,11 +33,11 @@ module.exports = {
 var ForColon = function() {
     this.id = null;
     this.exp = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "(for" + this.id;
-        out += ":" + this.exp.toString() + ")";
+        out += ":" + this.exp.toString(0, indLvlHidden) + ")";
         return out;
     };
 };

@@ -61,14 +61,15 @@ module.exports = {
 
 var ArrayCont = function() {
     this.array = [];
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "[";
         for(var i = 0; i < this.array.length; i++) {
-            out += this.array[i].toString() + ",";
+            out += this.array[i].toString(0, indLvlHidden) + ",";
         }
-        out = out.substring(0, out.length-1) + "]";
+        var removeCount = (this.array.length > 0?-1:0);
+        out = out.substring(0, out.length+removeCount) + "]";
         return out;
     };
 };

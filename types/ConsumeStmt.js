@@ -31,7 +31,7 @@ module.exports = {      // Reduce this to just a single expression???
 var ConsumeStmt = function() {
     this.leftSideExps = null;
     this.rightSideExp = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "ConsumeStmt ->\n";
@@ -41,11 +41,11 @@ var ConsumeStmt = function() {
         } else {
             out += " [\n";
             for(var i = 0; i < this.leftSideExps.length; i++) {
-                out += this.leftSideExps[i].toString(indentlevel + 2);
+                out += this.leftSideExps[i].toString(indentlevel + 2, indLvlHidden+2);
             }
             out += indents + "  ]\n";
         }
-        out += indents + "  left side exp: " + this.rightSideExp.toString() + "\n";
+        out += indents + "  left side exp: " + this.rightSideExp.toString(0, indLvlHidden) + "\n";
         return out;
     };
 };

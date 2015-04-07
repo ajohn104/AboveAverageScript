@@ -62,7 +62,7 @@ module.exports = {
 
         debug("Completed statement search. Status: " + found);
         if(found) {
-            //debug("Last found: " + envir.last.toString()); //Turned off while under development.
+            //debug("Last found: " + envir.last.toString(0, 0)); //Turned off while under development.
         }
         debug("next token to be searched:");
         debug(envir.parseTokens[envir.index]);

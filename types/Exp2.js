@@ -35,16 +35,16 @@ module.exports = {
 var Exp2 = function() {
     this.val = null;
     this.furtherExps = [];
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = "";
         for(var j = 0; j < this.furtherExps.length; j++) {
             out += "(";
         }
-        out += this.val.toString(indentlevel);
+        out += this.val.toString(indentlevel, indLvlHidden);
         for(var i = 0; i < this.furtherExps.length; i++) {
-            out += this.furtherExps[i].operator + this.furtherExps[i].exp.toString(indentlevel) + ")";
+            out += this.furtherExps[i].operator + this.furtherExps[i].exp.toString(indentlevel, indLvlHidden) + ")";
         }
         return out;
     };

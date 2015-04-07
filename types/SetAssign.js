@@ -28,11 +28,11 @@ var SetAssign = function() {
     this.leftexp = null;
     this.operator = null;
     this.rightexp = null;
-    this.toString = function(indentlevel) {
+    this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "Assign(" + this.leftexp.toString();
-        out += this.operator + this.rightexp.toString();
+        var out = indents + "Assign(" + this.leftexp.toString(0, indLvlHidden);
+        out += this.operator + this.rightexp.toString(0, indLvlHidden);
         out += ")";
         return out;
     };
