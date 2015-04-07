@@ -38,12 +38,12 @@ var ObjectInd = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "Object ->\n";
-        out += indents + "  props: [\n";
+        out += envir.indents(indLvlHidden + 1) + "properties: [\n";
         for(var i = 0; i < this.props.length; i++) {
-            out += this.props[i].toString(indentlevel + 2, indLvlHidden+2) + ",\n";
+            out += this.props[i].toString(indLvlHidden + 2, indLvlHidden+2) + ",\n";
         }
         var removeCount = (this.props.length > 0?-2:0);
-        out = out.substring(0, out.length+removeCount) + "\n" + indents + "]\n";
+        out = out.substring(0, out.length+removeCount) + "\n" + envir.indents(indLvlHidden + 1)  + "]";
         return out;
     };
 };

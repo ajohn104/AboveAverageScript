@@ -47,7 +47,8 @@ var While = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "while" + this.condition.toString(0, indLvlHidden) + "\n";
+        var out = indents + "while ->\n";
+        out += indents + "  condition:" + this.condition.toString(0, indLvlHidden) + "\n";
         out += this.block.toString(indentlevel+1, indLvlHidden+1);
         return out;
     };

@@ -41,11 +41,11 @@ var ConsumeStmt = function() {
         } else {
             out += " [\n";
             for(var i = 0; i < this.leftSideExps.length; i++) {
-                out += this.leftSideExps[i].toString(indentlevel + 2, indLvlHidden+2);
+                out += this.leftSideExps[i].toString(indentlevel + 2, indLvlHidden+2) + "\n";
             }
             out += indents + "  ]\n";
         }
-        out += indents + "  left side exp: " + this.rightSideExp.toString(0, indLvlHidden) + "\n";
+        out += indents + "  rightSideExp: " + this.rightSideExp.toString(0, indLvlHidden);
         return out;
     };
 };

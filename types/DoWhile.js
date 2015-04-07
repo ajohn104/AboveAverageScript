@@ -51,7 +51,7 @@ var DoWhile = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
         var out = indents + "do..\n";
-        out += this.block.toString(indentlevel+1, indLvlHidden+1);
+        out += this.block.toString(indentlevel+1, indLvlHidden+1) + "\n";
         out += indents + "..while" + this.condition.toString(0, indLvlHidden);
         return out;
     };

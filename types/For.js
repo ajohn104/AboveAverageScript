@@ -79,6 +79,7 @@ module.exports = {
     }
 };
 
+// Todo: The toString here needs to be more explicit.
 var For = function() {
     this.firstexp = null;
     this.exp = null;
@@ -86,11 +87,11 @@ var For = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "(for";
+        var out = indents + "(for ";
         if(this.firstexp !== null) {
-            out += this.firstexp.toString(0, indLvlHidden);
+            out += this.firstexp.toString(0, indLvlHidden) + ", ";
         }
-        out += this.exp.toString(0, indLvlHidden);
+        out += this.exp.toString(0, indLvlHidden) + ", ";
         out += this.repeatexp.toString(0, indLvlHidden);
         out += ")";
         return out;

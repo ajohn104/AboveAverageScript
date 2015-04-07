@@ -36,8 +36,8 @@ var ForColon = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "(for" + this.id;
-        out += ":" + this.exp.toString(0, indLvlHidden) + ")";
+        var out = indents + "(for " + this.id;
+        out += " : " + this.exp.toString(0, indLvlHidden) + ")";
         return out;
     };
 };

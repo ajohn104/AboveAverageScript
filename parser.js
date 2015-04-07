@@ -71,6 +71,7 @@ envir.ObjInd = require("./types/ObjInd");
 envir.Lexeme = require("./types/Lexeme")(envir);
 envir.inIndented = false;
 envir.indentedExp = [];
+envir.nativeSpecified = false;
 
 envir.last = null;
 envir.indents = function(indents) {
@@ -142,19 +143,29 @@ var tokenStreamParser = function(tkns, call, err) {
         return found;
     };
 
+    // Program         ::= Stmt (Newline Stmt?)* EOF
+    // Yes, I'm aware I could use Block, which is what I had previously. But that would be implying (in my mind, at
+    // the very least) that the first Stmt and the following Block are separate, which they aren't. The first Stmt
+    // and any following Stmts are all in the same scope, so logically, they shouldn't be separated by an entity.
     this.parseProgram = function() {
         var entity = new Program();
         if(!at(envir.Stmt)) {
             error(envir.parseTokens[envir.index]);
             return false;
         }
-        entity.stmt = envir.last;
-        if(!at(envir.Block)) {
-            error(envir.parseTokens[envir.index]);
-            return false;
-        };
-        entity.block = envir.last;
-        debug("End of program block");
+        entity.stmts.push(envir.last);
+
+        while(at(envir.Newline)) {
+            if(at(envir.Stmt)) {
+                debug("Program additional Stmt found.\n");
+                entity.stmts.push(envir.last);
+            }
+        }
+        debug("Ending Program Newline/Stmt search. Looking for EOF. envir.index:" + envir.index + " \n");
+        debug("Current token is now:");
+        debug(envir.parseTokens[envir.index]);
+        debug('\n');
+
         if(!at(envir.EndOfFile)) {
             error(envir.parseTokens[envir.index]);
             return false;
@@ -166,14 +177,15 @@ var tokenStreamParser = function(tkns, call, err) {
     };
 
     var Program = function() {
-        this.stmt = null;
-        this.block = null;
+        this.stmts = [];
         this.toString = function(indentlevel, indLvlHidden) {
             indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
             var indents = envir.indents(indentlevel);
-            var out = indents + "Program ->\n";
-            out += this.stmt.toString(indentlevel + 1, indLvlHidden + 1);
-            out += this.block.toString(indentlevel + 1, indLvlHidden + 1);
+            var out = indents + "Program -> stmts: [\n";
+            for(var i = 0; i < this.stmts.length; i++) {
+                out += this.stmts[i].toString(indentlevel + 1, indLvlHidden + 1) + "\n";
+            }
+            out += indents + "]\n";
             return out;
         };
     };

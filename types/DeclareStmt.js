@@ -18,9 +18,9 @@ module.exports = {
                 found = false;
                 envir.index = indexMid;
             }
-            if(envir.isArray(envir.last)) {
+            if(envir.isArray(envir.last)) { // Note: this is when you have something like let x, y = a, b  (or just let x = a)
                 entity.rightSideExps = envir.last;
-            } else {
+            } else { // Note: this is when you have something like let x = a, y = b
                 entity.rightSideExps.push(envir.last);
             } 
         }
@@ -85,9 +85,9 @@ var DeclareMultVar = function() {
         out += indents + "  ]\n";
         out += indents + "  rightSideExps: [\n";
         for(var j = 0; j < this.rightSideExps.length; j++) {
-            out += this.rightSideExps[j].toString(indentlevel + 2, indLvlHidden + 2) + "\n";
+            out += this.rightSideExps[j].toString(indentlevel +2, indLvlHidden + 2) + "\n";
         }
-        out += indents + "  ]\n" + indents + "]\n";
+        out += indents + "  ]";
         return out;
     };
 };

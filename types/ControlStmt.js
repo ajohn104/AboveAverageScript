@@ -18,7 +18,7 @@ var ControlStmt = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + this.controlWord + "\n";
+        var out = indents + this.controlWord;
         return out;
     };
 };

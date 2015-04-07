@@ -39,9 +39,9 @@ var Prop = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "Property(key(" + this.leftexp.toString(0, indLvlHidden);
-        out += "):val(" + this.rightexp.toString(0, indLvlHidden);
-        out += "))";
+        var out = indents + "Property -> key(" + this.leftexp.toString(0, indLvlHidden);
+        out += ") : val" + this.rightexp.toString(0, indLvlHidden);
+        //out += ")";
         return out;
     };
 };

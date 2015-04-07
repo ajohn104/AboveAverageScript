@@ -40,7 +40,7 @@ var Block = function() {
         for(var i = 0; i < this.stmts.length; i++) {
             out += this.stmts[i].toString(indentlevel + 1, indLvlHidden+1) + "\n";
         }
-        out += indents + "]\n" + envir.indents(indentlevel-1);
+        out += indents + "]";
         return out;
     };
 };

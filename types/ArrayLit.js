@@ -10,7 +10,7 @@ module.exports = {
         envir.index = indexBefore;
         var found = at(envir.ArrayCont);
         if(found) {
-            entity.val = envir.last;
+            entity = envir.last;
             envir.last = entity;
         }
         return found;

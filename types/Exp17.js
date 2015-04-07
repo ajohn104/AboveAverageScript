@@ -64,6 +64,6 @@ var Exp17 = function() {
 var DotAccessor = function(val) {
     this.val = val;
     this.toString = function(indentlevel, indLvlHidden) {
-        return ".(" + val.toString(0, indLvlHidden) + ")";
+        return "." + val.toString(0, indLvlHidden);
     }
 };

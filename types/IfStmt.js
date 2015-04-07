@@ -118,7 +118,8 @@ var If = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "if condition:" + this.condition.toString(0, indLvlHidden) + "\n";
+        var out = indents + "if ->\n"; 
+        out += indents + "  condition:" + this.condition.toString(0, indLvlHidden) + "\n";
         out += this.block.toString(indentlevel + 1, indLvlHidden+1);
         return out;
     };
@@ -130,8 +131,9 @@ var Elif = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "elif condition:" + this.condition.toString(0, indLvlHidden) + "\n";
-        out += this.block.toString(indentlevel + 1, indLvlHidden+1);
+        var out = "\n" + indents + "elif ->";
+        out += indents + "  condition:" + this.condition.toString(0, indLvlHidden) + "\n";
+        out += this.block.toString(indentlevel + 1, indLvlHidden+1) + "\n";
         return out;
     };
 };
@@ -141,7 +143,7 @@ var Else = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "else\n" + this.block.toString(indentlevel + 1, indLvlHidden+1);
+        var out = "\n" + indents + "else" + this.block.toString(indentlevel + 1, indLvlHidden+1);
         return out;
     };
 };

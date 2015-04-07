@@ -69,12 +69,12 @@ var Call = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = "Call ->(";
+        var out = "Call -> arguments: [";
         for(var i = 0; i < this.args.length; i++) {
-            out += "(" + this.args[i].toString(0, indLvlHidden) + "),";
+            out += this.args[i].toString(0, indLvlHidden+1) + ",";
         }
         var removeCount = (this.args.length > 0?-1:0);
-        out = out.substring(0, out.length+removeCount) + ")";
+        out = out.substring(0, out.length+removeCount) + "]";
         return out;
     };
 };

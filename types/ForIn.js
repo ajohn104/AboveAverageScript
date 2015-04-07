@@ -46,11 +46,11 @@ var ForIn = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = envir.indents(indentlevel);
-        var out = indents + "(for" + this.idone;
+        var out = indents + "(for " + this.idone;
         if(this.idtwo !== null) {
             out += "," + this.idtwo;
         }
-        out += " in" + this.exp.toString(0, indLvlHidden) + ")";
+        out += " in " + this.exp.toString(0, indLvlHidden) + ")";
         return out;
     };
 };
