@@ -1,4 +1,4 @@
-Program         ::= Stmt Block EOF
+Program         ::= Stmt (Newline Stmt)* EOF
 Block           ::= (Newline Stmt)*
 Stmt            ::= DeclareStmt  
                  |  AssignStmt
