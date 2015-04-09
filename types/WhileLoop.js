@@ -1,9 +1,9 @@
 // WhileLoop       ::= DoWhile | While
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
 
-        return at(envir.DoWhile) || at(envir.While);
+        return at(env.DoWhile) || at(env.While);
     }
 };
 

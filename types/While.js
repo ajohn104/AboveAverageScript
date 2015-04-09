@@ -1,42 +1,42 @@
 // While           ::= 'while' Exp ':' Indent Block Dedent
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
         var entity = new While();
         debug("Checking for while loop");
         if(!at('while')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
 
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore;
+        if(!at(env.Exp)) {
+            env.index = indexBefore;
             return false;
         }
-        entity.condition = envir.last;
+        entity.condition = env.last;
 
         if(!at(':')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
 
-        if(!at(envir.Indent)) {
-            envir.index = indexBefore;
+        if(!at(env.Indent)) {
+            env.index = indexBefore;
             return false;
         }
 
-        if(!at(envir.Block)) {
-            envir.index = indexBefore;
+        if(!at(env.Block)) {
+            env.index = indexBefore;
             return false;
         }
-        entity.block = envir.last;
+        entity.block = env.last;
 
-        if(!at(envir.Dedent)) {
-            envir.index = indexBefore;
+        if(!at(env.Dedent)) {
+            env.index = indexBefore;
             return false;
         }
 
-        envir.last = entity;
+        env.last = entity;
         return true;
     }
 };
@@ -46,7 +46,7 @@ var While = function() {
     this.block = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "while ->\n";
         out += indents + "  condition:" + this.condition.toString(0, indLvlHidden) + "\n";
         out += this.block.toString(indentlevel+1, indLvlHidden+1);

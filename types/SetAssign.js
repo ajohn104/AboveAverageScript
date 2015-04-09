@@ -1,25 +1,25 @@
 // SetAssign       ::= Exp AssignOp Exp
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
         var entity = new SetAssign();
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore;
+        if(!at(env.Exp)) {
+            env.index = indexBefore;
             return false;
         }
-        entity.leftexp = envir.last;
-        if(!at(envir.AssignOp)) {
-            envir.index = indexBefore;
+        entity.leftexp = env.last;
+        if(!at(env.AssignOp)) {
+            env.index = indexBefore;
             return false;
         }
-        entity.operator = envir.last;
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore;
+        entity.operator = env.last;
+        if(!at(env.Exp)) {
+            env.index = indexBefore;
             return false;
         }
-        entity.rightexp = envir.last;
+        entity.rightexp = env.last;
 
-        envir.last = entity;
+        env.last = entity;
         return true;
     }
 };
@@ -30,7 +30,7 @@ var SetAssign = function() {
     this.rightexp = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "Assign(" + this.leftexp.toString(0, indLvlHidden);
         out += this.operator + this.rightexp.toString(0, indLvlHidden);
         out += ")";

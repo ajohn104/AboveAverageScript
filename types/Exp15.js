@@ -1,25 +1,25 @@
 // Exp15           ::= Exp16 PostfixOp?
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index; 
-        var indentedBefore = envir.inIndented;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index; 
+        var indentedBefore = env.inIndented;
         var entity = new Exp15();
-        debug("Starting on exp15. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
-        if(!at(envir.Exp16)) {
-            envir.index = indexBefore; 
-            envir.inIndented = indentedBefore;
+        debug("Starting on exp15. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+        if(!at(env.Exp16)) {
+            env.index = indexBefore; 
+            env.inIndented = indentedBefore;
             return false;
         }
-        entity.val = envir.last;
-        envir.checkIndent();
+        entity.val = env.last;
+        env.checkIndent();
 
-        var foundOp = at(envir.PostfixOp);
+        var foundOp = at(env.PostfixOp);
         if(foundOp) {
-            entity.postfix = envir.last;
+            entity.postfix = env.last;
         }
 
-        envir.last = entity;
-        debug("Finalizing exp15 success. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
+        env.last = entity;
+        debug("Finalizing exp15 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
         return true;
     }
 };
@@ -29,7 +29,7 @@ var Exp15 = function() {
     this.postfix = "";
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = (this.postfix.length > 0?"(":"") + this.val.toString(0, indLvlHidden) + (this.postfix.length > 0?")":"") + this.postfix;
         return out;
     };

@@ -1,95 +1,95 @@
 // IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
         var entity;
         if(!at('if')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
         entity = new IfStmt();
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore;
+        if(!at(env.Exp)) {
+            env.index = indexBefore;
             return false;
         }
         var ifEnt = new If();
-        ifEnt.condition = envir.last;
+        ifEnt.condition = env.last;
 
         if(!at(':')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
 
-        if(!at(envir.Indent)) {
-            envir.index = indexBefore;
+        if(!at(env.Indent)) {
+            env.index = indexBefore;
             return false;
         }
 
-        if(!at(envir.Block)) {
-            envir.index = indexBefore;
+        if(!at(env.Block)) {
+            env.index = indexBefore;
             return false;
         }
 
-        ifEnt.block = envir.last;
+        ifEnt.block = env.last;
         entity.ifEntity = ifEnt;
 
-        if(!at(envir.Dedent)) {
-            envir.index = indexBefore;
+        if(!at(env.Dedent)) {
+            env.index = indexBefore;
             return false;
         }
-        debug("Completed 'if' block. Moving on to elif. envir.index:" + envir.index);
-        while(envir.parseTokens[envir.index].kind === "Newline" && envir.parseTokens[envir.index+1].lexeme === 'elif') {
+        debug("Completed 'if' block. Moving on to elif. env.index:" + env.index);
+        while(env.parseTokens[env.index].kind === "Newline" && env.parseTokens[env.index+1].lexeme === 'elif') {
             var elifEnt = new Elif();
-            envir.index+=2;
-            if(!at(envir.Exp)) {
-                envir.index = indexBefore;
+            env.index+=2;
+            if(!at(env.Exp)) {
+                env.index = indexBefore;
                 return false;
             }
-            elifEnt.condition = envir.last;
+            elifEnt.condition = env.last;
             if(!at(':')) {
-                envir.index = indexBefore;
+                env.index = indexBefore;
                 return false;
             }
 
-            if(!at(envir.Indent)) {
-                envir.index = indexBefore;
+            if(!at(env.Indent)) {
+                env.index = indexBefore;
                 return false;
             }
 
-            if(!at(envir.Block)) {
-                envir.index = indexBefore;
+            if(!at(env.Block)) {
+                env.index = indexBefore;
                 return false;
             }
-            elifEnt.block = envir.last;
+            elifEnt.block = env.last;
 
-            if(!at(envir.Dedent)) {
-                envir.index = indexBefore;
+            if(!at(env.Dedent)) {
+                env.index = indexBefore;
                 return false;
             }
             entity.elifEntities.push(elifEnt);
         }
-        debug("Completed 'elif' blocks. Moving on to else. envir.index:" + envir.index);
-        if(envir.parseTokens[envir.index].kind === "Newline" && envir.parseTokens[envir.index+1].lexeme === 'else') {
-            envir.index+=2;
+        debug("Completed 'elif' blocks. Moving on to else. env.index:" + env.index);
+        if(env.parseTokens[env.index].kind === "Newline" && env.parseTokens[env.index+1].lexeme === 'else') {
+            env.index+=2;
             var elseEnt = new Else();
-            if(!at(envir.Indent)) {
-                envir.index = indexBefore;
+            if(!at(env.Indent)) {
+                env.index = indexBefore;
                 return false;
             }
 
-            if(!at(envir.Block)) {
-                envir.index = indexBefore;
+            if(!at(env.Block)) {
+                env.index = indexBefore;
                 return false;
             }
-            elseEnt.block = envir.last;
-            if(!at(envir.Dedent)) {
-                envir.index = indexBefore;
+            elseEnt.block = env.last;
+            if(!at(env.Dedent)) {
+                env.index = indexBefore;
                 return false;
             }
             entity.elseEntity = elseEnt;
         }
-        debug("Completed 'else' block. Done with IfStmt. envir.index:" + envir.index);
-        envir.last = entity;
+        debug("Completed 'else' block. Done with IfStmt. env.index:" + env.index);
+        env.last = entity;
         return true;
     }
 };
@@ -100,7 +100,7 @@ var IfStmt = function() {
     this.elseEntity = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = this.ifEntity.toString(indentlevel, indLvlHidden);
         for(var i = 0; i < this.elifEntities.length; i++) {
             out += this.elifEntities[i].toString(indentlevel, indLvlHidden);
@@ -117,7 +117,7 @@ var If = function() {
     this.block = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "if ->\n"; 
         out += indents + "  condition:" + this.condition.toString(0, indLvlHidden) + "\n";
         out += this.block.toString(indentlevel + 1, indLvlHidden+1);
@@ -130,7 +130,7 @@ var Elif = function() {
     this.block = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = "\n" + indents + "elif ->";
         out += indents + "  condition:" + this.condition.toString(0, indLvlHidden) + "\n";
         out += this.block.toString(indentlevel + 1, indLvlHidden+1) + "\n";
@@ -142,7 +142,7 @@ var Else = function() {
     this.block = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = "\n" + indents + "else" + this.block.toString(indentlevel + 1, indLvlHidden+1);
         return out;
     };

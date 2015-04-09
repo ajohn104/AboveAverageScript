@@ -1,18 +1,18 @@
 // ReturnStmt      ::= 'ret' Exp?
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
 
         if(!at('ret')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
         var entity = new ReturnStmt();
-        var foundExp = at(envir.Exp);
+        var foundExp = at(env.Exp);
         if(foundExp) {
-            entity.exp = envir.last;
+            entity.exp = env.last;
         }
-        envir.last = entity;
+        env.last = entity;
         return true;
     }
 };
@@ -21,7 +21,7 @@ var ReturnStmt = function() {
     this.exp = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "return" + ((this.exp !== null)?(" " + this.exp.toString(0, indLvlHidden)):(""));
         return out;
     };

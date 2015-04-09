@@ -1,29 +1,29 @@
 // ExpList         ::= Exp (Newline? ',' Exp)*
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index; 
-        var indentedBefore = envir.inIndented;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index; 
+        var indentedBefore = env.inIndented;
         var entity = new ExpList();
-        debug("ExpList: beginning search. envir.index:" + envir.index);
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore; envir.inIndented = indentedBefore;
+        debug("ExpList: beginning search. env.index:" + env.index);
+        if(!at(env.Exp)) {
+            env.index = indexBefore; env.inIndented = indentedBefore;
             return false;
         }
-        entity.exps.push(envir.last);
-        debug("ExpList: found Exp. envir.index:" + envir.index);
-        var indexMid = envir.index;
-        at(envir.Newline);
+        entity.exps.push(env.last);
+        debug("ExpList: found Exp. env.index:" + env.index);
+        var indexMid = env.index;
+        at(env.Newline);
         while(at(',')) {
-            if(!at(envir.Exp)) {
-                envir.index = indexBefore; envir.inIndented = indentedBefore;
+            if(!at(env.Exp)) {
+                env.index = indexBefore; env.inIndented = indentedBefore;
                 return false;
             }
-            entity.exps.push(envir.last);
-            indexMid = envir.index;
-            at(envir.Newline);
+            entity.exps.push(env.last);
+            indexMid = env.index;
+            at(env.Newline);
         }
-        envir.index = indexMid;
-        envir.last = entity.exps;
+        env.index = indexMid;
+        env.last = entity.exps;
         return true;
     }
 };
@@ -32,7 +32,7 @@ var ExpList = function() {
     this.exps = [];
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = "([";
         for(var i = 0; i < this.furtherExps.length; i++) {
             out += this.exps[i].toString(indentlevel, indLvlHidden) + ",";

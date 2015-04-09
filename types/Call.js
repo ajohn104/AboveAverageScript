@@ -1,65 +1,65 @@
 // Call            ::= '(' ( ExpList (Newline? ',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
         var entity = new Call();
         debug("Starting call test");
         if(!at('(')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
-        debug("Checking for function arguments. envir.index:" + envir.index);
-        if(at(envir.ExpList)) {
-            for(var j = 0; j < envir.last.length; j++) {
-                entity.args.push(envir.last[j]);
+        debug("Checking for function arguments. env.index:" + env.index);
+        if(at(env.ExpList)) {
+            for(var j = 0; j < env.last.length; j++) {
+                entity.args.push(env.last[j]);
             }
-            var indexMid = envir.index;
-            at(envir.Newline);
+            var indexMid = env.index;
+            at(env.Newline);
             if(at(',')) {
-                if(!at(envir.Indent)) {
-                    envir.index = indexBefore;
+                if(!at(env.Indent)) {
+                    env.index = indexBefore;
                     return false;
                 }
 
-                if(!at(envir.Newline)) {
-                    envir.index = indexBefore;
+                if(!at(env.Newline)) {
+                    env.index = indexBefore;
                     return false;
                 }
 
-                if(!at(envir.Exp)) {
-                    envir.index = indexBefore;
+                if(!at(env.Exp)) {
+                    env.index = indexBefore;
                     return false;
                 }
-                entity.args.push(envir.last);
+                entity.args.push(env.last);
 
-                while(envir.parseTokens[envir.index].kind === "Newline" && envir.parseTokens[envir.index+1].lexeme === ",") {
-                    envir.index+=2;
-                    if(!at(envir.Exp)) {
-                        envir.index = indexBefore;
+                while(env.parseTokens[env.index].kind === "Newline" && env.parseTokens[env.index+1].lexeme === ",") {
+                    env.index+=2;
+                    if(!at(env.Exp)) {
+                        env.index = indexBefore;
                         return false;
                     }
-                    entity.args.push(envir.last);
+                    entity.args.push(env.last);
                 }
 
-                if(!at(envir.Dedent)) {
-                    envir.index = indexBefore;
+                if(!at(env.Dedent)) {
+                    env.index = indexBefore;
                     return false;
                 }
             }
 
-            at(envir.Newline);
+            at(env.Newline);
         } else {
-            debug("Cannot find any arguments to function. Checking for ')'. envir.index:" + envir.index);
+            debug("Cannot find any arguments to function. Checking for ')'. env.index:" + env.index);
         }
 
         
 
         if(!at(')')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
-        envir.last = entity;
-        debug("Ending successful call on function: " + envir.parseTokens[indexBefore-1].lexeme);
+        env.last = entity;
+        debug("Ending successful call on function: " + env.parseTokens[indexBefore-1].lexeme);
         return true;
     }
 };
@@ -68,7 +68,7 @@ var Call = function() {
     this.args = [];
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = "Call -> arguments: [";
         for(var i = 0; i < this.args.length; i++) {
             out += this.args[i].toString(0, indLvlHidden+1) + ",";

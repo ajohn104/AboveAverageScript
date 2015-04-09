@@ -1,10 +1,10 @@
 // NativeStmt      ::= '***native***'
 module.exports = {
-    is: function(at, next, envir, debug) {
+    is: function(at, next, env, debug) {
         var found = at('***native***');
         if(found) {
-            envir.last = new NativeStmt();
-            envir.nativeSpecified = true;
+            env.last = new NativeStmt();
+            env.nativeSpecified = true;
         }
         return found;
     }
@@ -13,7 +13,7 @@ module.exports = {
 var NativeStmt = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "***native***";
         return out;
     };

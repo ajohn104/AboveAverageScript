@@ -1,50 +1,50 @@
 // Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
 module.exports = {
-    is: function(at, next, envir, debug) {
-        debug("Starting on exp18. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
-        var indexBefore = envir.index; 
-        var indentedBefore = envir.inIndented;
+    is: function(at, next, env, debug) {
+        debug("Starting on exp18. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+        var indexBefore = env.index; 
+        var indentedBefore = env.inIndented;
         var isParenthesizedExpr = false;
         var entity = new Exp18();
-        if(at('(') && at(envir.Exp)) {
-            entity.val = envir.last;
-            debug("Found exp within possible ParenthesizedExpr. Looking for ')'. envir.index:" + envir.index);
+        if(at('(') && at(env.Exp)) {
+            entity.val = env.last;
+            debug("Found exp within possible ParenthesizedExpr. Looking for ')'. env.index:" + env.index);
 
-            debug("Checking for newline. envir.index:" + envir.index);
-            if(at(envir.Newline)) {
-                debug("Found newline. envir.index:" + envir.index);
+            debug("Checking for newline. env.index:" + env.index);
+            if(at(env.Newline)) {
+                debug("Found newline. env.index:" + env.index);
             } // I think this is it.
 
             if(!at(')')) {
-                envir.index = indexBefore; 
-                envir.inIndented = indentedBefore;
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
                 isParenthesizedExpr = false;
             }
-            debug("Found ')'. Completed ParenthesizedExpr. envir.index:" + envir.index);
+            debug("Found ')'. Completed ParenthesizedExpr. env.index:" + env.index);
             isParenthesizedExpr = true;
             entity.isParenthesizedExpr = true;
         } else {
-            envir.index = indexBefore; 
-            envir.inIndented = indentedBefore;
+            env.index = indexBefore; 
+            env.inIndented = indentedBefore;
             isParenthesizedExpr = false;
         }
         var found = isParenthesizedExpr
-                 || at(envir.Id)
-                 || at(envir.BoolLit)
-                 || at(envir.IntLit)
-                 || at(envir.StringLit)
-                 || at(envir.Func)
-                 || at(envir.ArrayLit)
-                 || at(envir.ObjectInline)
-                 || at(envir.This)
-                 || at(envir.RegExpLit);
-        var accessIndex = envir.index;
+                 || at(env.Id)
+                 || at(env.BoolLit)
+                 || at(env.IntLit)
+                 || at(env.StringLit)
+                 || at(env.Func)
+                 || at(env.ArrayLit)
+                 || at(env.ObjectInline)
+                 || at(env.This)
+                 || at(env.RegExpLit);
+        var accessIndex = env.index;
         if(entity.val === null) {
-            entity.val = envir.last;
+            entity.val = env.last;
         }
-        if(envir.index === 0) accessIndex = 0;
-        envir.last = entity;
-        debug("Finalizing exp18, found:" + found + ", envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[accessIndex].lexeme);
+        if(env.index === 0) accessIndex = 0;
+        env.last = entity;
+        debug("Finalizing exp18, found:" + found + ", env.index:" + env.index + ', lexeme: ' + env.parseTokens[accessIndex].lexeme);
         return found;
     }
 };
@@ -54,7 +54,7 @@ var Exp18 = function() {
     this.isParenthesizedExpr = false;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + this.val.toString(indentlevel, indLvlHidden);
         return out;
     };

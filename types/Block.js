@@ -1,30 +1,30 @@
 // Block           ::= (Newline Stmt)*
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
         var entity = new Block();
-        debug("Beginning block search. envir.index:" + envir.index + " \n");
+        debug("Beginning block search. env.index:" + env.index + " \n");
         debug("Current token:");
-        debug(envir.parseTokens[envir.index]);
+        debug(env.parseTokens[env.index]);
         debug("Previous token:");
-        debug(envir.parseTokens[envir.index-1]);
+        debug(env.parseTokens[env.index-1]);
         debug('\n');
-        var indexMid = envir.index;
-        while(at(envir.Newline)) {
-            if(!at(envir.Stmt)) {
+        var indexMid = env.index;
+        while(at(env.Newline)) {
+            if(!at(env.Stmt)) {
                 debug("Block search stopped.\n");
-                envir.index = indexMid;
+                env.index = indexMid;
                 break;
             }
-            entity.stmts.push(envir.last);
-            indexMid = envir.index;
+            entity.stmts.push(env.last);
+            indexMid = env.index;
         }
         
-        debug("Ending block search. envir.index:" + envir.index + " \n");
+        debug("Ending block search. env.index:" + env.index + " \n");
         debug("Current token is now:");
-        debug(envir.parseTokens[envir.index]);
+        debug(env.parseTokens[env.index]);
         debug('\n');
-        envir.last = entity;
+        env.last = entity;
         return true;
     } 
 };
@@ -33,7 +33,7 @@ var Block = function() {
     this.stmts = [];
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "Block -> stmts: [\n";
 
         //console.log("indLvlHidden: " + indLvlHidden);

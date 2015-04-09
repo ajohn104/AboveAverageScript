@@ -1,48 +1,48 @@
 // Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp17)*
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index; 
-        var indentedBefore = envir.inIndented;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index; 
+        var indentedBefore = env.inIndented;
         var entity = new Exp17();
-        debug("Starting on exp17. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
-        if(!at(envir.Exp18)) {
-            envir.index = indexBefore; 
-            envir.inIndented = indentedBefore;
+        debug("Starting on exp17. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+        if(!at(env.Exp18)) {
+            env.index = indexBefore; 
+            env.inIndented = indentedBefore;
             return false;
         }
-        entity.val = envir.last;
-        var indexMid = envir.index;
-        while(next(envir.ArrayCont) || next(envir.Call) || next('.') || next(envir.Indent) || (envir.inIndented && next(envir.Newline))) {
-            if(envir.inIndented && next(envir.Newline)) {
-                envir.checkIndent();
-            } else if(at(envir.ArrayCont)) {
-                entity.accessors.push(envir.last);
-            } else if(at(envir.Call)) {
-                entity.accessors.push(envir.last);
+        entity.val = env.last;
+        var indexMid = env.index;
+        while(next(env.ArrayCont) || next(env.Call) || next('.') || next(env.Indent) || (env.inIndented && next(env.Newline))) {
+            if(env.inIndented && next(env.Newline)) {
+                env.checkIndent();
+            } else if(at(env.ArrayCont)) {
+                entity.accessors.push(env.last);
+            } else if(at(env.Call)) {
+                entity.accessors.push(env.last);
             } else if(at('.')) {
-                if(!at(envir.Exp17)) {
-                    entity.accessors.push(envir.last);
-                    envir.index = indexMid;
+                if(!at(env.Exp17)) {
+                    entity.accessors.push(env.last);
+                    env.index = indexMid;
                     break;
                 }
-                entity.accessors.push(new DotAccessor(envir.last));
-            } else if(next(envir.Indent)) {
-                envir.checkIndent();
+                entity.accessors.push(new DotAccessor(env.last));
+            } else if(next(env.Indent)) {
+                env.checkIndent();
                 if(!at('.')) {
-                    envir.index = indexMid;
-                    envir.inIndented = indentedBefore;
+                    env.index = indexMid;
+                    env.inIndented = indentedBefore;
                     break;
                 }
-                if(!at(envir.Exp17)) {
-                    envir.index = indexMid;
-                    envir.inIndented = indentedBefore;
+                if(!at(env.Exp17)) {
+                    env.index = indexMid;
+                    env.inIndented = indentedBefore;
                     break;
                 }
-                entity.accessors.push(new DotAccessor(envir.last));
+                entity.accessors.push(new DotAccessor(env.last));
             }
         }
-        envir.last = entity;
-        debug("Finalizing exp17 success. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
+        env.last = entity;
+        debug("Finalizing exp17 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
         return true;
     }
 };
@@ -52,7 +52,7 @@ var Exp17 = function() {
     this.accessors = [];
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = this.val.toString(0, indLvlHidden);
         for(var i = 0; i < this.accessors.length; i++) {
             out += "(" + this.accessors[i].toString(0, indLvlHidden) + ")";

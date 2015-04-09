@@ -1,15 +1,15 @@
 // StringLit       ::= '\"[^\"\\]*(?:\\.[^\"\\]*)*\"|\'[^\'\\]*(?:\\.[^\'\\]*)*\''
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
         var entity = new StringLit();
-        if(envir.parseTokens[envir.index].kind !== 'StrLit') {
-            envir.index = indexBefore;
+        if(env.parseTokens[env.index].kind !== 'StrLit') {
+            env.index = indexBefore;
             return false;
         }
-        entity.val = envir.parseTokens[envir.index].lexeme;
-        envir.index++;
-        envir.last = entity;
+        entity.val = env.parseTokens[env.index].lexeme;
+        env.index++;
+        env.last = entity;
         return true;
     }
 };
@@ -18,7 +18,7 @@ var StringLit = function() {
     this.val = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = this.val;
         return out;
     };

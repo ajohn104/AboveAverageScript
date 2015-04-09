@@ -1,51 +1,51 @@
 // SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Default? Dedent
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
 
         var entity = new SwitchStmt();
         if(!at('switch')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
 
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore;
+        if(!at(env.Exp)) {
+            env.index = indexBefore;
             return false;
         }
-        entity.condition = envir.last;
+        entity.condition = env.last;
 
         if(!at(':')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
 
-        if(!at(envir.Indent)) {
-            envir.index = indexBefore;
+        if(!at(env.Indent)) {
+            env.index = indexBefore;
             return false;
         }
 
-        if(!at(envir.Case)) {
-            envir.index = indexBefore;
+        if(!at(env.Case)) {
+            env.index = indexBefore;
             return false;
         }
-        entity.cases.push(envir.last);
+        entity.cases.push(env.last);
 
-        while(at(envir.Case)) {
-            entity.cases.push(envir.last);
+        while(at(env.Case)) {
+            entity.cases.push(env.last);
         }
 
-        var foundDefault = at(envir.Default);
+        var foundDefault = at(env.Default);
         if(foundDefault) {
-            entity.defaultCase = envir.last;
+            entity.defaultCase = env.last;
         }
 
-        if(!at(envir.Dedent)) {
-            envir.index = indexBefore;
+        if(!at(env.Dedent)) {
+            env.index = indexBefore;
             return false;
         }
 
-        envir.last = entity;
+        env.last = entity;
         return true;
     }
 };
@@ -56,7 +56,7 @@ var SwitchStmt = function() {
     this.defaultCase = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "SwitchStmt ->\n";
         out += indents + "  condition: " + this.condition + "\n";
         for(var i = 0; i < this.cases.length; i++) {

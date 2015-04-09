@@ -1,42 +1,42 @@
 // Exp3            ::= Exp4 ('?' Exp4 ':' Exp4)?
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index; 
-        var indentedBefore = envir.inIndented;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index; 
+        var indentedBefore = env.inIndented;
         var entity = new Exp3();
-        debug("Starting on exp3. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
-        if(!at(envir.Exp4)) {
-            envir.index = indexBefore; 
-            envir.inIndented = indentedBefore;
+        debug("Starting on exp3. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+        if(!at(env.Exp4)) {
+            env.index = indexBefore; 
+            env.inIndented = indentedBefore;
             return false;
         }
-        entity.val = envir.last;
-        envir.checkIndent();
+        entity.val = env.last;
+        env.checkIndent();
         if(at('?')) {
-            envir.furtherExps = {};
-            envir.checkIndent();
-            if(!at(envir.Exp4)) {
-                envir.index = indexBefore; 
-                envir.inIndented = indentedBefore;
+            env.furtherExps = {};
+            env.checkIndent();
+            if(!at(env.Exp4)) {
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
                 return false;
             }
-            envir.furtherExps.firstexp = envir.last;
-            envir.checkIndent();
+            env.furtherExps.firstexp = env.last;
+            env.checkIndent();
             if(!at(':')) {
-                envir.index = indexBefore; 
-                envir.inIndented = indentedBefore;
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
                 return false;
             }
-            envir.checkIndent();
-            if(!at(envir.Exp4)) {
-                envir.index = indexBefore; 
-                envir.inIndented = indentedBefore;
+            env.checkIndent();
+            if(!at(env.Exp4)) {
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
                 return false;
             }
-            envir.furtherExps.secondexp = envir.last;
+            env.furtherExps.secondexp = env.last;
         }
-        envir.last = entity;
-        debug("Finalizing exp3 success. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
+        env.last = entity;
+        debug("Finalizing exp3 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
         return true;
     }
 };
@@ -46,7 +46,7 @@ var Exp3 = function() {
     this.furtherExps = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = this.val.toString(indentlevel, indLvlHidden);
         if(this.furtherExps !== null) {
             out += "?(" + this.furtherExps.firstexp.toString(0, indLvlHidden) + "):(";

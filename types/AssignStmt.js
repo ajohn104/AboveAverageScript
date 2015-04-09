@@ -1,69 +1,69 @@
 // AssignStmt      ::= (ExpList AssignOp (ObjInd | ExpList)) | (SetAssign (',' Indent Newline SetAssign (',' Newline SetAssign)* Dedent ) )
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
 
         var found = false;
-        var indexMid = envir.index;
+        var indexMid = env.index;
         var entity;
-        if(!found && at(envir.ExpList)) {
+        if(!found && at(env.ExpList)) {
             found = true;
             entity = new AssignMultVar();
-            entity.leftSideExps = envir.last;
-            if(!at(envir.AssignOp)) {
+            entity.leftSideExps = env.last;
+            if(!at(env.AssignOp)) {
                 found = false;
-                envir.index = indexMid;
+                env.index = indexMid;
             }
-            entity.operator = envir.last;
-            if(!(found && (at(envir.ObjInd) || at(envir.ExpList)))) {
+            entity.operator = env.last;
+            if(!(found && (at(env.ObjInd) || at(env.ExpList)))) {
                 found = false;
-                envir.index = indexMid;
+                env.index = indexMid;
             }
-            if(envir.isArray(envir.last)) {
-                entity.rightSideExps = envir.last;
+            if(env.isArray(env.last)) {
+                entity.rightSideExps = env.last;
             } else {
-                entity.rightSideExps.push(envir.last);
+                entity.rightSideExps.push(env.last);
             }
         }
 
-        if(!found && at(envir.SetAssign)) {
+        if(!found && at(env.SetAssign)) {
             found = true;
             entity = new AssignMultiLine();
-            entity.assignpairs.push(envir.last);
+            entity.assignpairs.push(env.last);
             if(found && !at(',')) {
                 found = false;
-                envir.index = indexMid;
+                env.index = indexMid;
             }
-            if(found && !at(envir.Indent)) {
+            if(found && !at(env.Indent)) {
                 found = false;
-                envir.index = indexMid;
+                env.index = indexMid;
             }
-            if(found && !at(envir.Newline)) {
+            if(found && !at(env.Newline)) {
                 found = false;
-                envir.index = indexMid;
+                env.index = indexMid;
             }
-            if(found && !at(envir.SetAssign)) {
+            if(found && !at(env.SetAssign)) {
                 found = false;
-                envir.index = indexMid;
+                env.index = indexMid;
             }
-            entity.assignpairs.push(envir.last);
-            indexMid = envir.index;
-            while(found && at(',') && at(envir.Newline) && at(envir.SetAssign)) {
-                entity.assignpairs.push(envir.last);
-                indexMid = envir.index;
+            entity.assignpairs.push(env.last);
+            indexMid = env.index;
+            while(found && at(',') && at(env.Newline) && at(env.SetAssign)) {
+                entity.assignpairs.push(env.last);
+                indexMid = env.index;
             }
-            envir.index = indexMid;
+            env.index = indexMid;
 
-            if(!at(envir.Dedent)){
+            if(!at(env.Dedent)){
                 found = false;
-                envir.index = indexMid;
+                env.index = indexMid;
             }
         }
         if(!found) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
-        envir.last = entity;
+        env.last = entity;
         return true;
     }
 };
@@ -74,7 +74,7 @@ var AssignMultVar = function() {
     this.operator;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "AssignMultVar ->\n";
         out += indents + "  leftSideExps: [\n";
         for(var i = 0; i < this.leftSideExps.length; i++) {
@@ -95,7 +95,7 @@ var AssignMultiLine = function() {
     this.assignpairs = [];
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "AssignMultiLine -> stmts: [\n";
         for(var i = 0; i < this.assignpairs.length; i++) {
             var pair = this.assignpairs[i];

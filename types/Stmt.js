@@ -11,48 +11,48 @@
  *               
  */
 module.exports = {
-    is: function(at, next, envir, debug) {
+    is: function(at, next, env, debug) {
         debug("Beginning statement search with token:");
-        debug(envir.parseTokens[envir.index]);
-        debug("index:" + envir.index + "\n");
+        debug(env.parseTokens[env.index]);
+        debug("index:" + env.index + "\n");
         debug("Trying DeclareStmt")
-        var found = at(envir.DeclareStmt);
+        var found = at(env.DeclareStmt);
         var isExp = false;
         if(!found) {
             debug("DeclareStmt failed\nTrying AssignStmt");
-            found |= at(envir.AssignStmt);
+            found |= at(env.AssignStmt);
         } 
         if(!found) {
             debug("AssignStmt failed\nTrying NativeStmt");
-            found |= at(envir.NativeStmt);
+            found |= at(env.NativeStmt);
         } 
         if(!found) {
             debug("NativeStmt failed\nTrying SwitchStmt");
-            found |= at(envir.SwitchStmt);
+            found |= at(env.SwitchStmt);
         } 
         if(!found) {
             debug("SwitchStmt failed\nTrying Loop");
-            found |= at(envir.Loop);
+            found |= at(env.Loop);
         } 
         if(!found) {
             debug("Loop failed\nTrying IfStmt");
-            found |= at(envir.IfStmt);
+            found |= at(env.IfStmt);
         }
         if(!found) {
             debug("IfStmt failed\nTrying ConsumeStmt");
-            found |= at(envir.ConsumeStmt);
+            found |= at(env.ConsumeStmt);
         } 
         if(!found) {
             debug("ConsumeStmt failed\nTrying ReturnStmt");
-            found |= at(envir.ReturnStmt);
+            found |= at(env.ReturnStmt);
         } 
         if(!found) {
             debug("ReturnStmt failed\nTrying ControlStmt");
-            found |= at(envir.ControlStmt);
+            found |= at(env.ControlStmt);
         } 
         if(!found) {
             debug("ControlStmt failed\nTrying Exp");  
-            found |= at(envir.Exp);
+            found |= at(env.Exp);
             isExp = found;
         }
         // Left off at Exp13. Also, nearly no children were done, either.
@@ -62,11 +62,11 @@ module.exports = {
 
         debug("Completed statement search. Status: " + found);
         if(found) {
-            //debug("Last found: " + envir.last.toString(0, 0)); //Turned off while under development.
+            //debug("Last found: " + env.last.toString(0, 0)); //Turned off while under development.
         }
         debug("next token to be searched:");
-        debug(envir.parseTokens[envir.index]);
-        debug("index:" + envir.index + " \n");
+        debug(env.parseTokens[env.index]);
+        debug("index:" + env.index + " \n");
         return found;
     }
 

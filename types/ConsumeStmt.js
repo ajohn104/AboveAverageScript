@@ -1,28 +1,28 @@
 // ConsumeStmt     ::= ExpList? '<-' Exp
 module.exports = {      // Reduce this to just a single expression???
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
 
-        var listFound = at(envir.ExpList);
+        var listFound = at(env.ExpList);
         var entity = new ConsumeStmt();
         if(listFound) {
-            entity.leftSideExps = envir.last;
+            entity.leftSideExps = env.last;
         }
 
-        debug("ConsumeStmt: checking for '<-'. envir.index:" + envir.index + ", lexeme:" + envir.parseTokens[envir.index].lexeme);
+        debug("ConsumeStmt: checking for '<-'. env.index:" + env.index + ", lexeme:" + env.parseTokens[env.index].lexeme);
         if(!at('<-')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
-        debug("ConsumeStmt: found '<-'. checking for Exp. envir.index:" + envir.index + ", lexeme:" + envir.parseTokens[envir.index].lexeme);
+        debug("ConsumeStmt: found '<-'. checking for Exp. env.index:" + env.index + ", lexeme:" + env.parseTokens[env.index].lexeme);
 
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore;
+        if(!at(env.Exp)) {
+            env.index = indexBefore;
             return false;
         }
-        entity.rightSideExp = envir.last;
-        envir.last = entity;
-        debug("ConsumeStmt: found Exp. envir.index:" + envir.index + ", lexeme:" + envir.parseTokens[envir.index].lexeme);
+        entity.rightSideExp = env.last;
+        env.last = entity;
+        debug("ConsumeStmt: found Exp. env.index:" + env.index + ", lexeme:" + env.parseTokens[env.index].lexeme);
         return true;
     }
 };
@@ -33,7 +33,7 @@ var ConsumeStmt = function() {
     this.rightSideExp = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "ConsumeStmt ->\n";
         out += indents + "  consumer(s):";
         if(this.leftSideExps === null) {

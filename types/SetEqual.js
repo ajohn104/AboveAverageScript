@@ -1,24 +1,24 @@
 // SetEqual        ::= Exp '=' Exp
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
         var entity = new SetEqual();
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore;
+        if(!at(env.Exp)) {
+            env.index = indexBefore;
             return false;
         }
-        entity.leftexp = envir.last;
+        entity.leftexp = env.last;
         if(!at('=')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
-        if(!at(envir.Exp)) {
-            envir.index = indexBefore;
+        if(!at(env.Exp)) {
+            env.index = indexBefore;
             return false;
         }
-        entity.rightexp = envir.last;
+        entity.rightexp = env.last;
 
-        envir.last = entity;
+        env.last = entity;
         return true;
     }
 };
@@ -28,7 +28,7 @@ var SetEqual = function() {
     this.rightexp = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "Declare(" + this.leftexp.toString(0, indLvlHidden);
         out += "=" + this.rightexp.toString(0, indLvlHidden);
         out += ")";

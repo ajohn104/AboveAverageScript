@@ -1,9 +1,9 @@
 // Dedent          ::= '\d'
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
         if(!at('\\d')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
         return true;

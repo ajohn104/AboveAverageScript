@@ -1,31 +1,31 @@
 // Exp11           ::= Exp12 (ShiftOp Exp12)*
 module.exports = {
-    is: function(at, next, envir, debug) {
-        debug("Starting on exp11. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
-        var indexBefore = envir.index; 
-        var indentedBefore = envir.inIndented;
+    is: function(at, next, env, debug) {
+        debug("Starting on exp11. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+        var indexBefore = env.index; 
+        var indentedBefore = env.inIndented;
         var entity = new Exp11();
-        if(!at(envir.Exp12)) {
-            envir.index = indexBefore; 
-            envir.inIndented = indentedBefore;
+        if(!at(env.Exp12)) {
+            env.index = indexBefore; 
+            env.inIndented = indentedBefore;
             return false;
         }
-        entity.val = envir.last;
-        envir.checkIndent();
-        var indexMid = envir.index;
-        while(at(envir.ShiftOp)) {
-            var part = {operator: envir.last};
-            envir.checkIndent();
-            if(!at(envir.Exp12)) {
-                envir.index = indexMid;
+        entity.val = env.last;
+        env.checkIndent();
+        var indexMid = env.index;
+        while(at(env.ShiftOp)) {
+            var part = {operator: env.last};
+            env.checkIndent();
+            if(!at(env.Exp12)) {
+                env.index = indexMid;
                 break;
             }
-            part.exp = envir.last;
+            part.exp = env.last;
             entity.furtherExps.push(part);
-            indexMid = envir.index;
+            indexMid = env.index;
         }
-        envir.last = entity;
-        debug("Finalizing exp11 success. envir.index:" + envir.index + ', lexeme: ' + envir.parseTokens[envir.index].lexeme);
+        env.last = entity;
+        debug("Finalizing exp11 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
         return true;
     }
 };
@@ -35,7 +35,7 @@ var Exp11 = function() {
     this.furtherExps = [];
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = "";
         for(var j = 0; j < this.furtherExps.length; j++) {
             out += "(";

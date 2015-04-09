@@ -1,24 +1,24 @@
 // PropInd         ::= (Id | BoolLit | StringLit) ':' (Exp | ObjInd)
 module.exports = {
-    is: function(at, next, envir, debug) {
-        var indexBefore = envir.index;
+    is: function(at, next, env, debug) {
+        var indexBefore = env.index;
         var entity = new PropInd();
-        if(!(at(envir.Id) || at(envir.BoolLit) || at(envir.StringLit))) {
-            envir.index = indexBefore;
+        if(!(at(env.Id) || at(env.BoolLit) || at(env.StringLit))) {
+            env.index = indexBefore;
             return false;
         }
-        entity.leftexp = envir.last;
+        entity.leftexp = env.last;
         if(!at(':')) {
-            envir.index = indexBefore;
+            env.index = indexBefore;
             return false;
         }
-        if(!(at(envir.Exp) || at(envir.ObjInd))) {
-            envir.index = indexBefore;
+        if(!(at(env.Exp) || at(env.ObjInd))) {
+            env.index = indexBefore;
             return false;
         }
-        entity.rightexp = envir.last;
+        entity.rightexp = env.last;
 
-        envir.last = entity;
+        env.last = entity;
         return true;
     }
 };
@@ -28,7 +28,7 @@ var PropInd = function() {
     this.rightexp = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
-        var indents = envir.indents(indentlevel);
+        var indents = env.indents(indentlevel);
         var out = indents + "Property(key(" + this.leftexp.toString(0, indLvlHidden);
         out += "):val" + this.rightexp.toString(0, indLvlHidden);
         //out += ")";

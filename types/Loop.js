@@ -1,7 +1,7 @@
 // Loop            ::= WhileLoop | ForLoop
 module.exports = {
-    is: function(at, next, envir, debug) {
-        return at(envir.WhileLoop) || at(envir.ForLoop);
+    is: function(at, next, env, debug) {
+        return at(env.WhileLoop) || at(env.ForLoop);
     }
 };
 
