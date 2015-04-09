@@ -37,8 +37,8 @@ size = function(obj) {
     return len(Object.keys(obj));
 };
 
-// Shorter instanceof. is(x, y) translates to -> x instanceof y
-is = function(x, y) {
+// Shorter instanceof. isInst(x, y) translates to -> x instanceof y
+isInst = function(x, y) {
     return x instanceof y;
 };
 
