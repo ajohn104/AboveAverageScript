@@ -1,4 +1,4 @@
-// Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp17)*
+// Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp18)*
 module.exports = {
     is: function(at, next, env, debug) {
         var indexBefore = env.index; 
@@ -10,22 +10,24 @@ module.exports = {
             env.inIndented = indentedBefore;
             return false;
         }
-        entity.val = env.last;
+        entity.lastVal = env.last;
         var indexMid = env.index;
         while(next(env.ArrayCont) || next(env.Call) || next('.') || next(env.Indent) || (env.inIndented && next(env.Newline))) {
             if(env.inIndented && next(env.Newline)) {
                 env.checkIndent();
             } else if(at(env.ArrayCont)) {
-                entity.accessors.push(env.last);
+                var newest = new BracketAccessor(env.last, entity.lastVal);
+                entity.lastVal = newest;
             } else if(at(env.Call)) {
-                entity.accessors.push(env.last);
+                var newest = new Call(env.last, entity.lastVal);
+                entity.lastVal = newest;
             } else if(at('.')) {
-                if(!at(env.Exp17)) {
-                    entity.accessors.push(env.last);
+                if(!at(env.Exp18)) {
                     env.index = indexMid;
                     break;
                 }
-                entity.accessors.push(new DotAccessor(env.last));
+                var newest = new DotAccessor(env.last, entity.lastVal);
+                entity.lastVal = newest;
             } else if(next(env.Indent)) {
                 env.checkIndent();
                 if(!at('.')) {
@@ -33,12 +35,13 @@ module.exports = {
                     env.inIndented = indentedBefore;
                     break;
                 }
-                if(!at(env.Exp17)) {
+                if(!at(env.Exp18)) {
                     env.index = indexMid;
                     env.inIndented = indentedBefore;
                     break;
                 }
-                entity.accessors.push(new DotAccessor(env.last));
+                var newest = new DotAccessor(env.last, entity.lastVal);
+                entity.lastVal = newest;
             }
         }
         env.last = entity;
@@ -48,22 +51,51 @@ module.exports = {
 };
 
 var Exp17 = function() {
-    this.val = null;
-    this.accessors = [];
+    this.lastVal = null;
+    this.toString = function(indentlevel, indLvlHidden) {
+        return this.lastVal.toString(indentlevel, indLvlHidden);
+    };
+};
+
+var DotAccessor = function(key, obj) {
+    this.key = key;
+    this.object = obj;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
-        var out = this.val.toString(0, indLvlHidden);
-        for(var i = 0; i < this.accessors.length; i++) {
-            out += "(" + this.accessors[i].toString(0, indLvlHidden) + ")";
-        }
+        var out = indents + "DotAccess -> "/* + "\n"*/;
+        out += /*env.indents(indLvlHidden+1) + */"key: (" + this.key.toString(0, indLvlHidden) + "), "/* + "\n"*/;
+        out += /*env.indents(indLvlHidden+1) + */"object: " + this.object.toString(0, indLvlHidden);
         return out;
     };
 };
 
-var DotAccessor = function(val) {
-    this.val = val;
+var BracketAccessor = function(keys, obj) {
+    this.keys = keys;
+    this.object = obj;
     this.toString = function(indentlevel, indLvlHidden) {
-        return "." + val.toString(0, indLvlHidden);
-    }
+        indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
+        var indents = env.indents(indentlevel);
+        var out = indents + "BracketAccess -> "/* + "\n"*/;
+        out += /*env.indents(indLvlHidden+1) + */"keys: (" + this.keys.toString(0, indLvlHidden) + "), "/* + "\n"*/;
+        out += /*env.indents(indLvlHidden+1) + */"object: " + this.object.toString(0, indLvlHidden);
+        return out;
+    };
+};
+
+var Call = function(call, obj) {
+    this.args = call.args;
+    this.object = obj;
+    this.toString = function(indentlevel, indLvlHidden) {
+        indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
+        var indents = env.indents(indentlevel);
+        var out = indents + "Call ->\n";
+        out += env.indents(indLvlHidden+1) + "arguments: [";
+        for(var i = 0; i < this.args.length; i++) {
+            out += this.args[i].toString(0, indLvlHidden+1) + ",";
+        }
+        out = out.substring(0, out.length + (this.args.length > 0?-1:0)) + "]\n";
+        out += env.indents(indLvlHidden+1) + "object: " + this.object.toString(0, indLvlHidden+1);
+        return out;
+    };
 };

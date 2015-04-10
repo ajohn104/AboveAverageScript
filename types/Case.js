@@ -51,7 +51,7 @@ var Case = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
         var out = indents + "Case ->\n";
-        out += indents + "  condition: " + this.condition.toString(0, indLvlHidden) + "\n";
+        out += indents + env.ind + "condition: " + this.condition.toString(0, indLvlHidden) + "\n";
         out += this.block.toString(indentlevel+1, indLvlHidden+1);
         return out;
     };

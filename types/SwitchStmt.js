@@ -58,7 +58,7 @@ var SwitchStmt = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
         var out = indents + "SwitchStmt ->\n";
-        out += indents + "  condition: " + this.condition + "\n";
+        out += indents + env.ind + "condition: " + this.condition + "\n";
         for(var i = 0; i < this.cases.length; i++) {
             out += this.cases[i].toString(indentlevel + 1, indLvlHidden+1);
         }

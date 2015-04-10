@@ -40,8 +40,7 @@ var Prop = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
         var out = indents + "Property -> key(" + this.leftexp.toString(0, indLvlHidden);
-        out += ") : val" + this.rightexp.toString(0, indLvlHidden);
-        //out += ")";
+        out += ") : val(" + this.rightexp.toString(0, indLvlHidden) + ")";
         return out;
     };
 };

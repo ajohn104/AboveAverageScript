@@ -42,11 +42,18 @@ var Exp = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
-        var out = indents + "(" + this.val.toString(0, indLvlHidden);
-        for(var i = 0; i < this.furtherExps.length; i++) {
-            out += "(" + this.furtherExps[i].toString(0, indLvlHidden) + ")";
+        var out = indents;
+        for(var j = 0; j < this.furtherExps.length; j++) {
+            out += "(";
         }
-        out += ")";
+        out += this.val.toString(0, indLvlHidden);
+        for(var i = 0; i < this.furtherExps.length; i++) {
+            out += this.furtherExps[i].toString(0, indLvlHidden) + ")";
+        }
         return out;
     };
 };
+
+
+// x + y for x in a for y in b
+// (((x + y) for x in a) for y in b)

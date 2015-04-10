@@ -61,14 +61,9 @@ module.exports = {
         }
 
         debug("Completed statement search. Status: " + found);
-        if(found) {
-            //debug("Last found: " + env.last.toString(0, 0)); //Turned off while under development.
-        }
         debug("next token to be searched:");
         debug(env.parseTokens[env.index]);
         debug("index:" + env.index + " \n");
         return found;
     }
-
-    // No entity needed, since the entity should really be specific to the type of stmt/exp found.
 };

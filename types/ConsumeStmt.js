@@ -43,9 +43,9 @@ var ConsumeStmt = function() {
             for(var i = 0; i < this.leftSideExps.length; i++) {
                 out += this.leftSideExps[i].toString(indentlevel + 2, indLvlHidden+2) + "\n";
             }
-            out += indents + "  ]\n";
+            out += indents + env.ind + "]\n";
         }
-        out += indents + "  rightSideExp: " + this.rightSideExp.toString(0, indLvlHidden);
+        out += indents + env.ind + "rightSideExp: " + this.rightSideExp.toString(0, indLvlHidden);
         return out;
     };
 };

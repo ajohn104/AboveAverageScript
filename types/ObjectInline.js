@@ -70,8 +70,8 @@ var ObjectInline = function() {
         for(var i = 0; i < this.props.length; i++) {
             out += this.props[i].toString(indLvlHidden + 2, indLvlHidden + 2) + ",\n";
         }
-        var removeCount = (this.props.length > 0?-2:0);
-        out = out.substring(0, out.length+removeCount) + "\n" + env.indents(indLvlHidden +1) + "]";
+        var removeCount = (this.props.length > 0?-2:-1);
+        out = out.substring(0, out.length+removeCount) + (removeCount !== -1?"\n" + env.indents(indLvlHidden +1):"")  + "]";
         return out;
     };
 };

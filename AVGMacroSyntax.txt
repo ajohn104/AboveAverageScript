@@ -51,7 +51,7 @@ Exp13           ::= Exp14 (MulOp Exp14)*
 Exp14           ::= PrefixOp? Exp15
 Exp15           ::= Exp16 PostfixOp?
 Exp16           ::= 'new'? Exp17 Call?
-Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp17)*
+Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp18)*
 Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
 
 ArrayLit        ::= ('[' ']') | ArrayCont

@@ -2,8 +2,15 @@ var env = {
     inIndented: false,
     indentedExp: [],
     nativeSpecified: false,
-    Lexeme: require("./types/Lexeme")(env),
-    last: null
+    last: null,
+    ind: "  ",
+    indents: function(indents) {
+        var str = "";
+        for(var i = 0; i < indents; i++) {
+            str += env.ind;
+        }
+        return str;
+    }
 };
 var entityNames = [
     "Block", "Stmt", "DeclareStmt", "AssignStmt", "ConsumeStmt", "ReturnStmt", 
@@ -17,17 +24,11 @@ var entityNames = [
     "Dedent", "RegExpLit", "EndOfFile", "ExpList", "SetAssign", "SetEqual", "ObjInd"
 ];
 
+env.Lexeme = require("./types/Lexeme")(env);
+
 entityNames.forEach(function(name) {
     env[name] = require("./types/" + name);
 });
-
-env.indents = function(indents) {
-    var str = "";
-    for(var i = 0; i < indents; i++) {
-        str += "  ";
-    }
-    return str;
-};
 
 var callback = undefined;
 var error = undefined;

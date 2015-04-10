@@ -78,16 +78,16 @@ var DeclareMultVar = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
         var out = indents + "DeclareMultVar ->\n";
-        out += indents + "  leftSideExps: [\n";
+        out += indents + env.ind + "leftSideExps: [\n";
         for(var i = 0; i < this.leftSideExps.length; i++) {
             out += this.leftSideExps[i].toString(indentlevel + 2, indLvlHidden + 2) + "\n";
         }
-        out += indents + "  ]\n";
-        out += indents + "  rightSideExps: [\n";
+        out += indents + env.ind + "]\n";
+        out += indents + env.ind + "rightSideExps: [\n";
         for(var j = 0; j < this.rightSideExps.length; j++) {
             out += this.rightSideExps[j].toString(indentlevel +2, indLvlHidden + 2) + "\n";
         }
-        out += indents + "  ]";
+        out += indents + env.ind + "]";
         return out;
     };
 };

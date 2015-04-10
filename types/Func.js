@@ -72,7 +72,7 @@ var Func = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indLvlHidden);
         var out = "function ->\n";
-        out += indents + "  parameters: [";
+        out += indents + env.ind + "parameters: [";
         for(var i = 0; i < this.parameters.length; i++) {
             out += this.parameters[i].toString(0, indLvlHidden) + ",";
         }

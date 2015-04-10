@@ -2,7 +2,6 @@
 module.exports = {
     is: function(at, next, env, debug) {
         var indexBefore = env.index;
-
         return at(env.DoWhile) || at(env.While);
     }
 };
