@@ -31,9 +31,9 @@ var SetAssign = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
-        var out = indents + "Assign(" + this.leftexp.toString(0, indLvlHidden);
-        out += this.operator + this.rightexp.toString(0, indLvlHidden);
-        out += ")";
+        var out = indents + "Assign -> leftExp: " + this.leftexp.toString(0, indLvlHidden);
+        out += ", assignOp: " + this.operator;
+        out += ", leftExp: " + this.rightexp.toString(0, indLvlHidden);
         return out;
     };
 };

@@ -82,7 +82,7 @@ var DeclareMultVar = function() {
         for(var i = 0; i < this.leftSideExps.length; i++) {
             out += this.leftSideExps[i].toString(indentlevel + 2, indLvlHidden + 2) + "\n";
         }
-        out += indents + env.ind + "]\n";
+        out += indents + env.ind + "],\n";
         out += indents + env.ind + "rightSideExps: [\n";
         for(var j = 0; j < this.rightSideExps.length; j++) {
             out += this.rightSideExps[j].toString(indentlevel +2, indLvlHidden + 2) + "\n";
@@ -100,9 +100,9 @@ var DeclareMultiLine = function() {
         var out = indents + "DeclareMultiLine -> stmts: [\n";
         for(var i = 0; i < this.declarepairs.length; i++) {
             var pair = this.declarepairs[i];
-            out += pair.toString(indentlevel+1, indLvlHidden + 1) + "\n";
+            out += pair.toString(indentlevel+1, indLvlHidden + 1) + ",\n";
         }
-        out += indents + "]";
+        out = out.substring(0 , out.length-2) + "\n" + indents + "]";
         return out;
     };
 };

@@ -99,9 +99,9 @@ var AssignMultiLine = function() {
         var out = indents + "AssignMultiLine -> stmts: [\n";
         for(var i = 0; i < this.assignpairs.length; i++) {
             var pair = this.assignpairs[i];
-            out += pair.left.toString(indentlevel + 1, indLvlHidden + 1) + pair.operator + pair.right.toString(0, indLvlHidden) + "\n";
+            out += pair.toString(indentlevel+1, indLvlHidden + 1) + ",\n";
         }
-        out += indents + "]";
+        out = out.substring(0 , out.length-2) + "\n" + indents + "]";
         return out;
     };
 };
