@@ -63,9 +63,9 @@ var DotAccessor = function(key, obj) {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
-        var out = indents + "DotAccess -> ";
-        out += "key: (" + this.key.toString(0, indLvlHidden) + "), ";
-        out += "object: " + this.object.toString(0, indLvlHidden);
+        var out = indents + "(DotAccess -> ";
+        out += "key: " + this.key.toString(0, indLvlHidden) + ", ";
+        out += "object: " + this.object.toString(0, indLvlHidden) + ")";
         return out;
     };
 };
@@ -76,9 +76,9 @@ var BracketAccessor = function(keys, obj) {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
-        var out = indents + "BracketAccess -> ";
-        out += "keys: (" + this.keys.toString(0, indLvlHidden) + "), ";
-        out += "object: " + this.object.toString(0, indLvlHidden);
+        var out = indents + "(BracketAccess -> ";
+        out += "keys: " + this.keys.toString(0, indLvlHidden) + ", ";
+        out += "object: " + this.object.toString(0, indLvlHidden) + ")";
         return out;
     };
 };
@@ -89,13 +89,13 @@ var Call = function(call, obj) {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
-        var out = indents + "Call ->\n";
-        out += env.indents(indLvlHidden+1) + "arguments: [";
+        var out = indents + "(Call -> ";
+        out += "arguments: [";
         for(var i = 0; i < this.args.length; i++) {
-            out += this.args[i].toString(0, indLvlHidden+1) + ",";
+            out += this.args[i].toString(0, indLvlHidden) + ", ";
         }
-        out = out.substring(0, out.length + (this.args.length > 0?-1:0)) + "]\n";
-        out += env.indents(indLvlHidden+1) + "object: " + this.object.toString(0, indLvlHidden+1);
+        out = out.substring(0, out.length + (this.args.length > 0?-2:0)) + "], ";
+        out += "object: " + this.object.toString(0, indLvlHidden) + ")";
         return out;
     };
 };
