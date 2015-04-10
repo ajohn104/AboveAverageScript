@@ -53,7 +53,3 @@ var Exp = function() {
         return out;
     };
 };
-
-
-// x + y for x in a for y in b
-// (((x + y) for x in a) for y in b)

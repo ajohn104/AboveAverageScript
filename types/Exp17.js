@@ -63,9 +63,9 @@ var DotAccessor = function(key, obj) {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
-        var out = indents + "DotAccess -> "/* + "\n"*/;
-        out += /*env.indents(indLvlHidden+1) + */"key: (" + this.key.toString(0, indLvlHidden) + "), "/* + "\n"*/;
-        out += /*env.indents(indLvlHidden+1) + */"object: " + this.object.toString(0, indLvlHidden);
+        var out = indents + "DotAccess -> ";
+        out += "key: (" + this.key.toString(0, indLvlHidden) + "), ";
+        out += "object: " + this.object.toString(0, indLvlHidden);
         return out;
     };
 };
@@ -76,9 +76,9 @@ var BracketAccessor = function(keys, obj) {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
-        var out = indents + "BracketAccess -> "/* + "\n"*/;
-        out += /*env.indents(indLvlHidden+1) + */"keys: (" + this.keys.toString(0, indLvlHidden) + "), "/* + "\n"*/;
-        out += /*env.indents(indLvlHidden+1) + */"object: " + this.object.toString(0, indLvlHidden);
+        var out = indents + "BracketAccess -> ";
+        out += "keys: (" + this.keys.toString(0, indLvlHidden) + "), ";
+        out += "object: " + this.object.toString(0, indLvlHidden);
         return out;
     };
 };
