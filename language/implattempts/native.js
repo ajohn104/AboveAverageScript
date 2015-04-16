@@ -12,54 +12,56 @@
 // variable with that id.
 var _ = {};
 
+_.global = (typeof window !== 'undefined')?window:global;
+
 // Shorter typeof. type(x) translates to -> typeof x
-type = function(x) {
+_.global.type = function(x) {
     return typeof x;
 };
 
 // Returns true if x is undefined.
-isUndef = function(x) {
-    return type(x) === 'undefined';
+_.global.isUndef = function(x) {
+    return (typeof x) === 'undefined';
 };
 
 // Returns a if a has a value other than undefined. If a is undefined, returns the def val.
-defaults = function(a, def) {
-    return (!isUndef(a) ? a : def);
+_.global.defaults = function(a, def) {
+    return (!(typeof a === 'undefined') ? a : def);
 };
 
 // Returns the length property of the given object.
-len = function(arr) {
+_.global.len = function(arr) {
     return arr['length'];
 };
 
 // Similar to len, but instead counts the enumerable properties of the object.
-size = function(obj) {
-    return len(Object.keys(obj));
+_.global.size = function(obj) {
+    return _.global.keys(obj).length;
 };
 
 // Shorter instanceof. isInst(x, y) translates to -> x instanceof y
-isInst = function(x, y) {
+_.global.isInst = function(x, y) {
     return x instanceof y;
 };
 
 // Shorter parseInt(x, base);
-int = function(x, base) {
+_.global.int = function(x, base) {
     var base = defaults(base, 10);
     return parseInt(x, base);
 };
 
 // Shorter parseFloat(x)
-float = function(x) {
+_.global.float = function(x) {
     return parseFloat(x);
 };
 
 // Shorter Math.abs(x)
-abs = function(x) {
+_.global.abs = function(x) {
     return Math.abs(x);
 };
 
 // Shorter Math.pow(x, y)
-pow = function(x, y) {
+_.global.pow = function(x, y) {
     return Math.pow(x, y);
 };
 
@@ -70,7 +72,7 @@ pow = function(x, y) {
 //      => if delta > 0, returns an array from min <= x < max with increments of delta
 //      => if delta < 0, returns an array from max < x <= min with decrements of abs(delta)
 //      => if delta == 0, then I hope you like crashing.
-range = function() {
+_.global.range = function() {
     var min = 0, max, delta = 1, array = [];
     if(arguments.length === 1) {
         max = arguments[0];
@@ -105,13 +107,13 @@ _.laziest = function(call, args) {
 
 // lazier is just like lazy, except that instead of an infinite number of arguments, it
 // only takes in the function to be called and an array of arguments to call it with.
-lazier = function(call, args) {
+_.global.lazier = function(call, args) {
     return _.laziest(call, args);
 };
 
 // lazy is a function that takes in a function as its first param, and any number of arguments as its
 // second parameter. It then returns a function that calls the given function with those arguments.
-lazy = function(call) {
+_.global.lazy = function(call) {
     var args = [];
     for(var i = 1; i < arguments.length; i++) {
         args.push(arguments[i]);                    // Before anyone says "Use the shift method! Array.prototype.shift!",
@@ -120,7 +122,30 @@ lazy = function(call) {
 };
 
 // Shorter version of console.log
-log = console.log.bind(console);
+_.global.log = console.log.bind(console);
 
 // Shorter version of console.error
-error = console.error.bind(console);
+_.global.error = console.error.bind(console);
+
+// Shorter version of the ES6 definition for Object.keys
+// As such, primitives other than null and undefined are allowed.
+_.global.keys = function(val) {
+    var typeval = typeof val;
+    if(val === null || typeval === 'undefined') {
+        throw new TypeError('built-in keys called on null');
+    }
+    switch(typeval) {
+        case 'function':
+            return Object.keys(val);
+        case 'object':
+            return Object.keys(val);
+        case 'string':
+            var array = [];
+            for(var i = 0; i < val.length; i++) {
+                array.push(i);
+            }
+            return array;
+        default:
+            return [];
+    }
+};
