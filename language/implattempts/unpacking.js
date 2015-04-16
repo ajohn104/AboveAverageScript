@@ -42,7 +42,7 @@ log('\n');
 
 var _list_list_unpacked_1 = [];
 for(var _list_unpack_i1 = 0; _list_unpack_i1 < len(_list_list_comprehend_1); _list_unpack_i1++) {
-    _list_list_unpacked_1.push("list[" + _list_list_comprehend_1[_list_unpack_i1] + "]");
+    _list_list_unpacked_1.push(list[_list_list_comprehend_1[_list_unpack_i1]]);
 }
 
 log("Test case one unpacked output:");
@@ -51,7 +51,7 @@ log('\n');
 
 
 for(var _list_i1 = 0; _list_i1 < len(_list_list_unpacked_1); _list_i1++ ) {
-    eval( "mod3Times3.push( (" + _list_list_unpacked_1[_list_i1] + "*3 + 5 )*10 );");
+     mod3Times3.push( ( _list_list_unpacked_1[_list_i1] * 3 + 5 ) * 10 );
 }
 
 log("Test case one final output: ");
@@ -151,6 +151,8 @@ for(var _statement_i1 = 0; _statement_i1 < len(_list_numbers_unpacked_1); _state
 log("Test case three final output:");
 log(numbers);
 log('\n');
+
+// correct for #3 is [55, 77, 99, 121, 143, 165, 132, 165, 198]
 
 // And lastly, an example for passing these in to function calls:
 // let car =
