@@ -52,7 +52,7 @@ module.exports = {
         }
         if(!found) {
             debug("ControlStmt failed\nTrying Exp");  
-            found |= at(env.Exp);                        // code generation does literally nothing
+            found |= at(env.Exp);                        // basic code generation supported up through all expressions
             isExp = found;
         }
         

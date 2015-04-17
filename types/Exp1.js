@@ -48,4 +48,22 @@ var Exp1 = function() {
         }
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        if(this.ifexp !== null) {
+            write('(');
+            this.ifexp.compile(write, scope, 0, indentsHidden);
+            write('?');
+            this.val.compile(write, scope, 0, indentsHidden);
+            write(':');
+            if(this.elseexp !== null) {
+                this.elseexp.compile(write, scope, 0, indentsHidden);
+            } else {
+                write('undefined');
+            }
+            write(')');
+        } else {
+            this.val.compile(write, scope, 0, indentsHidden);
+        }
+    };
 };

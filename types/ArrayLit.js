@@ -22,7 +22,15 @@ var ArrayLit = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
-        var out = (this.array.length === [])?indents + "[]":this.array.toString(indentlevel, indLvlHidden);
+        var out = (this.array === [])?indents + "[]":this.array.toString(indentlevel, indLvlHidden);
         return out;
+    };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        if(this.array === []) {
+            write('[]');
+        } else {
+            this.array.compile(write, scope, 0, indentsHidden);
+        }
     };
 };

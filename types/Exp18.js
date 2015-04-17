@@ -58,4 +58,18 @@ var Exp18 = function() {
         var out = indents + this.val.toString(indentlevel, indLvlHidden);
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        if(this.isParenthesizedExpr) {
+            write('(');
+        }
+        if(this.val === '_') {
+            write('this');
+        } else {
+            this.val.compile(write, scope, 0, indentsHidden);
+        }
+        if(this.isParenthesizedExpr) {
+            write(')');
+        }
+    };
 };

@@ -55,6 +55,10 @@ var Exp17 = function() {
     this.toString = function(indentlevel, indLvlHidden) {
         return this.lastVal.toString(indentlevel, indLvlHidden);
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        this.lastVal.compile(write, scope, 0, indentsHidden);
+    };
 };
 
 var DotAccessor = function(key, obj) {
@@ -67,6 +71,15 @@ var DotAccessor = function(key, obj) {
         out += "key: " + this.key.toString(0, indLvlHidden) + ", ";
         out += "object: " + this.object.toString(0, indLvlHidden) + ")";
         return out;
+    };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        //write('(');
+        
+        //write(').')
+        this.object.compile(write, scope, 0, indentsHidden);
+        write('.');
+        this.key.compile(write, scope, 0, indentsHidden);
     };
 };
 
@@ -81,21 +94,30 @@ var BracketAccessor = function(keys, obj) {
         out += "object: " + this.object.toString(0, indLvlHidden) + ")";
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        //write('(');
+        this.object.compile(write, scope, 0, indentsHidden);
+        //write(')');
+        this.keys.compile(write, scope, 0, indentsHidden);
+    };
 };
 
 var Call = function(call, obj) {
-    this.args = call.args;
+    this.call = call;
     this.object = obj;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
-        var out = indents + "(Call -> ";
-        out += "arguments: [";
-        for(var i = 0; i < this.args.length; i++) {
-            out += this.args[i].toString(0, indLvlHidden) + ", ";
-        }
-        out = out.substring(0, out.length + (this.args.length > 0?-2:0)) + "], ";
+        var out = indents + this.call.toString(0, indLvlHidden) + ", ";
         out += "object: " + this.object.toString(0, indLvlHidden) + ")";
         return out;
+    };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        //write('(');
+        this.object.compile(write, scope, 0, indentsHidden);
+        //write(')');
+        this.call.compile(write, scope, 0, indentsHidden);  
     };
 };

@@ -1,4 +1,23 @@
 // NativeStmt      ::= '***native***'
+var compile = function(write, scope, indents, indentsHidden) {
+    scope = scope.clone();
+    var fs = require('fs'),
+        byline = require('byline');
+    var stream = fs.createReadStream(__dirname + '/../language/implattempts/native.js');
+    stream = byline.createStream(stream, { encoding: 'utf8', keepEmptyLines: true });
+    scope.pause();
+    stream.on('readable', function() {
+        var line;
+        while (null !== (line = stream.read())) {
+            scope.writeImmediately(scope.ind(indents) + line + '\n');
+        }
+    });
+    stream.on('end', function() {
+        scope.writeImmediately('\n' +  scope.ind(indentsHidden) + '// ----End of Built in\'s---\n\n\n');
+        scope.resume();
+    });
+};
+
 module.exports = {
     is: function(at, next, env, debug) {
         var found = at('***native***');
@@ -7,7 +26,8 @@ module.exports = {
             env.nativeSpecified = true;
         }
         return found;
-    }
+    },
+    compile: compile
 };
 
 var NativeStmt = function() {
@@ -17,19 +37,5 @@ var NativeStmt = function() {
         var out = indents + "***native***";
         return out;
     };
-    this.compile = function(write, scope, indents, indentsHidden) {
-        scope = scope.clone();
-        var fs = require('fs'),
-            byline = require('byline');
-        var stream = fs.createReadStream(__dirname + '/../language/implattempts/native.js');
-        stream = byline.createStream(stream, { encoding: 'utf8', keepEmptyLines: true });
-        scope.pause();
-        stream.on('readable', function() {
-            var line;
-            while (null !== (line = stream.read())) {
-                scope.writeImmediately(scope.ind(indents) + line + '\n');
-            }
-        });
-        stream.on('end', scope.resume);
-    };
+    this.compile = compile;
 };

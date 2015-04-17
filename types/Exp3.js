@@ -54,4 +54,18 @@ var Exp3 = function() {
         }
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        if(this.furtherExps !== null) {
+            write('(');
+            this.val.compile(write, scope, 0, indentsHidden);
+            write('?');
+            this.furtherExps.firstexp.compile(write, scope, 0, indentsHidden);
+            write(':');
+            this.furtherExps.secondexp.compile(write, scope, 0, indentsHidden);
+            write(')');
+        } else {
+            this.val.compile(write, scope, 0, indentsHidden);
+        }
+    };
 };

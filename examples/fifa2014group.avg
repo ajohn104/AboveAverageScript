@@ -1,0 +1,36 @@
+let request = require("request"),
+    RIGHT_PAD = 19
+
+let argError = func ->
+    error("Need just one commandline argument, A...H")
+    process.exit(1)
+
+let padRight = func str, fill, pad ->
+    let uncutPadded = str + Array(pad).join(fill)
+    ret uncutPadded.replace(uncutPadded.slice(pad),"")
+
+
+let dictStrToArrayStr = func strDict ->
+    ret strDict.replace(/"\w+?":/g, "").replace(/\{/g, "[").replace(/\}/g, "]")
+
+
+if len(process.argv) !== 3:
+    argError()
+
+
+let arg = process.argv[2]
+
+if not arg.match(/^[A-H]$/):
+    argError()
+
+let mainURL = "http://worldcup.kimonolabs.com/api/teams?",
+    apikey = "apikey=tpJ4L0Svl3mBE3AEee7zAhDDwYw8fBsc",
+    filter = "&group=" + arg,
+    fields = "&fields=name,wins,draws,losses",
+    sort = "&sort=groupRank,1"
+
+request(mainURL + apikey + filter + sort + fields, func err, response, body ->
+    let teams = JSON.parse(dictStrToArrayStr(body))
+    log(padRight("Name", " ", RIGHT_PAD) + "W  D  L")
+    log(padRight(team[0], " ", RIGHT_PAD) + team.slice(1).join("  ")) for team in teams
+)

@@ -33,7 +33,7 @@ module.exports = {
 
 var Exp9 = function() {
     this.val = null;
-    this.furtherExps = [];
+    this.furtherExps = [];  // {operator: op, exp: last}
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -46,5 +46,18 @@ var Exp9 = function() {
             out += this.furtherExps[i].operator + this.furtherExps[i].exp.toString(0, indLvlHidden) + ")";
         }
         return out;
+    };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        var max = len(this.furtherExps)-1;
+        for(var i = max; i >= 0; i--) {
+            write('(');
+        }
+        this.val.compile(write, scope, 0, indentsHidden);
+        for(var i = 0; i <= max; i++) {
+            write(' ' + this.furtherExps[i].operator + ' ');
+            this.furtherExps[i].exp.compile(write, scope, 0, indentsHidden);
+            write(')');
+        }
     };
 };

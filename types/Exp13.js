@@ -46,4 +46,17 @@ var Exp13 = function() {
         }
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        var max = len(this.furtherExps)-1;
+        for(var i = max; i >= 0; i--) {
+            write('(');
+        }
+        this.val.compile(write, scope, 0, indentsHidden);
+        for(var i = 0; i <= max; i++) {
+            write(' ' + this.furtherExps[i].operator + ' ');
+            this.furtherExps[i].exp.compile(write, scope, 0, indentsHidden);
+            write(')');
+        }
+    };
 };

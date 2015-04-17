@@ -1,4 +1,4 @@
-// Func            ::= 'func' (Id (',' Id)* )? '->' ('ret'? Exp) | (Indent Block Dedent)
+// Func            ::= 'func' (Id (',' Id)* )? '->' (Exp | ReturnStmt) | (Indent Block Dedent)
 module.exports = {
     is: function(at, next, env, debug) {
         var indexBefore = env.index;
@@ -28,15 +28,10 @@ module.exports = {
             return false;
         }
         debug("Found '->'. Looking for single line 'ret'. env.index:" + env.index);
-        if(at('ret')) {
-            if(!at(env.Exp)) {
-                env.index = indexBefore;
-                return false;
-            }
+        if(at(env.Exp) || at(env.ReturnStmt)) {
+            debug("Found single line exp or return stmt. env.index:" + env.index);
             entity.block = env.last;
-        } else if(at(env.Exp)) {
-            entity.block = env.last;
-            debug("Single line 'ret' not found. Instead found Single line Exp. env.index:" + env.index);
+            //debug("Single line 'ret' not found. Instead found Single line Exp. env.index:" + env.index);
             ; // Just let it fall through
         } else {
             debug("Not single line. checking for indent. env.index:" + env.index);
@@ -80,5 +75,23 @@ var Func = function() {
         out = out.substring(0, out.length + removeCount) + "]\n";
         out += this.block.toString(indLvlHidden+1, indLvlHidden+1);
         return out;
+    };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write('function(');
+        var max = len(this.parameters);
+        if(max > 0) {
+            this.parameters[0].compile(write, scope, 0, indentsHidden);
+        }
+        for(var i = 1; i < max; i++) {
+            write(', ');
+            this.parameters[i].compile(write, scope, 0, indentsHidden);
+        }
+        write(') {\n');
+        this.block.compile(write, scope, indentsHidden+1, indentsHidden+1);
+        if(this.block.constructor.name !== 'Block') {
+            write('\n');
+        }
+        write(scope.ind(indentsHidden) + '}');
     };
 };

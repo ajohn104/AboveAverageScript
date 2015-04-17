@@ -54,6 +54,16 @@ var Exp = function() {
     };
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
-        write(scope.ind(indents) + 'IKCSPRASHUN');
+        var max = len(this.furtherExps);
+        for(var i = 0; i < max; i++) {
+            this.furtherExps[i].compile(write, scope, indents + i, indentsHidden + i);
+            write('\n');
+        }
+        // write(scope.ind(indents) + 'IKCSPRASHUN'); -- deprecated
+        write(scope.ind(indents + max));
+        this.val.compile(write, scope, 0, indentsHidden + max);
+        for(var j = max - 1; j >= 0; j--) {
+            write('\n' + scope.ind(indents + j) + '})');
+        }
     };
 };

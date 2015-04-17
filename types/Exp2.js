@@ -48,4 +48,24 @@ var Exp2 = function() {
         }
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+
+        var max = len(this.furtherExps)-1;
+        if(max >= 0) {
+            write('(');
+        }
+        for(var i = max; i >= 0; i--) {
+            write('(');
+            this.furtherExps[i].exp.compile(write, scope, 0, indentsHidden);
+            write('.indexOf(');
+        }
+        this.val.compile(write, scope, 0, indentsHidden);
+        for(var j = max; j >= 0; j--) {
+            write(') >= 0');
+        }
+        if(max >= 0) {
+            write(')');
+        }
+    };
 };

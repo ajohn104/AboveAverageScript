@@ -17,6 +17,11 @@ _.global.isUndef = function(x) {
     return (typeof x) === 'undefined';
 };
 
+// Returns true if x is undefined.
+_.global.isNull = function(x) {
+    return x === null;
+};
+
 // Returns a if a has a value other than undefined. If a is undefined, returns the def val.
 _.global.defaults = function(a, def) {
     return (!(typeof a === 'undefined') ? a : def);

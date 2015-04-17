@@ -35,8 +35,6 @@ var Block = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
         var out = indents + "Block -> stmts: [\n";
-
-        //console.log("indLvlHidden: " + indLvlHidden);
         for(var i = 0; i < this.stmts.length; i++) {
             out += this.stmts[i].toString(indentlevel + 1, indLvlHidden+1) + "\n";
         }

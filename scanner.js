@@ -150,6 +150,8 @@ var LineScanner = function() {
                 }
                 if(token.kind === "UnexpectedChars" || token.kind === "Unused") {
                     this.errorToken = token;
+                    token.line = this.lineNumber;
+                    token.index = charAt;
                     return false;
                 }
                 token.line = this.lineNumber;
@@ -271,7 +273,7 @@ var LineScanner = function() {
     };
     // Slightly adapted from the string regex...
     var getRegExpMatch = function(line) {
-        return getMatchReg(line, "RegExpLit", "\\/[^\\/\\\\]+(?:\\\\.[^\\/\\\\]*)*\\/[igm]{0,3}");
+        return getMatchReg(line, "RegExpLit", "\\/[^\\/]+(?:\\\\.[^\\/\\\\]*)*\\/[igm]{0,3}");
     };
     var getBoolMatch = function(line) {
         return getMatch(line, "BoolLit", true);

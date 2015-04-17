@@ -77,4 +77,17 @@ var Call = function() {
         out = out.substring(0, out.length+removeCount) + "]";
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        var max = len(this.args);
+        write('(');
+        if(max > 0) {
+            this.args[0].compile(write, scope, 0, indentsHidden);
+        }
+        for(var i = 1; i < max; i++) {
+            write(', ');
+            this.args[i].compile(write, scope, 0, indentsHidden);
+        }
+        write(')');
+    };
 };

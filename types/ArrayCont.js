@@ -72,4 +72,17 @@ var ArrayCont = function() {
         out = out.substring(0, out.length+removeCount) + "]";
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        var max = len(this.array);
+        write('[');
+        if(max > 0) {
+            this.array[0].compile(write, scope, 0, indentsHidden);
+        }
+        for(var i = 1; i < max; i++) {
+            write(', ');
+            this.array[i].compile(write, scope, 0, indentsHidden);
+        }
+        write(']');
+    };
 };

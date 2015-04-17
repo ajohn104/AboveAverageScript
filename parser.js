@@ -121,6 +121,7 @@ var tokenStreamParser = function(tkns, call, err) {
         if(outputTree) {
             console.log(entity.toString(0, 0));
         }
+        entity.nativeSpecified = env.nativeSpecified;
         return entity;
     };
 
@@ -138,6 +139,9 @@ var tokenStreamParser = function(tkns, call, err) {
         };
         this.compile = function(write, scope, indents, indentsHidden) {
             scope = scope.clone();
+            if(!this.nativeSpecified) {
+                env.NativeStmt.compile(write, scope, indents, indentsHidden);
+            }
             for(var i = 0; i < len(this.stmts); i++) {
                 this.stmts[i].compile(write, scope, indents, indentsHidden);
                 write(';\n');

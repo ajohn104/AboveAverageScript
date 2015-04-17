@@ -55,14 +55,14 @@ var ForIn = function() {
     };
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
-        var valId = defaults(this.idtwo,this.idone);
-        var keyId = !isUndef(this.idtwo)?this.idone:scope.nextId();
+        var valId = !isNull(this.idtwo)?this.idtwo:this.idone;
+        var keyId = !isNull(this.idtwo)?this.idone:scope.nextId();
         var objId = scope.nextId();
 
         write(scope.ind(indents) + 'var ' + objId + ' = ');
         this.exp.compile(write, scope, 0, indentsHidden);
         write(';\n' + scope.ind(indentsHidden) + 'Object.keys(' 
             + objId + ').forEach(function(' + keyId + ') {\n' 
-            + scope.ind(indentsHidden+1) + 'var ' + keyId + ' = ' + objId + ';');
+            + scope.ind(indentsHidden+1) + 'var ' + valId + ' = ' + objId + '[' + keyId + '];');
     };
 };

@@ -15,7 +15,8 @@ module.exports = {
         at(env.Newline);
         while(at(',')) {
             if(!at(env.Exp)) {
-                env.index = indexBefore; env.inIndented = indentedBefore;
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
                 return false;
             }
             entity.exps.push(env.last);

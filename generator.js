@@ -73,7 +73,7 @@ var generate = function(program, compileTarget) {
         },
         randId: function() {
             var id = "";
-            id += rand(10);
+            // id += rand(10); :/ I wanted license plate variables, but I can't start them with numbers...
             for(var i = 0; i < 3; i++) {
                 id += randIn(alphabet);
             }

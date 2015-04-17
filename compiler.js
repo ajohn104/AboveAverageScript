@@ -15,7 +15,8 @@ var scanError = function(errorToken) {
             console.error("Scan Error. Found disallowed reserved word: '" + errorToken.lexeme + "'");
             break;
         case "UnexpectedChars":
-            console.error("Scan Error. Found unexpected character(s): '" + errorToken.lexeme + "'");
+            console.error("Scan Error. Found unexpected character(s): '" + errorToken.lexeme 
+                + "', line number: " +  errorToken.line + ", column: " + errorToken.index);
             break;
     }
     finalCallBack(false);
@@ -33,7 +34,7 @@ var scanCall = function(tokens) {
     var result = parse(tokens, parseCall, parseError, debugParse, displayTree);
     var isValidProgram = typeof result === 'object';
     //if(displayValid) console.log("Valid Program Entered: " + isValidProgram);
-    if(generateCode) generate(result, file);
+    if(generateCode && isValidProgram) generate(result, file);
     finalCallBack(isValidProgram);
 };
 

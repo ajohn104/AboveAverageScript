@@ -31,4 +31,14 @@ var Exp14 = function() {
         var out = (this.prefix.length > 0?"(":"") + this.prefix + this.val.toString(0, indLvlHidden) + (this.prefix.length > 0?")":"");
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        if(this.prefix !== "") {
+            write('(' + this.prefix);
+        }
+        this.val.compile(write, scope, 0, indentsHidden);
+        if(this.prefix !== "") {
+            write(')');
+        }
+    };
 };

@@ -22,4 +22,8 @@ var RegExpLit = function() {
         var out = this.val;
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(this.val);
+    };
 };
