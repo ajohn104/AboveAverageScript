@@ -33,4 +33,10 @@ var SetEqual = function() {
         out += ", rightExp: " + this.rightexp.toString(0, indLvlHidden);
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        write(scope.ind(indents));
+        this.leftexp.compile(write, scope, 0, indentsHidden);
+        write(' = ');
+        this.rightexp.compile(write, scope, 0, indentsHidden);
+    };
 };

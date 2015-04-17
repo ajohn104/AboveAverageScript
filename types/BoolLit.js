@@ -18,4 +18,8 @@ var BoolLit = function() {
         var out = this.val;
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.ind(indents) + this.val);
+    };
 };

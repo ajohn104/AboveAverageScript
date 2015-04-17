@@ -121,7 +121,7 @@ var tokenStreamParser = function(tkns, call, err) {
         if(outputTree) {
             console.log(entity.toString(0, 0));
         }
-        return true;
+        return entity;
     };
 
     var Program = function() {
@@ -135,6 +135,13 @@ var tokenStreamParser = function(tkns, call, err) {
             }
             out += indents + "]\n";
             return out;
+        };
+        this.compile = function(write, scope, indents, indentsHidden) {
+            scope = scope.clone();
+            for(var i = 0; i < len(this.stmts); i++) {
+                this.stmts[i].compile(write, scope, indents, indentsHidden);
+                write(';\n');
+            }
         };
     };
 };

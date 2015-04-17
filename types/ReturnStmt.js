@@ -25,4 +25,12 @@ var ReturnStmt = function() {
         var out = indents + "return" + ((this.exp !== null)?(" " + this.exp.toString(0, indLvlHidden)):(""));
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.ind(indents) + 'return');
+        if(this.exp !== null) {
+            write(' ');
+            this.exp.compile(write, scope, 0, indentsHidden);
+        }
+    };
 };

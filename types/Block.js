@@ -43,4 +43,11 @@ var Block = function() {
         out += indents + "]";
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        for(var i = 0; i < len(this.stmts); i++) {
+            this.stmts[i].compile(write, scope, indents, indentsHidden);
+            write(';\n');
+        }
+    };
 };

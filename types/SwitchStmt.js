@@ -58,12 +58,22 @@ var SwitchStmt = function() {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
         var out = indents + "SwitchStmt ->\n";
-        out += indents + env.ind + "condition: " + this.condition + "\n";
+        out += indents + env.ind + "condition: " + this.condition.toString(0,indLvlHidden) + "\n";
         for(var i = 0; i < this.cases.length; i++) {
             out += this.cases[i].toString(indentlevel + 1, indLvlHidden+1);
         }
         out += indents + "]\n";
         out += this.defaultCase.toString(indentlevel + 1, indLvlHidden+1);
         return out;
+    };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.ind(indents) + 'switch(');
+        this.condition.compile(write, scope, 0, indentsHidden);
+        write(') {\n');
+        for(var i = 0; i < len(this.cases); i++) {
+            this.cases[i].compile(write, scope, indents+1, indentsHidden+1);
+        }
+        write(scope.ind(indents) + '}');
     };
 };

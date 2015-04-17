@@ -43,4 +43,10 @@ var ForLoop = function() {
         out += this.block.toString(indentlevel+1, indLvlHidden+1);
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        this.loop.compile(write, scope, indents, indentsHidden);
+        this.block.compile(write, scope, indents+1, indentsHidden+1);
+        write(scope.ind(indents) + '}' + (this.loop.doesntNeedParens?'':')'));
+    };
 };

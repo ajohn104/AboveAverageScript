@@ -55,4 +55,13 @@ var Case = function() {
         out += this.block.toString(indentlevel+1, indLvlHidden+1);
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        for(var i = 0; i < len(this.stmts); i++) {
+            write(scope.ind(indents) + 'case ');
+            this.condition.compile(write, scope, 0, indentsHidden);
+            write(':\n');
+            this.block.compile(write, scope, indents+1, indentsHidden+1);
+        }
+    };
 };

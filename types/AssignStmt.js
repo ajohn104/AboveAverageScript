@@ -89,6 +89,14 @@ var AssignMultVar = function() {
         out += indents + env.ind + "]";
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        // Todo. For now this is taking a REALLY basic approach of just a single variable at a time.
+        write(scope.ind(indents));
+        this.leftSideExps[0].compile(write, scope, 0, indentsHidden);
+        write(' ' + this.operator + ' ');
+        this.rightSideExps[0].compile(write, scope, 0, indentsHidden);
+    };
 };
 
 var AssignMultiLine = function() {
@@ -103,5 +111,13 @@ var AssignMultiLine = function() {
         }
         out = out.substring(0 , out.length-2) + "\n" + indents + "]";
         return out;
+    };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        this.assignpairs[0].compile(write, scope, indents, indentsHidden);
+        for(var i = 1; i < len(this.assignpairs); i++) {
+            write(',\n');
+            this.assignpairs[i].compile(write, scope, indents+1, indentsHidden+1);
+        }
     };
 };

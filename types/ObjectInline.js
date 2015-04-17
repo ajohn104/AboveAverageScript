@@ -74,4 +74,13 @@ var ObjectInline = function() {
         out = out.substring(0, out.length+removeCount) + (removeCount !== -1?"\n" + env.indents(indLvlHidden +1):"")  + "]";
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.ind(indents) + '{\n');
+        for(var i = 0; i < len(this.props); i++) {
+            this.props[i].compile(write, scope, indents+1, indentsHidden+1);
+            write('\n');
+        }
+        write('}');
+    };
 };

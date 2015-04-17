@@ -110,6 +110,16 @@ var IfStmt = function() {
         }
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        this.ifEntity.compile(write, scope, indents, indentsHidden);
+        for(var i = 0; i < len(this.elifEntities); i++) {
+            this.elifEntities[i].compile(write, scope, 0, indentsHidden);
+        }
+        if(this.elseEntity !== null) {
+            this.elseEntity.compile(write, scope, 0, indentsHidden);
+        }
+    };
 };
 
 var If = function() {
@@ -122,6 +132,14 @@ var If = function() {
         out += indents + env.ind + "condition: " + this.condition.toString(0, indLvlHidden) + "\n";
         out += this.block.toString(indentlevel + 1, indLvlHidden+1);
         return out;
+    };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.ind(indents) + 'if(');
+        this.condition.compile(write, scope, 0, indentsHidden);
+        write(') {\n');
+        this.block.compile(write, scope, indents+1, indentsHidden+1);
+        write(scope.ind(indents) + '}');
     };
 };
 
@@ -136,6 +154,14 @@ var Elif = function() {
         out += this.block.toString(indentlevel + 1, indLvlHidden+1) + "\n";
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.ind(indents) + ' else if(');
+        this.condition.compile(write, scope, 0, indentsHidden);
+        write(') {\n');
+        this.block.compile(write, scope, indents+1, indentsHidden+1);
+        write(scope.ind(indents) + '}');
+    };
 };
 
 var Else = function() {
@@ -145,5 +171,11 @@ var Else = function() {
         var indents = env.indents(indentlevel);
         var out = "\n" + indents + "else ->\n" + this.block.toString(indentlevel + 1, indLvlHidden+1);
         return out;
+    };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.ind(indents) + ' else {\n');
+        this.block.compile(write, scope, indents+1, indentsHidden+1);
+        write(scope.ind(indents) + '}');
     };
 };

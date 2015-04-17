@@ -14,7 +14,7 @@ module.exports = {
         env.checkIndent();
         var indexMid = env.index;
         while(at('or')) {
-            var part = {operator: env.last};
+            var part = {operator: '||'/*env.last*/};
             env.checkIndent();
             if(!at(env.Exp5)) {
                 env.index = indexMid;

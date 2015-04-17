@@ -21,4 +21,8 @@ var ControlStmt = function() {
         var out = indents + this.controlWord;
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.env(indents) + this.controlWord);
+    };
 };

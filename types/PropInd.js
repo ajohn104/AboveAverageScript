@@ -33,4 +33,11 @@ var PropInd = function() {
         out += ", val: " + this.rightexp.toString(0, indLvlHidden);
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        this.leftexp.compile(write, scope, indents, indentsHidden);
+        write(':');
+        this.rightexp.compile(write, scope, 0, indentsHidden);
+        write(',');
+    };
 };

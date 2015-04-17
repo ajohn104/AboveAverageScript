@@ -90,6 +90,14 @@ var DeclareMultVar = function() {
         out += indents + env.ind + "]";
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        // Todo. For now this is taking a REALLY basic approach of just a single variable at a time.
+        write(scope.ind(indents) + 'var ');
+        this.leftSideExps[0].compile(write, scope, 0, indentsHidden);
+        write(' = ');
+        this.rightSideExps[0].compile(write, scope, 0, indentsHidden);
+    };
 };
 
 var DeclareMultiLine = function() {
@@ -104,5 +112,14 @@ var DeclareMultiLine = function() {
         }
         out = out.substring(0 , out.length-2) + "\n" + indents + "]";
         return out;
+    };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.ind(indents) + 'var ');
+        this.declarepairs[0].compile(write, scope, 0, indentsHidden);
+        for(var i = 1; i < len(this.declarepairs); i++) {
+            write(',\n');
+            this.declarepairs[i].compile(write, scope, indents+1, indentsHidden+1);
+        }
     };
 };

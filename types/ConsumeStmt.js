@@ -48,4 +48,10 @@ var ConsumeStmt = function() {
         out += indents + env.ind + "rightSideExp: " + this.rightSideExp.toString(0, indLvlHidden);
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        // Todo. For now this pretty much doesn't do anything. At all.
+        write(scope.ind(indents));
+        write("KUNSUMPSHUN");
+    };
 };

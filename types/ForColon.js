@@ -40,4 +40,14 @@ var ForColon = function() {
         out += " : " + this.exp.toString(0, indLvlHidden) + ")";
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        var keyId = this.id;
+        var objId = scope.nextId();
+
+        write(scope.ind(indents) + 'var ' + objId + ' = ');
+        this.exp.compile(write, scope, 0, indentsHidden);
+        write(';\n' + scope.ind(indentsHidden) + 'Object.keys(' 
+            + objId + ').forEach(function(' + keyId + ') {');
+    };
 };

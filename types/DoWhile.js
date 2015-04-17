@@ -55,4 +55,12 @@ var DoWhile = function() {
         out += indents + "..while" + this.condition.toString(0, indLvlHidden);
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.env(indents) + 'do {\n');
+        this.block.compile(write, scope, indLvlHidden+1, indentsHidden+1);
+        write('} while(');
+        this.rightSideExps[0].compile(write, scope, 0, indentsHidden);
+        write(')');
+    };
 };

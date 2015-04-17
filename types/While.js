@@ -52,4 +52,12 @@ var While = function() {
         out += this.block.toString(indentlevel+1, indLvlHidden+1);
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        write(scope.ind(indents) + 'while(');
+        this.condition.compile(write, scope, 0, indentsHidden);
+        write(') {\n');
+        this.block.compile(write, scope, indents+1, indentsHidden+1);
+        write(scope.ind(indents) + '}');
+    };
 };

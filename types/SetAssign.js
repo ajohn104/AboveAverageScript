@@ -36,4 +36,10 @@ var SetAssign = function() {
         out += ", leftExp: " + this.rightexp.toString(0, indLvlHidden);
         return out;
     };
+    this.compile = function(write, scope, indents, indentsHidden) {
+        write(scope.ind(indents));
+        leftexp.compile(write, scope, 0, indentsHidden);
+        write(' ' + this.operator + ' ');
+        rightexp.compile(write, scope, 0, indentsHidden);
+    };
 };
