@@ -30,11 +30,12 @@ var debugParse = false;
 var displayValid = false;
 var displayTree = false;
 var generateCode = false;
+var runCode = false;
+var runArgs = "";
 var scanCall = function(tokens) {
     var result = parse(tokens, parseCall, parseError, debugParse, displayTree);
     var isValidProgram = typeof result === 'object';
-    //if(displayValid) console.log("Valid Program Entered: " + isValidProgram);
-    if(generateCode && isValidProgram) generate(result, file);
+    if(generateCode && isValidProgram) generate(result, file, runCode, runArgs);
     finalCallBack(isValidProgram);
 };
 
@@ -66,6 +67,11 @@ var readStdIn = function(args) {
         }
         if(argument.search(/^-build$/) >= 0) {
             generateCode = true;
+            continue;
+        }
+        if(argument.search(/^\-run(\:.*)?$/) >= 0) {
+            runArgs = argument.substring(5);
+            runCode = true;
             continue;
         }
         if(argument.search(/^\-file\:\d+$/) >= 0) {

@@ -1,9 +1,10 @@
 require('./language/implattempts/native');
 var fs = require('fs');
 
-var generate = function(program, compileTarget) {
+var generate = function(program, compileTarget, runFile, runArgs) {
     var compileDest;
-    var doTest = false;
+    var doTest = defaults(runFile, false);
+    var runArgs = !isUndef(runArgs)?' ' + runArgs: "";
 
     var initiateFile = function() {
         compileDest = compileTarget.match(/^.*(?=\.avg)/)[0] + '.js';
@@ -21,7 +22,9 @@ var generate = function(program, compileTarget) {
             fs.appendFileSync(compileDest, buffer);
         } else {
             writeBuffer.push(buffer);
+            writeBufferEmpty = false;
         }
+        scope.checkCompletion();
     };
 
     var writeImmediately = function(buffer) {
@@ -30,7 +33,15 @@ var generate = function(program, compileTarget) {
 
     var testFile = function() {
         if(doTest) {
-            require(compileDest);
+            var exec = require('child_process').exec;
+            exec('node ' + compileDest + runArgs, function (error, stdout) {
+                if(len(stdout) > 0) { 
+                    log(stdout);
+                }
+                if(!isNull(error)) {
+                    log(error.message);
+                }
+            });
         }
     };
 
@@ -44,6 +55,9 @@ var generate = function(program, compileTarget) {
         return Math.floor(Math.random()*max);
     };
 
+    var nativeComplete = false;
+    var writeBufferEmpty = false;
+
     var scope = {
         indent: "    ",
         clone: function() {
@@ -54,9 +68,13 @@ var generate = function(program, compileTarget) {
             isOwned = true;
         },
         resume: function() {
+            nativeComplete = true;
             for(var i = 0; i < writeBuffer.length; i++) {
                 writeImmediately(writeBuffer[i]);
             }
+            writeBufferEmpty = true;
+            this.checkCompletion();
+            //log('scope.nativeComplete = ' + nativeComplete);
             isOwned = false;
         },
         ind: function(indents) {
@@ -81,12 +99,19 @@ var generate = function(program, compileTarget) {
                 id += rand(10);
             }
             return id;
+        },
+        allStatementsCompleted: false,
+        checkCompletion: function() {
+            //log('stateCompl: ' + this.allStatementsCompleted + ', writeBufferEmpty: '+ writeBufferEmpty + ', nativeComplete: ' + nativeComplete);
+            if(this.allStatementsCompleted && writeBufferEmpty && nativeComplete) {
+                //log('bored');
+                testFile();
+            }
         }
     };
 
     initiateFile();
     program.compile(write, scope, 0, 0);
-    testFile();
 };
 
 

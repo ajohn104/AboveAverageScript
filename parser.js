@@ -138,7 +138,6 @@ var tokenStreamParser = function(tkns, call, err) {
             return out;
         };
         this.compile = function(write, scope, indents, indentsHidden) {
-            scope = scope.clone();
             if(!this.nativeSpecified) {
                 env.NativeStmt.compile(write, scope, indents, indentsHidden);
             }
@@ -146,6 +145,7 @@ var tokenStreamParser = function(tkns, call, err) {
                 this.stmts[i].compile(write, scope, indents, indentsHidden);
                 write(';\n');
             }
+            scope.allStatementsCompleted = true;
         };
     };
 };
