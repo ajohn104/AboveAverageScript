@@ -1,13 +1,14 @@
 // SetAssign       ::= Exp AssignOp Exp
 module.exports = {
-    is: function(at, next, env, debug) {
+    is: function(at, next, env, debug, previous) {
         var indexBefore = env.index;
         var entity = new SetAssign();
-        if(!at(env.Exp)) {
+        var havePrevious = (typeof previous !== 'undefined');
+        if(!havePrevious && !at(env.Exp)) {
             env.index = indexBefore;
             return false;
         }
-        entity.leftexp = env.last;
+        entity.leftexp = havePrevious?previous:env.last;
         if(!at(env.AssignOp)) {
             env.index = indexBefore;
             return false;

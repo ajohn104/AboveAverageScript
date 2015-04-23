@@ -1,15 +1,21 @@
 // AssignStmt      ::= (ExpList AssignOp (ObjInd | ExpList)) | (SetAssign (',' Indent Newline SetAssign (',' Newline SetAssign)* Dedent ) )
 module.exports = {
-    is: function(at, next, env, debug) {
+    is: function(at, next, env, debug, previous) {
         var indexBefore = env.index;
 
         var found = false;
         var indexMid = env.index;
         var entity;
-        if(!found && at(env.ExpList)) {
+        var havePrevious = (typeof previous !== 'undefined');
+
+        var foundExpList = false;
+
+        if(!found && at(env.ExpList, previous)) {
+            foundExpList = true;
             found = true;
             entity = new AssignMultVar();
             entity.leftSideExps = env.last;
+            env.initialExpList = env.last;
             if(!at(env.AssignOp)) {
                 found = false;
                 env.index = indexMid;
@@ -26,7 +32,8 @@ module.exports = {
             }
         }
 
-        if(!found && at(env.SetAssign)) {
+        // Yeah I know this looks terrible but it makes things faster
+        if(foundExpList && env.initialExpList.length === 1 && !found && at(env.SetAssign, previous)) {
             found = true;
             entity = new AssignMultiLine();
             entity.assignpairs.push(env.last);

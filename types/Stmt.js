@@ -39,7 +39,7 @@ module.exports = {
             found |= at(env.IfStmt);                            // code generation done unless buggy
         }
         if(!found) {
-            debug("IfStmt failed\nTrying ConsumeStmt");
+            debug("IfStmt failed\nTrying ConsumeStmt for local assignment");
             found |= at(env.ConsumeStmt);                       // code generation does literally nothing noteworthy until full exp
         }
         if(!found) {
@@ -53,12 +53,28 @@ module.exports = {
         if(!found) {
             debug("ControlStmt failed\nTrying Exp");  
             found |= at(env.Exp);                        // basic code generation supported up through all expressions
-            isExp = found;
+            if(found) {
+                var initialExp = env.last;
+                debug("Initial Expression found\nTrying AssignStmt and possibly ConsumeStmt");  
+                if(at(env.AssignStmt, initialExp)) {
+                    isExp = false;
+                    debug("AssignStmt success for explist");  
+                } else if(at(env.ConsumeStmt, initialExp)) {
+                    isExp = false;
+                    debug("ConsumeStmt success for explist");  
+                } else {
+                    debug("AssignStmt and ConsumeStmt failed. Defaulting to Expression");  
+                    env.last = initialExp;
+                    isExp = true;
+                }
+            }
         }
         
         if(!found) {
-            debug("Exp failed");  
+            debug("Initial Expression search failed");  
         }
+        env.initialExpList = undefined;
+
 
         debug("Completed statement search. Status: " + found);
         debug("next token to be searched:");

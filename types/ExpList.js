@@ -1,15 +1,17 @@
 // ExpList         ::= Exp (Newline? ',' Exp)*
 module.exports = {
-    is: function(at, next, env, debug) {
+    is: function(at, next, env, debug, previous) {
         var indexBefore = env.index; 
         var indentedBefore = env.inIndented;
         var entity = new ExpList();
         debug("ExpList: beginning search. env.index:" + env.index);
-        if(!at(env.Exp)) {
-            env.index = indexBefore; env.inIndented = indentedBefore;
+        var havePrevious = (typeof previous !== 'undefined');
+        if(!havePrevious && !at(env.Exp)) {
+            env.index = indexBefore; 
+            env.inIndented = indentedBefore;
             return false;
         }
-        entity.exps.push(env.last);
+        entity.exps.push(havePrevious?previous:env.last);
         debug("ExpList: found Exp. env.index:" + env.index);
         var indexMid = env.index;
         at(env.Newline);

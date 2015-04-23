@@ -39,6 +39,8 @@ module.exports = {
 var Exp = function() {
     this.val = null;
     this.furtherExps = [];
+    this.isExp = true;
+    this.buried = undefined;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -64,6 +66,36 @@ var Exp = function() {
         this.val.compile(write, scope, 0, indentsHidden + max);
         for(var j = max - 1; j >= 0; j--) {
             write('\n' + scope.ind(indents + j) + '})');
+        }
+    };
+    this.compileRedo = function(write, scope, indents, indentsHidden) {
+        scope = scope.clone();
+        this.dig();
+        var max = this.furtherExps.length;
+        if(!isUndef(this.buried)) {
+            // Prepare the store locations for buried. This pretty much just means an array.
+            // All the info for this is stored in buried (buried isn't the actual exp to evaluate)
+        }
+        if(max > 0) {
+            // Prepare the store locations for any evaluated values. Also just an array.
+        }
+        // now for the for loop
+
+    };
+    this.dig = function() {
+        // So this needs to search for a defined child of each entity. If a child is found,
+        // it should check to see if that child is an Exp.
+        if(isUndef(this.buried)) {
+            return;
+        }
+        var searchChild = this.child;
+        while(!isUndef(searchChild = searchChild.child)) {
+            if(searchChild.isExp && searchChild.furtherExps.length > 0) {
+                searchChild.buried = this.buried;
+                //delete this.buried;
+                this.buried = undefined;
+                return;
+            }
         }
     };
 };

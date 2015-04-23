@@ -1,11 +1,15 @@
 // ConsumeStmt     ::= ExpList? '<-' Exp
 module.exports = {      // Reduce this to just a single expression???
-    is: function(at, next, env, debug) {
+    is: function(at, next, env, debug, previous) {
         var indexBefore = env.index;
+        var havePrevious = (typeof previous !== 'undefined');
 
-        var listFound = at(env.ExpList);
+        var haveExpList = (typeof env.initialExpList !== 'undefined');
+        env.last = haveExpList?env.initialExpList:env.last;
+
+        var listFound = !haveExpList && havePrevious && at(env.ExpList, previous);
         var entity = new ConsumeStmt();
-        if(listFound) {
+        if(listFound || haveExpList) {
             entity.leftSideExps = env.last;
         }
 

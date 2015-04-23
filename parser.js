@@ -71,7 +71,7 @@ var tokenStreamParser = function(tkns, call, err) {
 
     env.isArray = isArray;
 
-    var at = function(expected) {
+    var at = function(expected, previous) {
         if(isArray(expected)) {
             for(var i = 0; i < expected.length; i++) {
                 if(at(expected[i])) return true;
@@ -81,7 +81,7 @@ var tokenStreamParser = function(tkns, call, err) {
         if(typeof expected === 'string') {
             return env.Lexeme(expected).is(at, next, env, debug);
         }
-        return expected.is(at, next, env, debug);
+        return expected.is(at, next, env, debug, previous);
     };
 
     var next = function(expected) {

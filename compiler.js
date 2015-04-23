@@ -49,6 +49,10 @@ var parseError = function(stuff) {
 };
 
 var readStdIn = function(args) {
+    if(args.indexOf('-compile') < 0) {
+        return;
+    }
+    
     var run = false;
     var arguments = [];
     for(var i = 2; i < args.length; i++) {
