@@ -248,6 +248,94 @@ list[i for i : list] += [ [k if j > k for k : list] for j : list].reduce(func x,
 
 /*
 
+numbers[i for i in range(len(numbers))] += numbers[j if j < i for j in range(len(numbers))]
+
+To compile, the assignment needs to do several things, only one of which is yet to be determined. Actually, maybe not. First,
+it needs to gather the list of 
+
+
+
+numbers[i + j for i in range(len(numbers)) for j in whocares] += nothing - whatever + j + i
+
+Alright, so... so before an expression finishes compiling (in particular, Exp), it could assign to the original scope the Exp (mostly
+just for the for loops) it used. But that won't always make sense. Suppose we had
+
+
+numbers[i + j for i : [numbers[k for k : numbers[8, 9, 10]]] for j : [numbers[0, 1, 2]] ] = numbers[ i + j + k ]
+
+In this example, the whole expression is equivalent to:
+
+let kHold = []
+for k : [numbers[8], numbers[9], numbers[10]]:
+    push(kHold, numbers[k])
+
+let jHold = [numbers[0], numbers[1], numbers[2]]
+
+for i : kHold:
+    for j : jHold:
+        numbers[i + j] = numbers[i + j + k]
+
+Clearly, this doesn't make sense. So, the only values that will be propagated to the right side of an assignment will be any that appear
+at the first or second level of the left side (aka list[i] for i : list || list[i for i : list])
+
+
+Now for an example that actually makes sense (technically):
+
+numbers[(i+j)%len([numbers[0,1,2]]) for i : numbers for j : numbers] for k : numbers += numbers[i + j] + list[i - j]
+
+This roughly translates to:
+
+
+for k : numbers:
+    let storeVal = 0
+    let storeVals = []
+
+    let numbersCopy = Object.create(numbers)
+    let key = -1
+    let keys = []
+    
+
+    for i : numbersCopy:
+        for j : numbersCopy:
+            key = (i + j) % len(numbersCopy)
+            storeVal = numbersCopy[i + j] + list[i - j]
+            //numbers[key] += storeVal
+            keys.push(key)
+            storeVals.push(storeVal)
+
+    if stuff...
+        ...->
+        for rA : keys
+            numbers[keys[rA]] += storeVals[keys[rA]]
+
+
+
+
+In summary, Exp should have an additional parameter slot of requested expression to compute (as well as a location to store it?).
+That requested expression will then be added to --- never mind. see below.
+
+Well, here's a terrible but probably the simplest solution to assignment (and whatever else is affected). Add a dig function to Exp
+**When called, it will search for any for loop containing expressions deeper than it, specifically only in the primary value of each
+expression entity. If no further for loops are found, it adds the code to evaluate the expression to itself. If it finds one deeper, it
+passes the responsibility to it by assigning the buriedExp property of that Exp (which is also how it knew to try to use dig in the
+first place).
+
+**with the parameter of an object that holds all the necessary info about the exp that is needed to be evaluated (storelocation, expr,
+etc). 
+
+^ was previously at the ** but I took it out since I don't think the argument is necessary. --> it wasn't. but if i bury more expressions
+in the future i might add it back or something.
+
+    
+
+So... The current thought process is that each expression will just provide through the scope a 'storeLoc' to each of it's children and then
+perform the operations on the values it gets back. Obviously this will need to be optimized to be less shitty in the future, but for now we do
+what we can. And with that, we have what might be our final puzzle piece to make it happen. But that doesn't mean it'll be easy or something
+to blow through. Take it step by step and make sure it makes sense every goddamn time.
+
+
+
+
 
 
 
