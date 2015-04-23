@@ -77,8 +77,9 @@ var parse = function(tkns, call, err, dbgMode, tree) {
     }):debug;
     env.debug = debug;
 
+    // I would have included Lexeme with the types above and below, but
+    // it really isn't a part of the above group and behaves differently.
     env.Lexeme = require("./types/Lexeme")(env, at, next, debug);
-    //env.DeclareStmt = require("./types/DeclareStmt")(env, at, next, debug);
 
     entityNames.forEach(function(name) {
         env[name] = require("./types/" + name)(env, at, next, debug);

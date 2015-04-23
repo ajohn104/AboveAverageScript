@@ -22,14 +22,15 @@ module.exports = function(env, at, next, debug) {
             }
             entity.lastVal = env.last;
             var indexMid = env.index;
-            while(next(ArrayCont) || next(Call) || next('.') || next(Indent) || (env.inIndented && next(Newline))) {
+            while(next('[') || next('(') || next('.') || next(Indent) || (env.inIndented && next(Newline))) {
                 if(env.inIndented && next(Newline)) {
                     checkIndent();
                 } else if(at(ArrayCont)) {
+                    indexMid = env.index;
                     var newest = new BracketAccessor(env.last, entity.lastVal);
                     entity.lastVal = newest;
                 } else if(at(Call)) {
-                    debug("success here at cow, index: " + env.index);
+                    indexMid = env.index;
                     var newest = new FunctionCall(env.last, entity.lastVal);
                     entity.lastVal = newest;
                 } else if(at('.')) {
@@ -37,6 +38,7 @@ module.exports = function(env, at, next, debug) {
                         env.index = indexMid;
                         break;
                     }
+                    indexMid = env.index;
                     var newest = new DotAccessor(env.last, entity.lastVal);
                     entity.lastVal = newest;
                 } else if(next(Indent)) {
@@ -51,8 +53,13 @@ module.exports = function(env, at, next, debug) {
                         env.inIndented = indentedBefore;
                         break;
                     }
+                    indexMid = env.index;
                     var newest = new DotAccessor(env.last, entity.lastVal);
                     entity.lastVal = newest;
+                } else {
+                    env.index = indexMid;
+                    env.inIndented = indentedBefore;
+                    break;
                 }
             }
             env.last = entity;

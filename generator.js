@@ -102,9 +102,7 @@ var generate = function(program, compileTarget, runFile, runArgs) {
         },
         allStatementsCompleted: false,
         checkCompletion: function() {
-            //log('stateCompl: ' + this.allStatementsCompleted + ', writeBufferEmpty: '+ writeBufferEmpty + ', nativeComplete: ' + nativeComplete);
             if(this.allStatementsCompleted && writeBufferEmpty && nativeComplete) {
-                //log('bored');
                 testFile();
             }
         }

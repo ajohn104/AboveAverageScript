@@ -24,10 +24,8 @@ module.exports = function(env, at, next, debug) {
                 if(!at(Call)) {
                     env.index = indexBefore;
                     env.inIndented = indentedBefore;
-                    debug("failing here at dog");
                     found = false;
                 }
-                debug("success here at cat");
                 entity.call = env.last;
             }
 
