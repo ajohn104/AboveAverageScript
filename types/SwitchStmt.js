@@ -1,9 +1,9 @@
-// SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Default? Dedent
+// SwitchStmt      ::= 'switch' Exp1 ':' Indent Case+ Default? Dedent
 module.exports = function(env, at, next, debug) {
-    var Exp, Indent, Case, Default, Dedent;
+    var Exp1, Indent, Case, Default, Dedent;
     return {
         loadData: function() {
-            Exp = env.Exp,
+            Exp1 = env.Exp1,
             Indent = env.Indent,
             Case = env.Case,
             Default = env.Default,
@@ -18,7 +18,7 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
 
-            if(!at(Exp)) {
+            if(!at(Exp1)) {
                 env.index = indexBefore;
                 return false;
             }

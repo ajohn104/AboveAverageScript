@@ -1,9 +1,9 @@
-// IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
+// IfStmt          ::= 'if' Exp1 ':' Indent Block Dedent (Newline 'elif' Exp1 ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
 module.exports = function(env, at, next, debug) {
-    var Exp, Indent, Block, Dedent, Newline;
+    var Exp1, Indent, Block, Dedent, Newline;
     return {
         loadData: function() {
-            Exp = env.Exp,
+            Exp1 = env.Exp1,
             Indent = env.Indent,
             Block = env.Block,
             Dedent = env.Dedent,
@@ -17,7 +17,7 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
             entity = new IfStmt();
-            if(!at(Exp)) {
+            if(!at(Exp1)) {
                 env.index = indexBefore;
                 return false;
             }
@@ -50,7 +50,7 @@ module.exports = function(env, at, next, debug) {
             while(env.parseTokens[env.index].kind === "Newline" && env.parseTokens[env.index+1].lexeme === 'elif') {
                 var elifEnt = new Elif();
                 env.index+=2;
-                if(!at(Exp)) {
+                if(!at(Exp1)) {
                     env.index = indexBefore;
                     return false;
                 }

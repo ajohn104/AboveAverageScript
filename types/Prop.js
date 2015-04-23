@@ -1,12 +1,12 @@
-// Prop            ::= (Id | BoolLit | StringLit) ':' Exp
+// Prop            ::= (Id | BoolLit | StringLit) ':' Exp1
 module.exports = function(env, at, next, debug) {
-    var Id, BoolLit, StringLit, Exp;
+    var Id, BoolLit, StringLit, Exp1;
     return {
         loadData: function() {
             Id = env.Id,
             BoolLit = env.BoolLit,
             StringLit = env.StringLit,
-            Exp = env.Exp;
+            Exp1 = env.Exp1;
         },
         is: function() {
             var indexBefore = env.index;
@@ -27,16 +27,16 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
             debug("Prop: found ':', index: " + env.index );
-            debug("Prop: checking for Exp, index: " + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-            if(!at(Exp)) {
+            debug("Prop: checking for Exp1, index: " + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            if(!at(Exp1)) {
                 env.index = indexBefore;
-                debug("Prop: cannot find Exp, index: " + env.index );
+                debug("Prop: cannot find Exp1, index: " + env.index );
                 return false;
             }
             entity.rightexp = env.last;
 
             env.last = entity;
-            debug("Prop: found Exp. Completed. index: " + env.index );
+            debug("Prop: found Exp1. Completed. index: " + env.index );
             return true;
         }
     };

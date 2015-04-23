@@ -1,10 +1,10 @@
-// ForColon        ::= 'for' Id ':' Exp
+// ForColon        ::= 'for' Id ':' Exp17
 module.exports = function(env, at, next, debug) {
-    var Id, Exp;
+    var Id, Exp17;
     return {
         loadData: function() {
             Id = env.Id,
-            Exp = env.Exp;
+            Exp17 = env.Exp17;
         },
         is: function() {
             var indexBefore = env.index;
@@ -25,7 +25,7 @@ module.exports = function(env, at, next, debug) {
                 env.index = indexBefore;
                 return false;
             }
-            if(!at(Exp)) {
+            if(!at(Exp17)) {
                 env.index = indexBefore;
                 return false;
             }

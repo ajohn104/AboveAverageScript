@@ -1,9 +1,9 @@
-// While           ::= 'while' Exp ':' Indent Block Dedent
+// While           ::= 'while' Exp1 ':' Indent Block Dedent
 module.exports = function(env, at, next, debug) {
-    var Exp, Indent, Block, Dedent;
+    var Exp1, Indent, Block, Dedent;
     return {
         loadData: function() {
-            Exp = env.Exp,
+            Exp1 = env.Exp1,
             Indent = env.Indent,
             Block = env.Block,
             Dedent = env.Dedent;
@@ -17,7 +17,7 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
 
-            if(!at(Exp)) {
+            if(!at(Exp1)) {
                 env.index = indexBefore;
                 return false;
             }

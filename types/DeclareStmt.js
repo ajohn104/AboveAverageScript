@@ -1,9 +1,10 @@
-// DeclareStmt     ::= 'let' (ExpList '=' (ObjInd | ExpList)) | (SetEqual (',' Indent Newline SetEqual (',' Newline SetEqual)* Dedent ) )
+// DeclareStmt     ::= 'let' (Id (',' Id)* '=' (ObjInd | ExpList)) | (SetEqual (',' Indent Newline SetEqual (',' Newline SetEqual)* Dedent ) )
 module.exports = function(env, at, next, debug) {
-    var ExpList, ObjInd, SetEqual, 
+    var ExpList, ObjInd, SetEqual, Id,
         Indent, Newline, Dedent, isArray;
     return {
         loadData: function() {
+            Id = env.Id,
             ExpList = env.ExpList,
             ObjInd = env.ObjInd,
             SetEqual = env.SetEqual,
@@ -23,19 +24,31 @@ module.exports = function(env, at, next, debug) {
             debug("DeclareStmt: found 'let'. env.index:" + env.index);
             var found = false;
             var indexMid = env.index;
-            if(!found && at(ExpList)) {
+            var ids = [];
+            if(at(Id)) {
                 found = true;
-                entity = new DeclareMultVar();
-                entity.leftSideExps = env.last;
-                if(!(at('=') && (at(ObjInd) || at(ExpList)))) {
-                    found = false;
-                    env.index = indexMid;
+                ids.push(env.last);
+                while(at(',')) {
+                    if(!at(Id)) {
+                        env.index = indexMid;
+                        found = false;
+                        break;
+                    }
+                    ids.push(env.last);
                 }
-                if(isArray(env.last)) { // Note: this is when you have something like let x, y = a, b  (or just let x = a)
-                    entity.rightSideExps = env.last;
-                } else { // Note: this is when you have something like let x = a, y = b
-                    entity.rightSideExps.push(env.last);
-                } 
+                if(found) {
+                    entity = new DeclareMultVar();
+                    entity.leftSideExps = ids;
+                    if(!(at('=') && (at(ObjInd) || at(ExpList)))) {
+                        found = false;
+                        env.index = indexMid;
+                    }
+                    if(isArray(env.last)) { // Note: this is when you have something like let x, y = a, b  (or just let x = a)
+                        entity.rightSideExps = env.last;
+                    } else { // Note: this is when you have something like let x = a, y = b
+                        entity.rightSideExps.push(env.last);
+                    } 
+                }
             }
             debug("DeclareStmt: found ExpList: " + found + ". env.index:" + env.index);
 

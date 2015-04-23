@@ -1,12 +1,12 @@
-// PropInd         ::= (Id | BoolLit | StringLit) ':' (Exp | ObjInd)
+// PropInd         ::= (Id | BoolLit | StringLit) ':' (Exp1 | ObjInd)
 module.exports = function(env, at, next, debug) {
-    var Id, BoolLit, StringLit, Exp, ObjInd;
+    var Id, BoolLit, StringLit, Exp1, ObjInd;
     return {
         loadData: function() {
             Id = env.Id,
             BoolLit = env.BoolLit,
             StringLit = env.StringLit,
-            Exp = env.Exp,
+            Exp1 = env.Exp1,
             ObjInd = env.ObjInd;
         },
         is: function() {
@@ -21,7 +21,7 @@ module.exports = function(env, at, next, debug) {
                 env.index = indexBefore;
                 return false;
             }
-            if(!(at(Exp) || at(ObjInd))) {
+            if(!(at(Exp1) || at(ObjInd))) {
                 env.index = indexBefore;
                 return false;
             }

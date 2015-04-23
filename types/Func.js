@@ -1,10 +1,10 @@
-// Func            ::= 'func' (Id (',' Id)* )? '->' (Exp | ReturnStmt) | (Indent Block Dedent)
+// Func            ::= 'func' (Id (',' Id)* )? '->' (Exp1 | ReturnStmt) | (Indent Block Dedent)
 module.exports = function(env, at, next, debug) {
-    var Id, Exp, ReturnStmt, Indent, Block, Dedent;
+    var Id, Exp1, ReturnStmt, Indent, Block, Dedent;
     return {
         loadData: function() {
             Id = env.Id,
-            Exp = env.Exp,
+            Exp1 = env.Exp1,
             ReturnStmt = env.ReturnStmt,
             Indent = env.Indent,
             Block = env.Block,
@@ -38,10 +38,10 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
             debug("Found '->'. Looking for single line 'ret'. env.index:" + env.index);
-            if(at(Exp) || at(ReturnStmt)) {
+            if(at(Exp1) || at(ReturnStmt)) {
                 debug("Found single line exp or return stmt. env.index:" + env.index);
                 entity.block = env.last;
-                //debug("Single line 'ret' not found. Instead found Single line Exp. env.index:" + env.index);
+                //debug("Single line 'ret' not found. Instead found Single line Exp1. env.index:" + env.index);
                 ; // Just let it fall through
             } else {
                 debug("Not single line. checking for indent. env.index:" + env.index);

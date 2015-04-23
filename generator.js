@@ -62,9 +62,9 @@ var generate = function(program, compileTarget, runFile, runArgs) {
         indent: "    ",
         clone: function() {
             var copy = Object.create(this);
-            copy.names = Object.create(this.names);
-            Objects.keys(this.names).forEach(function(key, index) {
-                copy.names[key] = this.names[key];
+            copy.nameMap = Object.create(this.nameMap);
+            Object.keys(this.nameMap).forEach(function(key, index) {
+                copy.nameMap[key] = this.nameMap[key];
             });
             return copy;
         },

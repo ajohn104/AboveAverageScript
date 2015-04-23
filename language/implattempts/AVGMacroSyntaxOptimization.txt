@@ -12,17 +12,17 @@ Stmt            ::= DeclareStmt
                  |  Exp
 
 DeclareStmt     ::= 'let' (Id (',' Id)* '=' (ObjInd | ExpList)) | (SetEqual (',' Indent Newline SetEqual (',' Newline SetEqual)* Dedent ) )
-AssignStmt      ::= (ExpList AssignOp (ObjInd | ExpList)) | (SetAssign (',' Indent Newline SetAssign (',' Newline SetAssign)* Dedent ) )
-ConsumeStmt     ::= ExpList? '<-' Exp
-ReturnStmt      ::= 'ret' Exp?
+AssignStmt      ::= (Exp17 (',' Exp17)* (ForIn | ForColon)* ) AssignOp (ObjInd | ExpList)) 
+                 |  (SetAssign (',' Indent Newline SetAssign (',' Newline SetAssign)* Dedent ) )         // Highly debatable. Consider later on.
+ConsumeStmt     ::= Exp? '<-' Exp17                             // Debatable. Consider later on.
+ReturnStmt      ::= 'ret' Exp1?
 ControlStmt     ::= 'stop' | 'skip'
-SetAssign       ::= Exp AssignOp Exp
-SetEqual        ::= Exp '=' Exp
+SetAssign       ::= Exp17 AssignOp Exp1                         // Also highly debatable. Consider later on.
+SetEqual        ::= Id '=' Exp1
 
-// Beware uses of Exp with numbers > 0, since they don't save the current indent at the moment. Well, not in the way Exp does.
 IfStmt          ::= 'if' Exp1 ':' Indent Block Dedent (Newline 'elif' Exp1 ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
 SwitchStmt      ::= 'switch' Exp1 ':' Indent Case+ Defaults? Dedent
-Case            ::= Newline 'case' Exp18 ':' Indent Block Dedent                // I'm not actually sure what should be valid here.
+Case            ::= Newline 'case' Exp18 ':' Indent Block Dedent
 Defaults        ::= Newline 'default' ':' Indent Block Dedent
 NativeStmt      ::= '***native***'
 
@@ -31,9 +31,9 @@ WhileLoop       ::= DoWhile | While
 DoWhile         ::= 'do' Indent Block Dedent Newline 'while' Exp1
 While           ::= 'while' Exp1 ':' Indent Block Dedent
 ForLoop         ::= (ForIn | ForColon | For) ':' Indent Block Dedent
-ForIn           ::= 'for' Id (',' Id)? 'in' Exp17       // This might be worth double checking
-ForColon        ::= 'for' Id ':' Exp17       // This might be worth double checking
-For             ::= 'for' ( ('let'? Id '=')? Exp1 ',')? Exp1 ',' Exp1       // This might be worth double checking
+ForIn           ::= 'for' Id (',' Id)? 'in' Exp17
+ForColon        ::= 'for' Id ':' Exp17
+For             ::= 'for' ( ('let'? Id '=')? Exp1 ',')? Exp1 ',' Exp1
 
 Exp             ::= Exp1 (ForIn | ForColon)*
 Exp1            ::= Exp2 ('if' Exp2 ('else' Exp2)?)?
@@ -54,18 +54,18 @@ Exp15           ::= Exp16 PostfixOp?
 Exp16           ::= ('new' Exp17 Call) | Exp17
 Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp18)*
 Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp2 Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
+// Exp18's parenthesized expr is more than likely going to cause an issue with indents. Seriously.
 
 ArrayLit        ::= ('[' ']') | ArrayCont
 ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) Newline? ']'
-ExpList         ::= Exp (Newline? ',' Exp)*             // This'll require some thought before I try to make it happen correctly
+ExpList         ::= Exp1 (Newline? ',' Exp1)*
 RegExpLit       ::= '\/[^\/\\]+(?:\\.[^\/\\]*)*\/[igm]{0,3}'
 Func            ::= 'func' (Id (',' Id)* )? '->' ('ret'? Exp1) | (Indent Block Dedent)
 ObjectInline    ::= '{' (Property (',' Property)*) | (Indent Newline Property (',' Newline Property)* Dedent Newline) '}'
 ObjInd          ::= Indent (Newline (Prop|PropInd) )+ Dedent
 Prop            ::= (Id | BoolLit | StringLit) ':' Exp1
 PropInd         ::= (Id | BoolLit | StringLit) ':' (Exp1 | ObjInd)
-Call            ::= '(' ( ExpList (Newline? ',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'    
-// Using Exp1 here wouldn't have symmetry with the ExpList that comes before it. Consider it later.
+Call            ::= '(' ( ExpList (Newline? ',' Indent Newline Exp1 (Newline ',' Exp1)* Dedent)? Newline?)? ')'
 
 AssignOp        ::= '=' | '+=' |'-=' | '*=' | '/=' | '%=' | '<<=' | '>>=' | '>>>=' | '&=' | '^=' | '|='
 EqualOp         ::= '!==' | '===' | '!=' | '=='
@@ -84,3 +84,4 @@ Newline         ::= '\n'
 Indent          ::= '\i'
 Dedent          ::= '\d'
 EOF             ::= '@EOF'
+

@@ -1,13 +1,13 @@
-// DoWhile         ::= 'do' Indent Block Dedent Newline 'while' Exp
+// DoWhile         ::= 'do' Indent Block Dedent Newline 'while' Exp1
 module.exports = function(env, at, next, debug) {
-    var Indent, Newline, Block, Dedent, Newline, Exp;
+    var Indent, Newline, Block, Dedent, Newline, Exp1;
     return {
         loadData: function() {
             Indent = env.Indent,
             Block = env.Block,
             Dedent = env.Dedent,
             Newline = env.Newline,
-            Exp = env.Exp;
+            Exp1 = env.Exp1;
         },
         is: function() {
             var indexBefore = env.index;
@@ -43,7 +43,7 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
 
-            if(!at(Exp)) {
+            if(!at(Exp1)) {
                 env.index = indexBefore;
                 return false;
             }

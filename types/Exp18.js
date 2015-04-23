@@ -1,6 +1,6 @@
-// Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
+// Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp2 Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
 module.exports = function(env, at, next, debug) {
-    var Id, BoolLit, IntLit, StringLit, Exp, Newline, 
+    var Id, BoolLit, IntLit, StringLit, Exp2, Newline, 
         Func, ArrayLit, ObjectInline, This, RegExpLit;
     return {
         loadData: function() {
@@ -8,7 +8,7 @@ module.exports = function(env, at, next, debug) {
             BoolLit = env.BoolLit,
             IntLit = env.IntLit,
             StringLit = env.StringLit,
-            Exp = env.Exp,
+            Exp2 = env.Exp2,
             Newline = env.Newline,
             Func = env.Func,
             ArrayLit = env.ArrayLit,
@@ -22,7 +22,7 @@ module.exports = function(env, at, next, debug) {
             var indentedBefore = env.inIndented;
             var isParenthesizedExpr = false;
             var entity = new Exp18();
-            if(at('(') && at(Exp)) {
+            if(at('(') && at(Exp2)) {
                 entity.val = env.last;
                 debug("Found exp within possible ParenthesizedExpr. Looking for ')'. env.index:" + env.index);
 
