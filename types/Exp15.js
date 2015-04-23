@@ -1,27 +1,35 @@
 // Exp15           ::= Exp16 PostfixOp?
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index; 
-        var indentedBefore = env.inIndented;
-        var entity = new Exp15();
-        debug("Starting on exp15. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        if(!at(env.Exp16)) {
-            env.index = indexBefore; 
-            env.inIndented = indentedBefore;
-            return false;
-        }
-        entity.val = env.last;
-        env.checkIndent();
+module.exports = function(env, at, next, debug) {
+    var Exp16, checkIndent, PostfixOp;
+    return {
+        loadData: function() {
+            Exp16 = env.Exp16,
+            checkIndent = env.checkIndent,
+            PostfixOp = env.PostfixOp;
+        },
+        is: function() {
+            var indexBefore = env.index; 
+            var indentedBefore = env.inIndented;
+            var entity = new Exp15();
+            debug("Starting on exp15. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            if(!at(Exp16)) {
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
+                return false;
+            }
+            entity.val = env.last;
+            checkIndent();
 
-        var foundOp = at(env.PostfixOp);
-        if(foundOp) {
-            entity.postfix = env.last;
-        }
+            var foundOp = at(PostfixOp);
+            if(foundOp) {
+                entity.postfix = env.last;
+            }
 
-        env.last = entity;
-        debug("Finalizing exp15 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        return true;
-    }
+            env.last = entity;
+            debug("Finalizing exp15 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            return true;
+        }
+    };
 };
 
 var Exp15 = function() {

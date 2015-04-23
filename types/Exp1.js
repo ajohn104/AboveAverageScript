@@ -1,35 +1,42 @@
 // Exp1            ::= Exp2 ('if' Exp2 ('else' Exp2)?)?
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var indentedBefore = env.inIndented;
-        debug("Starting on exp1. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        if(!at(env.Exp2)) {
-            env.index = indexBefore;
-            env.inIndented = indentedBefore;
-            return false;
-        }
-        env.checkIndent();
-        if(at('if')) {
-            env.checkIndent();
-            if(!at(env.Exp2)) {
+module.exports = function(env, at, next, debug) {
+    var Exp2, checkIndent;
+    return {
+        loadData: function() {
+            Exp2 = env.Exp2,
+            checkIndent = env.checkIndent;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var indentedBefore = env.inIndented;
+            debug("Starting on exp1. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            if(!at(Exp2)) {
                 env.index = indexBefore;
                 env.inIndented = indentedBefore;
                 return false;
             }
-            env.checkIndent();
-            if(at('else')) {
-                env.checkIndent();
-                if(!at(env.Exp2)) {
+            checkIndent();
+            if(at('if')) {
+                checkIndent();
+                if(!at(Exp2)) {
                     env.index = indexBefore;
                     env.inIndented = indentedBefore;
                     return false;
                 }
+                checkIndent();
+                if(at('else')) {
+                    checkIndent();
+                    if(!at(Exp2)) {
+                        env.index = indexBefore;
+                        env.inIndented = indentedBefore;
+                        return false;
+                    }
+                }
             }
+            debug("Finalizing exp1 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            return true;
         }
-        debug("Finalizing exp1 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        return true;
-    }
+    };
 };
 
 var Exp1 = function() {

@@ -1,39 +1,49 @@
 // Exp             ::= Exp1 (ForIn | ForColon)*
-module.exports = {
-    is: function(at, next, env, debug) {
-        debug("Starting on exp. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        var indexBefore = env.index;
-        var indentedBefore = env.inIndented;
-        var entity = new Exp();
-        env.indentedExp.push(env.inIndented);
-        env.inIndented = false;
-        
-        if(!at(env.Exp1)) {
-            env.index = indexBefore; 
-            env.inIndented = indentedBefore;
-            env.inIndented = env.indentedExp.pop();
-            return false;
-        }
-        entity.val = env.last;
-        env.checkIndent();
+module.exports = function(env, at, next, debug) {
+    var Exp1, ForIn, ForColon, checkIndent, Dedent;
+    return {
+        loadData: function() {
+            Exp1 = env.Exp1,
+            ForColon = env.ForColon,
+            ForIn = env.ForIn,
+            checkIndent = env.checkIndent,
+            Dedent = env.Dedent;
+        },
+        is: function() {
+            debug("Starting on exp. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            var indexBefore = env.index;
+            var indentedBefore = env.inIndented;
+            var entity = new Exp();
+            env.indentedExp.push(env.inIndented);
+            env.inIndented = false;
+            
+            if(!at(Exp1)) {
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
+                env.inIndented = env.indentedExp.pop();
+                return false;
+            }
+            entity.val = env.last;
+            checkIndent();
 
-        while(at(env.ForIn) || at(env.ForColon)) {
-            entity.furtherExps.push(env.last);
-            env.checkIndent();
-        }
-        
-        if(env.inIndented && !at(env.Dedent)) {
-            debug("Unfinished indented exp. Exp failed.")
-            env.index = indexBefore; 
-            env.inIndented = indentedBefore;
+            while(at(ForIn) || at(ForColon)) {
+                entity.furtherExps.push(env.last);
+                checkIndent();
+            }
+            
+            if(env.inIndented && !at(Dedent)) {
+                debug("Unfinished indented exp. Exp failed.")
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
+                env.inIndented = env.indentedExp.pop();
+                return false;
+            }
             env.inIndented = env.indentedExp.pop();
-            return false;
+            env.last = entity;
+            debug("Finalizing exp success. env.index:" + env.index  + ', lexeme: ' + env.parseTokens[env.index].lexeme + '\n');
+            return true;
         }
-        env.inIndented = env.indentedExp.pop();
-        env.last = entity;
-        debug("Finalizing exp success. env.index:" + env.index  + ', lexeme: ' + env.parseTokens[env.index].lexeme + '\n');
-        return true;
-    }
+    };
 };
 
 var Exp = function() {

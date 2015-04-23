@@ -1,53 +1,63 @@
 // SwitchStmt      ::= 'switch' Exp ':' Indent Case+ Default? Dedent
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
+module.exports = function(env, at, next, debug) {
+    var Exp, Indent, Case, Default, Dedent;
+    return {
+        loadData: function() {
+            Exp = env.Exp,
+            Indent = env.Indent,
+            Case = env.Case,
+            Default = env.Default,
+            Dedent = env.Dedent;
+        },
+        is: function() {
+            var indexBefore = env.index;
 
-        var entity = new SwitchStmt();
-        if(!at('switch')) {
-            env.index = indexBefore;
-            return false;
-        }
+            var entity = new SwitchStmt();
+            if(!at('switch')) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.condition = env.last;
+            if(!at(Exp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.condition = env.last;
 
-        if(!at(':')) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(':')) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Indent)) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(Indent)) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Case)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.cases.push(env.last);
-
-        while(at(env.Case)) {
+            if(!at(Case)) {
+                env.index = indexBefore;
+                return false;
+            }
             entity.cases.push(env.last);
-        }
 
-        var foundDefault = at(env.Default);
-        if(foundDefault) {
-            entity.defaultCase = env.last;
-        }
+            while(at(Case)) {
+                entity.cases.push(env.last);
+            }
 
-        if(!at(env.Dedent)) {
-            env.index = indexBefore;
-            return false;
-        }
+            var foundDefault = at(Default);
+            if(foundDefault) {
+                entity.defaultCase = env.last;
+            }
 
-        env.last = entity;
-        return true;
-    }
+            if(!at(Dedent)) {
+                env.index = indexBefore;
+                return false;
+            }
+
+            env.last = entity;
+            return true;
+        }
+    };
 };
 
 var SwitchStmt = function() {

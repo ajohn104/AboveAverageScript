@@ -1,78 +1,92 @@
 // AssignStmt      ::= (ExpList AssignOp (ObjInd | ExpList)) | (SetAssign (',' Indent Newline SetAssign (',' Newline SetAssign)* Dedent ) )
-module.exports = {
-    is: function(at, next, env, debug, previous) {
-        var indexBefore = env.index;
+module.exports = function(env, at, next, debug) {
+    var ExpList, AssignOp, ObjInd, SetAssign, 
+        Indent, Newline, Dedent, isArray;
+    return {
+        loadData: function() {
+            ExpList = env.ExpList,
+            AssignOp = env.AssignOp,
+            ObjInd = env.ObjInd,
+            SetAssign = env.SetAssign,
+            Indent = env.Indent,
+            Newline = env.Newline,
+            Dedent = env.Dedent,
+            isArray = env.isArray;
+        },
+        is: function(previous) {
+            var indexBefore = env.index;
 
-        var found = false;
-        var indexMid = env.index;
-        var entity;
-        var havePrevious = (typeof previous !== 'undefined');
+            var found = false;
+            var indexMid = env.index;
+            var entity;
+            var havePrevious = (typeof previous !== 'undefined');
 
-        var foundExpList = false;
+            var foundExpList = false;
 
-        if(!found && at(env.ExpList, previous)) {
-            foundExpList = true;
-            found = true;
-            entity = new AssignMultVar();
-            entity.leftSideExps = env.last;
-            env.initialExpList = env.last;
-            if(!at(env.AssignOp)) {
-                found = false;
-                env.index = indexMid;
+            if(!found && at(ExpList, previous)) {
+                foundExpList = true;
+                found = true;
+                entity = new AssignMultVar();
+                entity.leftSideExps = env.last;
+                env.initialExpList = env.last;
+                if(!at(AssignOp)) {
+                    found = false;
+                    env.index = indexMid;
+                }
+                entity.operator = env.last;
+                if(!(found && (at(ObjInd) || at(ExpList)))) {
+                    found = false;
+                    env.index = indexMid;
+                }
+                if(isArray(env.last)) {
+                    entity.rightSideExps = env.last;
+                } else {
+                    entity.rightSideExps.push(env.last);
+                }
             }
-            entity.operator = env.last;
-            if(!(found && (at(env.ObjInd) || at(env.ExpList)))) {
-                found = false;
-                env.index = indexMid;
-            }
-            if(env.isArray(env.last)) {
-                entity.rightSideExps = env.last;
-            } else {
-                entity.rightSideExps.push(env.last);
-            }
-        }
 
-        // Yeah I know this looks terrible but it makes things faster
-        if(foundExpList && env.initialExpList.length === 1 && !found && at(env.SetAssign, previous)) {
-            found = true;
-            entity = new AssignMultiLine();
-            entity.assignpairs.push(env.last);
-            if(found && !at(',')) {
-                found = false;
-                env.index = indexMid;
-            }
-            if(found && !at(env.Indent)) {
-                found = false;
-                env.index = indexMid;
-            }
-            if(found && !at(env.Newline)) {
-                found = false;
-                env.index = indexMid;
-            }
-            if(found && !at(env.SetAssign)) {
-                found = false;
-                env.index = indexMid;
-            }
-            entity.assignpairs.push(env.last);
-            indexMid = env.index;
-            while(found && at(',') && at(env.Newline) && at(env.SetAssign)) {
+            // Yeah I know this looks terrible but it makes things faster
+            if(foundExpList && env.initialExpList.length === 1 && !found && at(SetAssign, previous)) {
+                found = true;
+                entity = new AssignMultiLine();
+                entity.assignpairs.push(env.last);
+                if(found && !at(',')) {
+                    found = false;
+                    env.index = indexMid;
+                }
+                if(found && !at(Indent)) {
+                    found = false;
+                    env.index = indexMid;
+                }
+                if(found && !at(Newline)) {
+                    found = false;
+                    env.index = indexMid;
+                }
+                if(found && !at(SetAssign)) {
+                    found = false;
+                    env.index = indexMid;
+                }
                 entity.assignpairs.push(env.last);
                 indexMid = env.index;
-            }
-            env.index = indexMid;
-
-            if(!at(env.Dedent)){
-                found = false;
+                while(found && at(',') && at(Newline) && at(SetAssign)) {
+                    entity.assignpairs.push(env.last);
+                    indexMid = env.index;
+                }
                 env.index = indexMid;
+
+                if(!at(Dedent)){
+                    found = false;
+                    env.index = indexMid;
+                }
             }
+            if(!found) {
+                env.index = indexBefore;
+                return false;
+            }
+            env.last = entity;
+            return true;
         }
-        if(!found) {
-            env.index = indexBefore;
-            return false;
-        }
-        env.last = entity;
-        return true;
-    }
+    };
 };
 
 var AssignMultVar = function() {

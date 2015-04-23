@@ -1,74 +1,88 @@
 // DeclareStmt     ::= 'let' (ExpList '=' (ObjInd | ExpList)) | (SetEqual (',' Indent Newline SetEqual (',' Newline SetEqual)* Dedent ) )
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity;
-        if(!at('let')) {
-            env.index = indexBefore;
-            return false;
-        } 
-        debug("DeclareStmt: found 'let'. env.index:" + env.index);
-        var found = false;
-        var indexMid = env.index;
-        if(!found && at(env.ExpList)) {
-            found = true;
-            entity = new DeclareMultVar();
-            entity.leftSideExps = env.last;
-            if(!(at('=') && (at(env.ObjInd) || at(env.ExpList)))) {
-                found = false;
-                env.index = indexMid;
-            }
-            if(env.isArray(env.last)) { // Note: this is when you have something like let x, y = a, b  (or just let x = a)
-                entity.rightSideExps = env.last;
-            } else { // Note: this is when you have something like let x = a, y = b
-                entity.rightSideExps.push(env.last);
-            } 
-        }
-        debug("DeclareStmt: found ExpList: " + found + ". env.index:" + env.index);
+module.exports = function(env, at, next, debug) {
+    var ExpList, ObjInd, SetEqual, 
+        Indent, Newline, Dedent, isArray;
+    return {
+        loadData: function() {
+            ExpList = env.ExpList,
+            ObjInd = env.ObjInd,
+            SetEqual = env.SetEqual,
+            Indent = env.Indent,
+            Newline = env.Newline,
+            Dedent = env.Dedent,
+            isArray = env.isArray;
+        },
 
-        if(!found && at(env.SetEqual)) {
-            debug("DeclareStmt: checking for SetEqual stuff. env.index:" + env.index);
-            found = true;
-            entity = new DeclareMultiLine();
-            entity.declarepairs.push(env.last);
-            if(found && !at(',')) {
-                found = false;
-                env.index = indexMid;
+        is: function() {
+            var indexBefore = env.index;
+            var entity;
+            if(!at('let')) {
+                env.index = indexBefore;
+                return false;
+            } 
+            debug("DeclareStmt: found 'let'. env.index:" + env.index);
+            var found = false;
+            var indexMid = env.index;
+            if(!found && at(ExpList)) {
+                found = true;
+                entity = new DeclareMultVar();
+                entity.leftSideExps = env.last;
+                if(!(at('=') && (at(ObjInd) || at(ExpList)))) {
+                    found = false;
+                    env.index = indexMid;
+                }
+                if(isArray(env.last)) { // Note: this is when you have something like let x, y = a, b  (or just let x = a)
+                    entity.rightSideExps = env.last;
+                } else { // Note: this is when you have something like let x = a, y = b
+                    entity.rightSideExps.push(env.last);
+                } 
             }
-            if(found && !at(env.Indent)) {
-                found = false;
-                env.index = indexMid;
-            }
-            if(found && !at(env.Newline)) {
-                found = false;
-                env.index = indexMid;
-            }
-            if(found && !at(env.SetEqual)) {
-                found = false;
-                env.index = indexMid;
-            }
-            entity.declarepairs.push(env.last);
-            indexMid = env.index;
-            while(found && at(',') && at(env.Newline) && at(env.SetEqual)) {
+            debug("DeclareStmt: found ExpList: " + found + ". env.index:" + env.index);
+
+            if(!found && at(SetEqual)) {
+                debug("DeclareStmt: checking for SetEqual stuff. env.index:" + env.index);
+                found = true;
+                entity = new DeclareMultiLine();
+                entity.declarepairs.push(env.last);
+                if(found && !at(',')) {
+                    found = false;
+                    env.index = indexMid;
+                }
+                if(found && !at(Indent)) {
+                    found = false;
+                    env.index = indexMid;
+                }
+                if(found && !at(Newline)) {
+                    found = false;
+                    env.index = indexMid;
+                }
+                if(found && !at(SetEqual)) {
+                    found = false;
+                    env.index = indexMid;
+                }
                 entity.declarepairs.push(env.last);
                 indexMid = env.index;
-            }
-            env.index = indexMid;
-
-            if(!at(env.Dedent)){
-                found = false;
+                while(found && at(',') && at(Newline) && at(SetEqual)) {
+                    entity.declarepairs.push(env.last);
+                    indexMid = env.index;
+                }
                 env.index = indexMid;
-            }
-        }
 
-        debug("DeclareStmt: passed setequal. found: " + found + ". env.index:" + env.index);
-        if(!found) {
-            env.index = indexBefore;
-            return false;
+                if(!at(Dedent)){
+                    found = false;
+                    env.index = indexMid;
+                }
+            }
+
+            debug("DeclareStmt: passed setequal. found: " + found + ". env.index:" + env.index);
+            if(!found) {
+                env.index = indexBefore;
+                return false;
+            }
+            env.last = entity;
+            return true;
         }
-        env.last = entity;
-        return true;
-    }
+    };
 };
 
 var DeclareMultVar = function() {

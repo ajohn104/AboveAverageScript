@@ -1,26 +1,36 @@
 // PropInd         ::= (Id | BoolLit | StringLit) ':' (Exp | ObjInd)
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new PropInd();
-        if(!(at(env.Id) || at(env.BoolLit) || at(env.StringLit))) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.leftexp = env.last;
-        if(!at(':')) {
-            env.index = indexBefore;
-            return false;
-        }
-        if(!(at(env.Exp) || at(env.ObjInd))) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.rightexp = env.last;
+module.exports = function(env, at, next, debug) {
+    var Id, BoolLit, StringLit, Exp, ObjInd;
+    return {
+        loadData: function() {
+            Id = env.Id,
+            BoolLit = env.BoolLit,
+            StringLit = env.StringLit,
+            Exp = env.Exp,
+            ObjInd = env.ObjInd;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new PropInd();
+            if(!(at(Id) || at(BoolLit) || at(StringLit))) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.leftexp = env.last;
+            if(!at(':')) {
+                env.index = indexBefore;
+                return false;
+            }
+            if(!(at(Exp) || at(ObjInd))) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.rightexp = env.last;
 
-        env.last = entity;
-        return true;
-    }
+            env.last = entity;
+            return true;
+        }
+    };
 };
 
 var PropInd = function() {

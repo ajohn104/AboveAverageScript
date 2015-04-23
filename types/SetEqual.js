@@ -1,26 +1,32 @@
 // SetEqual        ::= Exp '=' Exp
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new SetEqual();
-        if(!at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.leftexp = env.last;
-        if(!at('=')) {
-            env.index = indexBefore;
-            return false;
-        }
-        if(!at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.rightexp = env.last;
+module.exports = function(env, at, next, debug) {
+    var Exp;
+    return {
+        loadData: function() {
+            Exp = env.Exp;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new SetEqual();
+            if(!at(Exp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.leftexp = env.last;
+            if(!at('=')) {
+                env.index = indexBefore;
+                return false;
+            }
+            if(!at(Exp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.rightexp = env.last;
 
-        env.last = entity;
-        return true;
-    }
+            env.last = entity;
+            return true;
+        }
+    };
 };
 
 var SetEqual = function() {

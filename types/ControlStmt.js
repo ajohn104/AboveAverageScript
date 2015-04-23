@@ -1,16 +1,19 @@
 // ControlStmt     ::= 'stop' | 'skip'
-module.exports = {
-    is: function(at, next, env, debug) {
-        var controls = ['stop', 'skip'];
-        var entity;
-        var foundControl = at(controls);
-        if(foundControl) {
-            entity = new ControlStmt();
-            entity.controlWord = env.last;
-            env.last = entity;
+module.exports = function(env, at, next, debug) {
+    var controls = ['stop', 'skip'];
+    return {
+        loadData: function() {},
+        is: function() {
+            var entity;
+            var foundControl = at(controls);
+            if(foundControl) {
+                entity = new ControlStmt();
+                entity.controlWord = env.last;
+                env.last = entity;
+            }
+            return foundControl;
         }
-        return foundControl;
-    }
+    };
 };
 
 var ControlStmt = function() {

@@ -1,13 +1,11 @@
 // Dedent          ::= '\d'
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        if(!at('\\d')) {
-            env.index = indexBefore;
-            return false;
+module.exports = function(env, at, next, debug) {
+    return {
+        loadData: function() {},
+        is: function() {
+            return at('\\d');
         }
-        return true;
-    }
+    };
 };
 
 // Entity is dealt with by Lexeme.

@@ -1,97 +1,107 @@
 // IfStmt          ::= 'if' Exp ':' Indent Block Dedent (Newline 'elif' Exp ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity;
-        if(!at('if')) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity = new IfStmt();
-        if(!at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        var ifEnt = new If();
-        ifEnt.condition = env.last;
-
-        if(!at(':')) {
-            env.index = indexBefore;
-            return false;
-        }
-
-        if(!at(env.Indent)) {
-            env.index = indexBefore;
-            return false;
-        }
-
-        if(!at(env.Block)) {
-            env.index = indexBefore;
-            return false;
-        }
-
-        ifEnt.block = env.last;
-        entity.ifEntity = ifEnt;
-
-        if(!at(env.Dedent)) {
-            env.index = indexBefore;
-            return false;
-        }
-        debug("Completed 'if' block. Moving on to elif. env.index:" + env.index);
-        while(env.parseTokens[env.index].kind === "Newline" && env.parseTokens[env.index+1].lexeme === 'elif') {
-            var elifEnt = new Elif();
-            env.index+=2;
-            if(!at(env.Exp)) {
+module.exports = function(env, at, next, debug) {
+    var Exp, Indent, Block, Dedent, Newline;
+    return {
+        loadData: function() {
+            Exp = env.Exp,
+            Indent = env.Indent,
+            Block = env.Block,
+            Dedent = env.Dedent,
+            Newline = env.Newline;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity;
+            if(!at('if')) {
                 env.index = indexBefore;
                 return false;
             }
-            elifEnt.condition = env.last;
+            entity = new IfStmt();
+            if(!at(Exp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            var ifEnt = new If();
+            ifEnt.condition = env.last;
+
             if(!at(':')) {
                 env.index = indexBefore;
                 return false;
             }
 
-            if(!at(env.Indent)) {
+            if(!at(Indent)) {
                 env.index = indexBefore;
                 return false;
             }
 
-            if(!at(env.Block)) {
+            if(!at(Block)) {
                 env.index = indexBefore;
                 return false;
             }
-            elifEnt.block = env.last;
 
-            if(!at(env.Dedent)) {
+            ifEnt.block = env.last;
+            entity.ifEntity = ifEnt;
+
+            if(!at(Dedent)) {
                 env.index = indexBefore;
                 return false;
             }
-            entity.elifEntities.push(elifEnt);
+            debug("Completed 'if' block. Moving on to elif. env.index:" + env.index);
+            while(env.parseTokens[env.index].kind === "Newline" && env.parseTokens[env.index+1].lexeme === 'elif') {
+                var elifEnt = new Elif();
+                env.index+=2;
+                if(!at(Exp)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                elifEnt.condition = env.last;
+                if(!at(':')) {
+                    env.index = indexBefore;
+                    return false;
+                }
+
+                if(!at(Indent)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+
+                if(!at(Block)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                elifEnt.block = env.last;
+
+                if(!at(Dedent)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                entity.elifEntities.push(elifEnt);
+            }
+            debug("Completed 'elif' blocks. Moving on to else. env.index:" + env.index);
+            if(env.parseTokens[env.index].kind === "Newline" && env.parseTokens[env.index+1].lexeme === 'else') {
+                env.index+=2;
+                var elseEnt = new Else();
+                if(!at(Indent)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+
+                if(!at(Block)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                elseEnt.block = env.last;
+                if(!at(Dedent)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                entity.elseEntity = elseEnt;
+            }
+            debug("Completed 'else' block. Done with IfStmt. env.index:" + env.index);
+            env.last = entity;
+            return true;
         }
-        debug("Completed 'elif' blocks. Moving on to else. env.index:" + env.index);
-        if(env.parseTokens[env.index].kind === "Newline" && env.parseTokens[env.index+1].lexeme === 'else') {
-            env.index+=2;
-            var elseEnt = new Else();
-            if(!at(env.Indent)) {
-                env.index = indexBefore;
-                return false;
-            }
-
-            if(!at(env.Block)) {
-                env.index = indexBefore;
-                return false;
-            }
-            elseEnt.block = env.last;
-            if(!at(env.Dedent)) {
-                env.index = indexBefore;
-                return false;
-            }
-            entity.elseEntity = elseEnt;
-        }
-        debug("Completed 'else' block. Done with IfStmt. env.index:" + env.index);
-        env.last = entity;
-        return true;
-    }
+    };
 };
 
 var IfStmt = function() {

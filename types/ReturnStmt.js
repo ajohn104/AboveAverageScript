@@ -1,20 +1,26 @@
 // ReturnStmt      ::= 'ret' Exp?
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
+module.exports = function(env, at, next, debug) {
+    var Exp;
+    return {
+        loadData: function() {
+            Exp = env.Exp;
+        },
+        is: function() {
+            var indexBefore = env.index;
 
-        if(!at('ret')) {
-            env.index = indexBefore;
-            return false;
+            if(!at('ret')) {
+                env.index = indexBefore;
+                return false;
+            }
+            var entity = new ReturnStmt();
+            var foundExp = at(Exp);
+            if(foundExp) {
+                entity.exp = env.last;
+            }
+            env.last = entity;
+            return true;
         }
-        var entity = new ReturnStmt();
-        var foundExp = at(env.Exp);
-        if(foundExp) {
-            entity.exp = env.last;
-        }
-        env.last = entity;
-        return true;
-    }
+    };
 };
 
 var ReturnStmt = function() {

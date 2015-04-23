@@ -1,44 +1,51 @@
 // Exp3            ::= Exp4 ('?' Exp4 ':' Exp4)?
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index; 
-        var indentedBefore = env.inIndented;
-        var entity = new Exp3();
-        debug("Starting on exp3. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        if(!at(env.Exp4)) {
-            env.index = indexBefore; 
-            env.inIndented = indentedBefore;
-            return false;
+module.exports = function(env, at, next, debug) {
+    var Exp4, checkIndent;
+    return {
+        loadData: function() {
+            Exp4 = env.Exp4,
+            checkIndent = env.checkIndent;
+        },
+        is: function() {
+            var indexBefore = env.index; 
+            var indentedBefore = env.inIndented;
+            var entity = new Exp3();
+            debug("Starting on exp3. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            if(!at(Exp4)) {
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
+                return false;
+            }
+            entity.val = env.last;
+            checkIndent();
+            if(at('?')) {
+                env.furtherExps = {};
+                checkIndent();
+                if(!at(Exp4)) {
+                    env.index = indexBefore; 
+                    env.inIndented = indentedBefore;
+                    return false;
+                }
+                env.furtherExps.firstexp = env.last;
+                checkIndent();
+                if(!at(':')) {
+                    env.index = indexBefore; 
+                    env.inIndented = indentedBefore;
+                    return false;
+                }
+                checkIndent();
+                if(!at(Exp4)) {
+                    env.index = indexBefore; 
+                    env.inIndented = indentedBefore;
+                    return false;
+                }
+                env.furtherExps.secondexp = env.last;
+            }
+            env.last = entity;
+            debug("Finalizing exp3 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            return true;
         }
-        entity.val = env.last;
-        env.checkIndent();
-        if(at('?')) {
-            env.furtherExps = {};
-            env.checkIndent();
-            if(!at(env.Exp4)) {
-                env.index = indexBefore; 
-                env.inIndented = indentedBefore;
-                return false;
-            }
-            env.furtherExps.firstexp = env.last;
-            env.checkIndent();
-            if(!at(':')) {
-                env.index = indexBefore; 
-                env.inIndented = indentedBefore;
-                return false;
-            }
-            env.checkIndent();
-            if(!at(env.Exp4)) {
-                env.index = indexBefore; 
-                env.inIndented = indentedBefore;
-                return false;
-            }
-            env.furtherExps.secondexp = env.last;
-        }
-        env.last = entity;
-        debug("Finalizing exp3 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        return true;
-    }
+    };
 };
 
 var Exp3 = function() {

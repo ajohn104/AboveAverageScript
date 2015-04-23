@@ -1,67 +1,75 @@
 // Call            ::= '(' ( ExpList (Newline? ',' Indent Newline Exp (Newline ',' Exp)* Dedent)? Newline?)? ')'
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new Call();
-        debug("Starting call test");
-        if(!at('(')) {
-            env.index = indexBefore;
-            return false;
-        }
-        debug("Checking for function arguments. env.index:" + env.index);
-        if(at(env.ExpList)) {
-            for(var j = 0; j < env.last.length; j++) {
-                entity.args.push(env.last[j]);
+module.exports = function(env, at, next, debug) {
+    var ExpList, Newline, Indent, Exp, Dedent;
+    return {
+        loadData: function() {
+            ExpList = env.ExpList,
+            Exp = env.Exp,
+            Indent = env.Indent,
+            Newline = env.Newline,
+            Dedent = env.Dedent;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new Call();
+            debug("Starting call test, index: " + env.index);
+            if(!at('(')) {
+                env.index = indexBefore;
+                return false;
             }
-            var indexMid = env.index;
-            at(env.Newline);
-            if(at(',')) {
-                if(!at(env.Indent)) {
-                    env.index = indexBefore;
-                    return false;
-                }
+            debug("Checking for function arguments. env.index:" + env.index);
+            if(at(ExpList)) {
+                entity.args = env.last;
+                var indexMid = env.index;
+                at(Newline);
+                if(at(',')) {
+                    if(!at(Indent)) {
+                        env.index = indexBefore;
+                        return false;
+                    }
 
-                if(!at(env.Newline)) {
-                    env.index = indexBefore;
-                    return false;
-                }
+                    if(!at(Newline)) {
+                        env.index = indexBefore;
+                        return false;
+                    }
 
-                if(!at(env.Exp)) {
-                    env.index = indexBefore;
-                    return false;
-                }
-                entity.args.push(env.last);
-
-                while(env.parseTokens[env.index].kind === "Newline" && env.parseTokens[env.index+1].lexeme === ",") {
-                    env.index+=2;
-                    if(!at(env.Exp)) {
+                    if(!at(Exp)) {
                         env.index = indexBefore;
                         return false;
                     }
                     entity.args.push(env.last);
+
+                    while(env.parseTokens[env.index].kind === "Newline" && env.parseTokens[env.index+1].lexeme === ",") {
+                        env.index+=2;
+                        if(!at(Exp)) {
+                            env.index = indexBefore;
+                            return false;
+                        }
+                        entity.args.push(env.last);
+                    }
+
+                    if(!at(Dedent)) {
+                        env.index = indexBefore;
+                        return false;
+                    }
                 }
 
-                if(!at(env.Dedent)) {
-                    env.index = indexBefore;
-                    return false;
-                }
+                at(Newline);
+            } else {
+                debug("Cannot find any arguments to function. Checking for ')'. env.index:" + env.index);
             }
 
-            at(env.Newline);
-        } else {
-            debug("Cannot find any arguments to function. Checking for ')'. env.index:" + env.index);
-        }
+            
 
-        
-
-        if(!at(')')) {
-            env.index = indexBefore;
-            return false;
+            if(!at(')')) {
+                env.index = indexBefore;
+                return false;
+            }
+            env.last = entity;
+            debug("Ending successful call on function: " + env.parseTokens[indexBefore-1].lexeme + ", index: " + env.index);
+            return true;
         }
-        env.last = entity;
-        debug("Ending successful call on function: " + env.parseTokens[indexBefore-1].lexeme);
-        return true;
-    }
+    };
 };
 
 var Call = function() {

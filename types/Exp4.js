@@ -1,33 +1,40 @@
 // Exp4            ::= Exp5 ('or' Exp5)*
-module.exports = {
-    is: function(at, next, env, debug) {
-        debug("Starting on exp4. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        var indexBefore = env.index; 
-        var indentedBefore = env.inIndented;
-        var entity = new Exp4();
-        if(!at(env.Exp5)) {
-            env.index = indexBefore; 
-            env.inIndented = indentedBefore;
-            return false;
-        }
-        entity.val = env.last;
-        env.checkIndent();
-        var indexMid = env.index;
-        while(at('or')) {
-            var part = {operator: '||'/*env.last*/};
-            env.checkIndent();
-            if(!at(env.Exp5)) {
-                env.index = indexMid;
-                break;
+module.exports = function(env, at, next, debug) {
+    var Exp5, checkIndent;
+    return {
+        loadData: function() {
+            Exp5 = env.Exp5,
+            checkIndent = env.checkIndent;
+        },
+        is: function() {
+            debug("Starting on exp4. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            var indexBefore = env.index; 
+            var indentedBefore = env.inIndented;
+            var entity = new Exp4();
+            if(!at(Exp5)) {
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
+                return false;
             }
-            part.exp = env.last;
-            entity.furtherExps.push(part);
-            indexMid = env.index;
+            entity.val = env.last;
+            checkIndent();
+            var indexMid = env.index;
+            while(at('or')) {
+                var part = {operator: '||'};
+                checkIndent();
+                if(!at(Exp5)) {
+                    env.index = indexMid;
+                    break;
+                }
+                part.exp = env.last;
+                entity.furtherExps.push(part);
+                indexMid = env.index;
+            }
+            env.last = entity;
+            debug("Finalizing exp4 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            return true;
         }
-        env.last = entity;
-        debug("Finalizing exp4 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        return true;
-    }
+    };
 };
 
 var Exp4 = function() {

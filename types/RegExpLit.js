@@ -1,17 +1,20 @@
 // RegExp          ::= '\/[^\/\\]+(?:\\.[^\/\\]*)*\/[igm]{0,3}'
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new RegExpLit();
-        if(env.parseTokens[env.index].kind !== 'RegExpLit') {
-            env.index = indexBefore;
-            return false;
+module.exports = function(env, at, next, debug) {
+    return {
+        loadData: function() {},
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new RegExpLit();
+            if(env.parseTokens[env.index].kind !== 'RegExpLit') {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.val = env.parseTokens[env.index].lexeme;
+            env.index++;
+            env.last = entity;
+            return true;
         }
-        entity.val = env.parseTokens[env.index].lexeme;
-        env.index++;
-        env.last = entity;
-        return true;
-    }
+    };
 };
 
 var RegExpLit = function() {

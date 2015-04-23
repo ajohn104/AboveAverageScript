@@ -1,34 +1,41 @@
 // ExpList         ::= Exp (Newline? ',' Exp)*
-module.exports = {
-    is: function(at, next, env, debug, previous) {
-        var indexBefore = env.index; 
-        var indentedBefore = env.inIndented;
-        var entity = new ExpList();
-        debug("ExpList: beginning search. env.index:" + env.index);
-        var havePrevious = (typeof previous !== 'undefined');
-        if(!havePrevious && !at(env.Exp)) {
-            env.index = indexBefore; 
-            env.inIndented = indentedBefore;
-            return false;
-        }
-        entity.exps.push(havePrevious?previous:env.last);
-        debug("ExpList: found Exp. env.index:" + env.index);
-        var indexMid = env.index;
-        at(env.Newline);
-        while(at(',')) {
-            if(!at(env.Exp)) {
+module.exports = function(env, at, next, debug) {
+    var Exp, Newline;
+    return {
+        loadData: function() {
+            Exp = env.Exp,
+            Newline = env.Newline;
+        },
+        is: function(previous) {
+            var indexBefore = env.index; 
+            var indentedBefore = env.inIndented;
+            var entity = new ExpList();
+            debug("ExpList: beginning search. env.index:" + env.index);
+            var havePrevious = (typeof previous !== 'undefined');
+            if(!havePrevious && !at(Exp)) {
                 env.index = indexBefore; 
                 env.inIndented = indentedBefore;
                 return false;
             }
-            entity.exps.push(env.last);
-            indexMid = env.index;
-            at(env.Newline);
+            entity.exps.push(havePrevious?previous:env.last);
+            debug("ExpList: found Exp. env.index:" + env.index);
+            var indexMid = env.index;
+            at(Newline);
+            while(at(',')) {
+                if(!at(Exp)) {
+                    env.index = indexBefore; 
+                    env.inIndented = indentedBefore;
+                    return false;
+                }
+                entity.exps.push(env.last);
+                indexMid = env.index;
+                at(Newline);
+            }
+            env.index = indexMid;
+            env.last = entity.exps;
+            return true;
         }
-        env.index = indexMid;
-        env.last = entity.exps;
-        return true;
-    }
+    };
 };
 
 var ExpList = function() {

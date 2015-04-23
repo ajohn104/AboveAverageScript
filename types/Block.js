@@ -1,32 +1,39 @@
 // Block           ::= (Newline Stmt)*
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new Block();
-        debug("Beginning block search. env.index:" + env.index + " \n");
-        debug("Current token:");
-        debug(env.parseTokens[env.index]);
-        debug("Previous token:");
-        debug(env.parseTokens[env.index-1]);
-        debug('\n');
-        var indexMid = env.index;
-        while(at(env.Newline)) {
-            if(!at(env.Stmt)) {
-                debug("Block search stopped.\n");
-                env.index = indexMid;
-                break;
+module.exports = function(env, at, next, debug) {
+    var Newline, Stmt;
+    return {
+        loadData: function() {
+            Newline = env.Newline,
+            Stmt = env.Stmt;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new Block();
+            debug("Beginning block search. env.index:" + env.index + " \n");
+            debug("Current token:");
+            debug(env.parseTokens[env.index]);
+            debug("Previous token:");
+            debug(env.parseTokens[env.index-1]);
+            debug('\n');
+            var indexMid = env.index;
+            while(at(Newline)) {
+                if(!at(Stmt)) {
+                    debug("Block search stopped.\n");
+                    env.index = indexMid;
+                    break;
+                }
+                entity.stmts.push(env.last);
+                indexMid = env.index;
             }
-            entity.stmts.push(env.last);
-            indexMid = env.index;
-        }
-        
-        debug("Ending block search. env.index:" + env.index + " \n");
-        debug("Current token is now:");
-        debug(env.parseTokens[env.index]);
-        debug('\n');
-        env.last = entity;
-        return true;
-    } 
+            
+            debug("Ending block search. env.index:" + env.index + " \n");
+            debug("Current token is now:");
+            debug(env.parseTokens[env.index]);
+            debug('\n');
+            env.last = entity;
+            return true;
+        } 
+    };
 };
 
 var Block = function() {

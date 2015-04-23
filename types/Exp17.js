@@ -1,53 +1,65 @@
 // Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp18)*
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index; 
-        var indentedBefore = env.inIndented;
-        var entity = new Exp17();
-        debug("Starting on exp17. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        if(!at(env.Exp18)) {
-            env.index = indexBefore; 
-            env.inIndented = indentedBefore;
-            return false;
-        }
-        entity.lastVal = env.last;
-        var indexMid = env.index;
-        while(next(env.ArrayCont) || next(env.Call) || next('.') || next(env.Indent) || (env.inIndented && next(env.Newline))) {
-            if(env.inIndented && next(env.Newline)) {
-                env.checkIndent();
-            } else if(at(env.ArrayCont)) {
-                var newest = new BracketAccessor(env.last, entity.lastVal);
-                entity.lastVal = newest;
-            } else if(at(env.Call)) {
-                var newest = new Call(env.last, entity.lastVal);
-                entity.lastVal = newest;
-            } else if(at('.')) {
-                if(!at(env.Exp18)) {
-                    env.index = indexMid;
-                    break;
-                }
-                var newest = new DotAccessor(env.last, entity.lastVal);
-                entity.lastVal = newest;
-            } else if(next(env.Indent)) {
-                env.checkIndent();
-                if(!at('.')) {
-                    env.index = indexMid;
-                    env.inIndented = indentedBefore;
-                    break;
-                }
-                if(!at(env.Exp18)) {
-                    env.index = indexMid;
-                    env.inIndented = indentedBefore;
-                    break;
-                }
-                var newest = new DotAccessor(env.last, entity.lastVal);
-                entity.lastVal = newest;
+module.exports = function(env, at, next, debug) {
+    var Exp18, ArrayCont, Call, Newline, Indent, checkIndent;
+    return {
+        loadData: function() {
+            Exp18 = env.Exp18,
+            ArrayCont = env.ArrayCont,
+            Call = env.Call,
+            Newline = env.Newline,
+            Indent = env.Indent
+            checkIndent = env.checkIndent;
+        },
+        is: function() {
+            var indexBefore = env.index; 
+            var indentedBefore = env.inIndented;
+            var entity = new Exp17();
+            debug("Starting on exp17. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            if(!at(Exp18)) {
+                env.index = indexBefore; 
+                env.inIndented = indentedBefore;
+                return false;
             }
+            entity.lastVal = env.last;
+            var indexMid = env.index;
+            while(next(ArrayCont) || next(Call) || next('.') || next(Indent) || (env.inIndented && next(Newline))) {
+                if(env.inIndented && next(Newline)) {
+                    checkIndent();
+                } else if(at(ArrayCont)) {
+                    var newest = new BracketAccessor(env.last, entity.lastVal);
+                    entity.lastVal = newest;
+                } else if(at(Call)) {
+                    debug("success here at cow, index: " + env.index);
+                    var newest = new FunctionCall(env.last, entity.lastVal);
+                    entity.lastVal = newest;
+                } else if(at('.')) {
+                    if(!at(Exp18)) {
+                        env.index = indexMid;
+                        break;
+                    }
+                    var newest = new DotAccessor(env.last, entity.lastVal);
+                    entity.lastVal = newest;
+                } else if(next(Indent)) {
+                    checkIndent();
+                    if(!at('.')) {
+                        env.index = indexMid;
+                        env.inIndented = indentedBefore;
+                        break;
+                    }
+                    if(!at(Exp18)) {
+                        env.index = indexMid;
+                        env.inIndented = indentedBefore;
+                        break;
+                    }
+                    var newest = new DotAccessor(env.last, entity.lastVal);
+                    entity.lastVal = newest;
+                }
+            }
+            env.last = entity;
+            debug("Finalizing exp17 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            return true;
         }
-        env.last = entity;
-        debug("Finalizing exp17 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        return true;
-    }
+    };
 };
 
 var Exp17 = function() {
@@ -103,7 +115,7 @@ var BracketAccessor = function(keys, obj) {
     };
 };
 
-var Call = function(call, obj) {
+var FunctionCall = function(call, obj) {
     this.call = call;
     this.object = obj;
     this.toString = function(indentlevel, indLvlHidden) {

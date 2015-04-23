@@ -1,62 +1,71 @@
 // ArrayCont       ::= '[' (Exp (',' Exp)*) | (Indent Newline Exp (',' Newline? Exp)* Dedent Newline) Newline? ']'
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new ArrayCont();
-        if(!at('[')) {
-            env.index = indexBefore;
-            return false;
-        }
-
-        if(at(env.Exp)) {
-            entity.array.push(env.last);
-            while(at(',')) {
-                if(!at(env.Exp)) {
-                    env.index = indexBefore;
-                    return false;
-                }
-                entity.array.push(env.last);
-            }
-        } else if(at(env.Indent)) {
-            if(!at(env.Newline)) {
-                env.index = indexBefore;
-                return false;
-            }
-            
-            if(!at(env.Exp)) {
-                env.index = indexBefore;
-                return false;
-            }
-            entity.array.push(env.last);
-            while(at(',')) {
-                at(env.Newline);
-                if(!at(env.Exp)) {
-                    env.index = indexBefore;
-                    return false;
-                }
-                entity.array.push(env.last);
-            }
-            if(!at(env.Dedent)) {
+module.exports = function(env, at, next, debug) {
+    var Exp, Indent, Newline, Dedent;
+    return {
+        loadData: function() {
+            Exp = env.Exp,
+            Indent = env.Indent,
+            Newline = env.Newline,
+            Dedent = env.Dedent;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new ArrayCont();
+            if(!at('[')) {
                 env.index = indexBefore;
                 return false;
             }
 
-            if(!at(env.Newline)) {
+            if(at(Exp)) {
+                entity.array.push(env.last);
+                while(at(',')) {
+                    if(!at(Exp)) {
+                        env.index = indexBefore;
+                        return false;
+                    }
+                    entity.array.push(env.last);
+                }
+            } else if(at(Indent)) {
+                if(!at(Newline)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                
+                if(!at(Exp)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                entity.array.push(env.last);
+                while(at(',')) {
+                    at(Newline);
+                    if(!at(env.Exp)) {
+                        env.index = indexBefore;
+                        return false;
+                    }
+                    entity.array.push(env.last);
+                }
+                if(!at(Dedent)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+
+                if(!at(Newline)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+            } else {
                 env.index = indexBefore;
                 return false;
             }
-        } else {
-            env.index = indexBefore;
-            return false;
+            at(Newline);
+            if(!at(']')) {
+                env.index = indexBefore;
+                return false;
+            }
+            env.last = entity;
+            return true;
         }
-        at(env.Newline);
-        if(!at(']')) {
-            env.index = indexBefore;
-            return false;
-        }
-        env.last = entity;
-        return true;
-    }
+    };
 };
 
 var ArrayCont = function() {

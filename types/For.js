@@ -1,82 +1,89 @@
 // For             ::= 'for' ( ('let'? Id '=')? Exp ',')? Exp ',' Exp
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new For();
-        var initialExp = new InitialCondition();
-        if(!at('for')) {
-            env.index = indexBefore;
-            return false;
-        }
+module.exports = function(env, at, next, debug) {
+    var Id, Exp;
+    return {
+        loadData: function() {
+            Id = env.Id,
+            Exp = env.Exp;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new For();
+            var initialExp = new InitialCondition();
+            if(!at('for')) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(at('let')) {
-            initialExp.let = "let";
-            if(!at(env.Id)) {
-                env.index = indexBefore;
-                return false;
+            if(at('let')) {
+                initialExp.let = "let";
+                if(!at(Id)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                initialExp.id = env.last;
+                if(!at('=')) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                if(!at(Exp)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                initialExp.exp = env.last;
+                if(!at(',')) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                entity.firstexp = initialExp;
+            } else if(at(Id)) {
+                initialExp.id = env.last;
+                if(!at('=')) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                if(!at(Exp)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                initialExp.exp = env.last;
+                if(!at(',')) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                entity.firstexp = initialExp;
+            } else {
+                if(!at(Exp)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                initialExp.exp = env.last;
+
+                if(!at(',')) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                entity.firstexp = initialExp;
             }
-            initialExp.id = env.last;
-            if(!at('=')) {
-                env.index = indexBefore;
-                return false;
-            }
-            if(!at(env.Exp)) {
-                env.index = indexBefore;
-                return false;
-            }
-            initialExp.exp = env.last;
-            if(!at(',')) {
-                env.index = indexBefore;
-                return false;
-            }
-            entity.firstexp = initialExp;
-        } else if(at(env.Id)) {
-            initialExp.id = env.last;
-            if(!at('=')) {
-                env.index = indexBefore;
-                return false;
-            }
-            if(!at(env.Exp)) {
-                env.index = indexBefore;
-                return false;
-            }
-            initialExp.exp = env.last;
-            if(!at(',')) {
-                env.index = indexBefore;
-                return false;
-            }
-            entity.firstexp = initialExp;
-        } else {
+
             if(!at(Exp)) {
                 env.index = indexBefore;
                 return false;
             }
-            initialExp.exp = env.last;
-
+            entity.exp = env.last;
             if(!at(',')) {
                 env.index = indexBefore;
                 return false;
             }
-            entity.firstexp = initialExp;
+            if(!at(Exp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.repeatexp = env.last;
+            env.last = entity;
+            return true;
         }
-
-        if(!at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.exp = env.last;
-        if(!at(',')) {
-            env.index = indexBefore;
-            return false;
-        }
-        if(!at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.repeatexp = env.last;
-        env.last = entity;
-        return true;
-    }
+    };
 };
 
 // Todo: The toString here needs to be more explicit.

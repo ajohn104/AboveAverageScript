@@ -1,28 +1,35 @@
 // SetAssign       ::= Exp AssignOp Exp
-module.exports = {
-    is: function(at, next, env, debug, previous) {
-        var indexBefore = env.index;
-        var entity = new SetAssign();
-        var havePrevious = (typeof previous !== 'undefined');
-        if(!havePrevious && !at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.leftexp = havePrevious?previous:env.last;
-        if(!at(env.AssignOp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.operator = env.last;
-        if(!at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.rightexp = env.last;
+module.exports = function(env, at, next, debug) {
+    var Exp, AssignOp;
+    return {
+        loadData: function() {
+            Exp = env.Exp,
+            AssignOp = env.AssignOp;
+        },
+        is: function(previous) {
+            var indexBefore = env.index;
+            var entity = new SetAssign();
+            var havePrevious = (typeof previous !== 'undefined');
+            if(!havePrevious && !at(Exp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.leftexp = havePrevious?previous:env.last;
+            if(!at(AssignOp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.operator = env.last;
+            if(!at(Exp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.rightexp = env.last;
 
-        env.last = entity;
-        return true;
-    }
+            env.last = entity;
+            return true;
+        }
+    };
 };
 
 var SetAssign = function() {

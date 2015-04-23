@@ -1,6 +1,9 @@
 // This            ::= '_'
-module.exports = {
-    is: function(at, next, env, debug) {
-        return at('_');
-    }
+module.exports = function(env, at, next, debug) {
+    return {
+        loadData: function() {},
+        is: function() {
+            return at('_');
+        }
+    };
 };

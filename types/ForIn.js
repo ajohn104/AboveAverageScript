@@ -1,42 +1,49 @@
 // ForIn           ::= 'for' Id (',' Id)? 'in' Exp
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new ForIn();
-        debug("Starting for-in. env.index:" + env.index);
-        if(!at('for')) {
-            env.index = indexBefore;
-            return false;
-        }
-
-        if(!at(env.Id)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.idone = env.last;
-
-        if(at(',')) {
-            if(!at(env.Id)) {
+module.exports = function(env, at, next, debug) {
+    var Id, Exp;
+    return {
+        loadData: function() {
+            Id = env.Id,
+            Exp = env.Exp;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new ForIn();
+            debug("Starting for-in. env.index:" + env.index);
+            if(!at('for')) {
                 env.index = indexBefore;
                 return false;
             }
-            entity.idtwo = env.last;
-        }
 
-        if(!at('in')) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(Id)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.idone = env.last;
 
-        if(!at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
+            if(at(',')) {
+                if(!at(Id)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                entity.idtwo = env.last;
+            }
+
+            if(!at('in')) {
+                env.index = indexBefore;
+                return false;
+            }
+
+            if(!at(Exp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.exp = env.last;
+            env.last = entity;
+            debug("Completed for-in. env.index:" + env.index);
+            return true;
         }
-        entity.exp = env.last;
-        env.last = entity;
-        debug("Completed for-in. env.index:" + env.index);
-        return true;
-    }
+    };
 };
 
 var ForIn = function() {

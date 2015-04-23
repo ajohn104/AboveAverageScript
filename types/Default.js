@@ -1,42 +1,51 @@
 // Default        ::= Newline 'default' ':' Indent Block Dedent
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new Default();
-        if(!at(env.Newline)) {
-            env.index = indexBefore;
-            return false;
-        }
+module.exports = function(env, at, next, debug) {
+    var Newline, Indent, Block, Dedent;
+    return {
+        loadData: function() {
+            Newline = env.Newline,
+            Block = env.Block,
+            Indent = env.Indent,
+            Dedent = env.Dedent;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new Default();
+            if(!at(Newline)) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at('default')) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at('default')) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(':')) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(':')) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Indent)) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(Indent)) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Block)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.block = env.last;
+            if(!at(Block)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.block = env.last;
 
-        if(!at(env.Dedent)) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(Dedent)) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        env.last = entity;
-        return true;
-    }
+            env.last = entity;
+            return true;
+        }
+    };
 };
 
 var Default = function() {

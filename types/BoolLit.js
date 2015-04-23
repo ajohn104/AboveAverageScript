@@ -1,13 +1,16 @@
 // BoolLit         ::= 'true' | 'false'
-module.exports = {
-    is: function(at, next, env, debug) {
-        var bools = ['true', 'false'];
-        var found = at(bools);
-        var entity = new BoolLit();
-        entity.val = env.last;
-        env.last = entity;
-        return found;
-    }
+module.exports = function(env, at, next, debug) {
+    return {
+        loadData: function() {},
+        is: function() {
+            var bools = ['true', 'false'];
+            var found = at(bools);
+            var entity = new BoolLit();
+            entity.val = env.last;
+            env.last = entity;
+            return found;
+        }
+    };
 };
 
 var BoolLit = function() {

@@ -1,34 +1,41 @@
 // ConsumeStmt     ::= ExpList? '<-' Exp
-module.exports = {      // Reduce this to just a single expression???
-    is: function(at, next, env, debug, previous) {
-        var indexBefore = env.index;
-        var havePrevious = (typeof previous !== 'undefined');
+module.exports = function(env, at, next, debug) {      // Reduce this to just a single expression???
+    var ExpList, Exp;
+    return {
+        loadData: function() {
+            ExpList = env.ExpList,
+            Exp = env.Exp;
+        },
+        is: function(previous) {
+            var indexBefore = env.index;
+            var havePrevious = (typeof previous !== 'undefined');
 
-        var haveExpList = (typeof env.initialExpList !== 'undefined');
-        env.last = haveExpList?env.initialExpList:env.last;
+            var haveExpList = (typeof env.initialExpList !== 'undefined');
+            env.last = haveExpList?env.initialExpList:env.last;
 
-        var listFound = !haveExpList && havePrevious && at(env.ExpList, previous);
-        var entity = new ConsumeStmt();
-        if(listFound || haveExpList) {
-            entity.leftSideExps = env.last;
+            var listFound = !haveExpList && havePrevious && at(env.ExpList, previous);
+            var entity = new ConsumeStmt();
+            if(listFound || haveExpList) {
+                entity.leftSideExps = env.last;
+            }
+
+            debug("ConsumeStmt: checking for '<-'. env.index:" + env.index + ", lexeme:" + env.parseTokens[env.index].lexeme);
+            if(!at('<-')) {
+                env.index = indexBefore;
+                return false;
+            }
+            debug("ConsumeStmt: found '<-'. checking for Exp. env.index:" + env.index + ", lexeme:" + env.parseTokens[env.index].lexeme);
+
+            if(!at(Exp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.rightSideExp = env.last;
+            env.last = entity;
+            debug("ConsumeStmt: found Exp. env.index:" + env.index + ", lexeme:" + env.parseTokens[env.index].lexeme);
+            return true;
         }
-
-        debug("ConsumeStmt: checking for '<-'. env.index:" + env.index + ", lexeme:" + env.parseTokens[env.index].lexeme);
-        if(!at('<-')) {
-            env.index = indexBefore;
-            return false;
-        }
-        debug("ConsumeStmt: found '<-'. checking for Exp. env.index:" + env.index + ", lexeme:" + env.parseTokens[env.index].lexeme);
-
-        if(!at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.rightSideExp = env.last;
-        env.last = entity;
-        debug("ConsumeStmt: found Exp. env.index:" + env.index + ", lexeme:" + env.parseTokens[env.index].lexeme);
-        return true;
-    }
+    };
 };
 
 // I changed the right side to just be an expression, and let it be a runtime error.

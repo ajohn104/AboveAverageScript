@@ -1,35 +1,45 @@
 // ObjInd          ::= Indent (Newline (Prop|PropInd) )+ Dedent
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new ObjectInd();
-        if(!at(env.Indent)) {
-            env.index = indexBefore;
-            return false;
-        }
-        if(!at(env.Newline)) {
-            env.index = indexBefore;
-            return false;
-        }
-        if(!(at(env.Prop) || at(env.PropInd))) {
-            entity.props.push(env.last);
-            env.index = indexBefore;
-            return false;
-        }
-        var indexMid = env.index;
-        while(at(env.Newline) && (at(env.Prop) || at(env.PropInd))) {
-            entity.props.push(env.last);
-            indexMid = env.index;
-        }
-        env.index = indexMid;
+module.exports = function(env, at, next, debug) {
+    var Indent, Newline, Prop, PropInd, Dedent;
+    return {
+        loadData: function() {
+            Indent = env.Indent,
+            Newline = env.Newline,
+            Prop = env.Prop,
+            PropInd = env.PropInd,
+            Dedent = env.Dedent;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new ObjectInd();
+            if(!at(Indent)) {
+                env.index = indexBefore;
+                return false;
+            }
+            if(!at(Newline)) {
+                env.index = indexBefore;
+                return false;
+            }
+            if(!(at(Prop) || at(PropInd))) {
+                entity.props.push(env.last);
+                env.index = indexBefore;
+                return false;
+            }
+            var indexMid = env.index;
+            while(at(Newline) && (at(Prop) || at(PropInd))) {
+                entity.props.push(env.last);
+                indexMid = env.index;
+            }
+            env.index = indexMid;
 
-        if(!at(env.Dedent)) {
-            env.index = indexBefore;
-            return false;
+            if(!at(Dedent)) {
+                env.index = indexBefore;
+                return false;
+            }
+            env.last = entity;
+            return true;
         }
-        env.last = entity;
-        return true;
-    }
+    };
 };
 
 var ObjectInd = function() {

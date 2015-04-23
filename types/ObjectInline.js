@@ -1,63 +1,72 @@
 // ObjectInline    ::= '{' (Prop (',' Prop)*) | (Indent Newline Prop (',' Newline Prop)* Dedent Newline) '}'
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new ObjectInline();
-        if(!at('{')) {
-            env.index = indexBefore;
-            return false;
-        }
-
-        if(at(env.Prop)) {
-            entity.props.push(env.last);
-            while(at(',')) {
-                if(!at(env.Prop)) {
-                    env.index = indexBefore;
-                    return false;
-                }
-                entity.props.push(env.last);
-            }
-        } else if(at(env.Indent)) {
-            if(!at(env.Newline)) {
-                env.index = indexBefore;
-                return false;
-            }
-            
-            if(!at(env.Prop)) {
-                env.index = indexBefore;
-                return false;
-            }
-            entity.props.push(env.last);
-            while(at(',')) {
-                if(!at(env.Newline)) {
-                    env.index = indexBefore;
-                    return false;
-                }
-                if(!at(env.Prop)) {
-                    env.index = indexBefore;
-                    return false;
-                }
-                entity.props.push(env.last);
-            }
-            if(!at(env.Dedent)) {
+module.exports = function(env, at, next, debug) {
+    var Prop, Indent, Newline, Dedent;
+    return {
+        loadData: function() {
+            Prop = env.Prop,
+            Indent = env.Indent,
+            Newline = env.Newline,
+            Dedent = env.Dedent;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new ObjectInline();
+            if(!at('{')) {
                 env.index = indexBefore;
                 return false;
             }
 
-            if(!at(env.Newline)) {
+            if(at(Prop)) {
+                entity.props.push(env.last);
+                while(at(',')) {
+                    if(!at(Prop)) {
+                        env.index = indexBefore;
+                        return false;
+                    }
+                    entity.props.push(env.last);
+                }
+            } else if(at(Indent)) {
+                if(!at(Newline)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                
+                if(!at(Prop)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+                entity.props.push(env.last);
+                while(at(',')) {
+                    if(!at(Newline)) {
+                        env.index = indexBefore;
+                        return false;
+                    }
+                    if(!at(Prop)) {
+                        env.index = indexBefore;
+                        return false;
+                    }
+                    entity.props.push(env.last);
+                }
+                if(!at(Dedent)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+
+                if(!at(Newline)) {
+                    env.index = indexBefore;
+                    return false;
+                }
+            } else {
+                ; // Do nothing
+            }
+            if(!at('}')) {
                 env.index = indexBefore;
                 return false;
             }
-        } else {
-            ; // Do nothing
+            env.last = entity;
+            return true;
         }
-        if(!at('}')) {
-            env.index = indexBefore;
-            return false;
-        }
-        env.last = entity;
-        return true;
-    }
+    };
 };
 
 var ObjectInline = function() {

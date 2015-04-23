@@ -1,44 +1,53 @@
 // While           ::= 'while' Exp ':' Indent Block Dedent
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new While();
-        debug("Checking for while loop");
-        if(!at('while')) {
-            env.index = indexBefore;
-            return false;
-        }
+module.exports = function(env, at, next, debug) {
+    var Exp, Indent, Block, Dedent;
+    return {
+        loadData: function() {
+            Exp = env.Exp,
+            Indent = env.Indent,
+            Block = env.Block,
+            Dedent = env.Dedent;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new While();
+            debug("Checking for while loop");
+            if(!at('while')) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Exp)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.condition = env.last;
+            if(!at(Exp)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.condition = env.last;
 
-        if(!at(':')) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(':')) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Indent)) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(Indent)) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Block)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.block = env.last;
+            if(!at(Block)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.block = env.last;
 
-        if(!at(env.Dedent)) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(Dedent)) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        env.last = entity;
-        return true;
-    }
+            env.last = entity;
+            return true;
+        }
+    };
 };
 
 var While = function() {

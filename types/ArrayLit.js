@@ -1,20 +1,26 @@
 // ArrayLit        ::= ('[' ']') | ArrayCont
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new ArrayLit();
-        if(at('[') && at(']'))  {
-            env.last = entity;
-            return true;
+module.exports = function(env, at, next, debug) {
+    var ArrayCont;
+    return {
+        loadData: function() {
+            ArrayCont = env.ArrayCont;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new ArrayLit();
+            if(at('[') && at(']'))  {
+                env.last = entity;
+                return true;
+            }
+            env.index = indexBefore;
+            var found = at(ArrayCont);
+            if(found) {
+                entity = env.last;
+                env.last = entity;
+            }
+            return found;
         }
-        env.index = indexBefore;
-        var found = at(env.ArrayCont);
-        if(found) {
-            entity = env.last;
-            env.last = entity;
-        }
-        return found;
-    }
+    };
 };
 
 var ArrayLit = function() {

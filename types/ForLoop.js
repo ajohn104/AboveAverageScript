@@ -1,36 +1,47 @@
 // ForLoop         ::= (ForIn | ForColon | For) ':' Indent Block Dedent
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new ForLoop();
-        if(!at(env.ForIn) && !at(env.ForColon) && !at(env.For)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.loop = env.last;
-        if(!at(':')) {
-            env.index = indexBefore;
-            return false;
-        }
+module.exports = function(env, at, next, debug) {
+    var ForIn, ForColon, For, Indent, Block, Dedent;
+    return {
+        loadData: function() {
+            ForIn = env.ForIn,
+            ForColon = env.ForColon,
+            For = env.For,
+            Indent = env.Indent,
+            Block = env.Block,
+            Dedent = env.Dedent;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new ForLoop();
+            if(!at(ForIn) && !at(ForColon) && !at(For)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.loop = env.last;
+            if(!at(':')) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Indent)) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(Indent)) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Block)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.block = env.last;
+            if(!at(Block)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.block = env.last;
 
-        if(!at(env.Dedent)) {
-            env.index = indexBefore;
-            return false;
+            if(!at(Dedent)) {
+                env.index = indexBefore;
+                return false;
+            }
+            env.last = entity;
+            return true;
         }
-        env.last = entity;
-        return true;
-    }
+    };
 };
 
 var ForLoop = function() {

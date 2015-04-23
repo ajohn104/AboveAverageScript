@@ -1,3 +1,29 @@
+var isArray = function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+}
+
+var at = function(expected, previous) {
+    if(isArray(expected)) {
+        for(var i = 0; i < expected.length; i++) {
+            if(at(expected[i])) return true;
+        }
+        return false;
+    }
+    if(typeof expected === 'string') {
+        return env.Lexeme(expected).is(at, next, env, debug);
+    }
+    return expected.is(previous);
+};
+
+var next = function(expected) {
+    var indexBefore = env.index;
+    var found = at(expected);
+    env.index = indexBefore;
+    return found;
+};
+
+var debug = function() {};
+
 var env = {
     inIndented: false,
     indentedExp: [],
@@ -10,8 +36,21 @@ var env = {
             str += env.ind;
         }
         return str;
-    }
+    },
+    debug: debug,
+    checkIndent: function() {
+        if(env.inIndented) {
+            at(env.Newline);
+        } else {
+            env.inIndented = at(env.Indent);
+            if(env.inIndented) {
+                at(env.Newline);
+            }
+        }
+    },
+    isArray: isArray
 };
+
 var entityNames = [
     "Block", "Stmt", "DeclareStmt", "AssignStmt", "ConsumeStmt", "ReturnStmt", 
     "ControlStmt", "IfStmt", "Loop", "WhileLoop", "DoWhile", "While", "ForLoop", 
@@ -24,24 +63,31 @@ var entityNames = [
     "Dedent", "RegExpLit", "EndOfFile", "ExpList", "SetAssign", "SetEqual", "ObjInd"
 ];
 
-env.Lexeme = require("./types/Lexeme")(env);
 
-entityNames.forEach(function(name) {
-    env[name] = require("./types/" + name);
-});
 
 var callback = undefined;
 var error = undefined;
 var debugMode = false;
 var outputTree = false;
 
-var debug = null;
-
 var parse = function(tkns, call, err, dbgMode, tree) {
     debugMode = (typeof dbgMode !== "undefined")?(dbgMode):(false);
     debug = debugMode?(function(output){
         console.log(output);
-    }):(function(output){});
+    }):debug;
+    env.debug = debug;
+
+    env.Lexeme = require("./types/Lexeme")(env, at, next, debug);
+    //env.DeclareStmt = require("./types/DeclareStmt")(env, at, next, debug);
+
+    entityNames.forEach(function(name) {
+        env[name] = require("./types/" + name)(env, at, next, debug);
+    });
+
+    entityNames.forEach(function(name) {
+        env[name].loadData();
+    });
+
     outputTree = tree;
     var parser = new tokenStreamParser(tkns, call, err);
     return parser.parseProgram();
@@ -65,31 +111,11 @@ var tokenStreamParser = function(tkns, call, err) {
     };
 
     // Array type check thanks to user113716 from StackOverflow
-    var isArray = function(obj) {
-        return Object.prototype.toString.call(obj) === '[object Array]';
-    }
+    
 
     env.isArray = isArray;
 
-    var at = function(expected, previous) {
-        if(isArray(expected)) {
-            for(var i = 0; i < expected.length; i++) {
-                if(at(expected[i])) return true;
-            }
-            return false;
-        }
-        if(typeof expected === 'string') {
-            return env.Lexeme(expected).is(at, next, env, debug);
-        }
-        return expected.is(at, next, env, debug, previous);
-    };
-
-    var next = function(expected) {
-        var indexBefore = env.index;
-        var found = at(expected);
-        env.index = indexBefore;
-        return found;
-    };
+    
 
     // Program         ::= Stmt (Newline Stmt?)* EOF
     // Yes, I'm aware I could use Block, which is what I had previously. But that would be implying (in my mind, at

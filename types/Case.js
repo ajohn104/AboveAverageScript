@@ -1,47 +1,57 @@
 // Case            ::= Newline 'case' Exp18 ':' Indent Block Dedent
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index;
-        var entity = new Case();
-        if(!at(env.Newline)) {
-            env.index = indexBefore;
-            return false;
-        }
+module.exports = function(env, at, next, debug) {
+    var Newline, Exp18, Indent, Block, Dedent;
+    return {
+        loadData: function() {
+            Newline = env.Newline,
+            Exp18 = env.Exp18,
+            Indent = env.Indent,
+            Block = env.Block,
+            Dedent = env.Dedent;
+        },
+        is: function() {
+            var indexBefore = env.index;
+            var entity = new Case();
+            if(!at(Newline)) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at('case')) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at('case')) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Exp18)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.condition = env.last;
-        if(!at(':')) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(Exp18)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.condition = env.last;
+            if(!at(':')) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Indent)) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(Indent)) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        if(!at(env.Block)) {
-            env.index = indexBefore;
-            return false;
-        }
-        entity.block = env.last;
+            if(!at(Block)) {
+                env.index = indexBefore;
+                return false;
+            }
+            entity.block = env.last;
 
-        if(!at(env.Dedent)) {
-            env.index = indexBefore;
-            return false;
-        }
+            if(!at(Dedent)) {
+                env.index = indexBefore;
+                return false;
+            }
 
-        env.last = entity;
-        return true;
-    }
+            env.last = entity;
+            return true;
+        }
+    };
 };
 
 var Case = function() {

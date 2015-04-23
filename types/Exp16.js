@@ -1,43 +1,52 @@
 // Exp16           ::= ('new' Exp17 Call) | Exp17
-module.exports = {
-    is: function(at, next, env, debug) {
-        var indexBefore = env.index; 
-        var indentedBefore = env.inIndented;
-        var entity = new Exp16();
-        debug("Starting on exp16. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        var found = false;
-        if(at('new')) {
-            found = true;
-            entity.prefix = env.last;
-            if(!at(env.Exp17)) {
-                env.index = indexBefore; 
-                env.inIndented = indentedBefore;
-                found = false;
+module.exports = function(env, at, next, debug) {
+    var Exp17, Call;
+    return {
+        loadData: function() {
+            Exp17 = env.Exp17,
+            Call = env.Call;
+        },
+        is: function() {
+            var indexBefore = env.index; 
+            var indentedBefore = env.inIndented;
+            var entity = new Exp16();
+            debug("Starting on exp16. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            var found = false;
+            if(at('new')) {
+                found = true;
+                entity.prefix = env.last;
+                if(!at(Exp17)) {
+                    env.index = indexBefore; 
+                    env.inIndented = indentedBefore;
+                    found = false;
+                }
+                entity.val = env.last;
+                if(!at(Call)) {
+                    env.index = indexBefore;
+                    env.inIndented = indentedBefore;
+                    debug("failing here at dog");
+                    found = false;
+                }
+                debug("success here at cat");
+                entity.call = env.last;
             }
-            entity.val = env.last;
-            if(!at(env.Call)) {
-                env.index = indexBefore;
-                env.inIndented = indentedBefore;
-                found = false;
-            }
-            entity.call = env.last;
-        }
 
-        if(!found) {
-            entity = new Exp16();
-            
-            if(!at(env.Exp17)) {
-                env.index = indexBefore;
-                env.inIndented = indentedBefore;
-                return false;
+            if(!found) {
+                entity = new Exp16();
+                
+                if(!at(Exp17)) {
+                    env.index = indexBefore;
+                    env.inIndented = indentedBefore;
+                    return false;
+                }
+                entity.val = env.last;
             }
-            entity.val = env.last;
+            
+            env.last = entity;
+            debug("Finalizing exp16 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            return true;
         }
-        
-        env.last = entity;
-        debug("Finalizing exp16 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
-        return true;
-    }
+    };
 };
 
 var Exp16 = function() {
