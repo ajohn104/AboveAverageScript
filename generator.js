@@ -61,7 +61,12 @@ var generate = function(program, compileTarget, runFile, runArgs) {
     var scope = {
         indent: "    ",
         clone: function() {
-            return Object.create(this);
+            var copy = Object.create(this);
+            copy.names = Object.create(this.names);
+            Objects.keys(this.names).forEach(function(key, index) {
+                copy.names[key] = this.names[key];
+            });
+            return copy;
         },
         writeImmediately: writeImmediately,
         pause: function() {
@@ -105,6 +110,16 @@ var generate = function(program, compileTarget, runFile, runArgs) {
             if(this.allStatementsCompleted && writeBufferEmpty && nativeComplete) {
                 testFile();
             }
+        },
+        nameMap: { },
+        identify: function(target, newName) {
+            if(isUndef(newName)) {
+                return this.nameMap[target];
+            }
+            if(usedIds.indexOf(newName) < 0) {
+                usedIds.push(newName);
+            }
+            this.nameMap[target] = newName;
         }
     };
 
