@@ -28,6 +28,18 @@ var scan = function(file, callback, error) {
     });
 };
 
+var scanLine = function(line, callback, error) {
+    var scanner = new LineScanner();
+    var valid = scanner.nextLine(line);
+    if(!valid) {
+        error(scanner.errorToken);
+        return;
+    }
+    if(typeof callback !== 'undefined') {
+        callback(scanner.complete());
+    }
+};
+
 var parseTokensToStringFull = function(tokens){
     var str = "";
     for(var i = 0; i < tokens.length; i++ ) {
@@ -364,6 +376,7 @@ var LineScanner = function() {
 };
 var Scanner = {
     scan: scan,
+    scanLine: scanLine,
     parseTokensToStringFull: parseTokensToStringFull,
     parseTokensToStringPretty: parseTokensToStringPretty,
     parseTokensToStringBest: parseTokensToStringBest,

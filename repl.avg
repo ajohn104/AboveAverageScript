@@ -1,0 +1,3 @@
+// Note: This is highly experimental, so don't expect this to work any time soon.
+require('readline')
+log('I\'ll work on this soon enough.')
