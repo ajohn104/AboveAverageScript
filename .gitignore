@@ -5,3 +5,4 @@ avgcompile.bat
 npm-debug.log
 AVGLang.sublime*
 examples/*\.js
+repl.js

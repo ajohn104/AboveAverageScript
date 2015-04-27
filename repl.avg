@@ -1,3 +1,15 @@
 // Note: This is highly experimental, so don't expect this to work any time soon.
-require('readline')
-log('I\'ll work on this soon enough.')
+let readline = require('readline')
+//log('I\'ll work on this soon enough.')
+
+//log(process)
+let rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
+
+rl.question("What do you think of node.js? ", func answer ->
+    // TODO: Log the answer in a database
+    log("Thank you for your valuable feedback:", answer)
+    rl.close()
+)

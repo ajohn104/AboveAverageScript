@@ -1,5 +1,5 @@
 var assert = require("assert");
-var compile = require("../../compiler.js");
+var compile = require("../../debugger.js");
 
 describe('Compiler Tests', function(){
     context('Compiler Test 1', function() {

@@ -100,7 +100,7 @@ var Func = function() {
         }
         write(') {\n');
         this.block.compile(write, scope, indentsHidden+1, indentsHidden+1);
-        if(this.block.constructor.name !== 'Block') {
+        if(this.block.isExp) {
             write('\n');
         }
         write(scope.ind(indentsHidden) + '}');

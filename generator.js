@@ -4,7 +4,7 @@ var fs = require('fs');
 var generate = function(program, compileTarget, runFile, runArgs) {
     var compileDest;
     var doTest = defaults(runFile, false);
-    var runArgs = !isUndef(runArgs)?' ' + runArgs: "";
+    var runArgs = !isUndef(runArgs)?runArgs: "";
 
     var initiateFile = function() {
         compileDest = compileTarget.match(/^.*(?=\.avg)/)[0] + '.js';
@@ -33,15 +33,12 @@ var generate = function(program, compileTarget, runFile, runArgs) {
 
     var testFile = function() {
         if(doTest) {
-            var exec = require('child_process').exec;
-            exec('node ' + compileDest + runArgs, function (error, stdout) {
-                if(len(stdout) > 0) { 
-                    log(stdout);
-                }
-                if(!isNull(error)) {
-                    log(error.message);
-                }
-            });
+            log(runArgs);
+            var args = runArgs.split(' '); // <- This is wrong. It really should ignore escaped spaces and quoted ones. Basically,
+            // it needs to behave just like node works. However, it would be a lot easier to just make a separate file to use
+            // when we intend to compile files and run them. Just let this be the debugger. 
+            process.argv = ['node', compileDest].concat(args);
+            require(compileDest);     // How to use exec with stdin??? -- Never mind, require is god child. Almost.
         }
     };
 
