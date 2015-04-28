@@ -60,7 +60,7 @@ var scanLineSync = function(line, lineNumber, column, isTruncating) {
 var truncate = function(str) {
     var list = ["\"\""];
     while(str.length > 0) {
-        var match = str.match(/^([^\\\n]*\\(\\\\)*(\$\([^\)]+\)|[^\$]))*?[^\\\n]*?(\\\\)*\$\([^\)]+\)/);
+        var match = str.match(/^([^\\]*\\(\\\\)*(\$\([^\)]+\)|[^\$]))*?[^\\]*?(\\\\)*\$\([^\)]+\)/);
         if(!match) {
             if(str.length > 2) {
                 list.push(str);
