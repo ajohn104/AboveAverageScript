@@ -89,7 +89,6 @@ var truncate = function(str) {
     for(var j = startIndex; j < list.length; j++) {
         retStr += " + " + list[j];
     }
-    retStr = /*"\"\" + " + */retStr;
     return retStr;
 };
 
