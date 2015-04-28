@@ -11,7 +11,9 @@ $(func ->
     while y or x:
         log("x: " + x)
 
-    let match = "I am Rob Shneider reborn! REBORN".match(/or/ig)
+    let name = "Rob Shneider"
+
+    let match = "I am $(name) reborn! REBORN".match(/or/ig)
 
     let color1 = "red",
         color2 = "white",

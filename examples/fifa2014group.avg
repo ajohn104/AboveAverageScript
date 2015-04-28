@@ -17,7 +17,6 @@ let dictStrToArrayStr = func strDict ->
 if len(process.argv) !== 3:
     argError()
 
-
 let arg = process.argv[2]
 
 if not arg.match(/^[A-H]$/):
@@ -25,11 +24,11 @@ if not arg.match(/^[A-H]$/):
 
 let mainURL = "http://worldcup.kimonolabs.com/api/teams?",
     apikey = "apikey=tpJ4L0Svl3mBE3AEee7zAhDDwYw8fBsc",
-    filter = "&group=" + arg,
+    filter = "&group=$(arg)",
     fields = "&fields=name,wins,draws,losses",
     sort = "&sort=groupRank,1"
 
-request(mainURL + apikey + filter + sort + fields, func err, response, body ->
+request("$(mainURL)$(apikey)$(filter)$(sort)$(fields)", func err, response, body ->
     let teams = JSON.parse(dictStrToArrayStr(body))
     log(padRight("Name", " ", RIGHT_PAD) + "W  D  L")
     log(padRight(team[0], " ", RIGHT_PAD) + team.slice(1).join("  ")) for team in teams

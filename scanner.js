@@ -40,6 +40,59 @@ var scanLine = function(line, callback, error) {
     }
 };
 
+var scanLineSync = function(line, lineNumber, column, isTruncating) {
+    var lineNumber = (typeof lineNumber === "undefined"? 0: lineNumber);
+    var column = (typeof column === "undefined"? 0: column);
+    var isTruncating = (typeof isTruncating === "undefined"? false: isTruncating);
+    var scanner = new LineScanner();
+    scanner.lineNumber = lineNumber;
+    scanner.isTruncating = isTruncating;
+    var valid = scanner.nextLine(line);
+    if(!valid) return false;
+    var tokens = scanner.complete();
+    tokens.pop();
+    for(var i = 0; i < tokens.length; i++) {
+        tokens[i].column = column;
+    }
+    return tokens;
+};
+
+var truncate = function(str) {
+    var list = ["\"\""];
+    while(str.length > 0) {
+        var match = str.match(/^([^\\\n]*\\(\\\\)*(\$\([^\)]+\)|[^\$]))*?[^\\\n]*?(\\\\)*\$\([^\)]+\)/);
+        if(!match) {
+            if(str.length > 2) {
+                list.push(str);
+            }
+            str = "";
+        } else {
+            var fullMatchString = match[0];
+            var refMatch = fullMatchString.match(/\$\([^\)]+\)$/);
+            if(refMatch.index === 1) {
+                list.push(refMatch[0].substring(2, refMatch[0].length-1));
+                str = str.charAt(str.length-1) + str.substring(fullMatchString.length);
+            } else {
+                list.push(str.substring(0, refMatch.index) + str.charAt(0));
+                list.push(refMatch[0].substring(2, refMatch[0].length-1));
+                str = str.charAt(str.length-1) + str.substring(fullMatchString.length);
+            }
+        }
+    }
+    var retStr = list[0];
+    var startIndex = 1;
+    if(list.length > 1 && (list[1].charAt(0) === "\"" || list[1].charAt(0) === "\'")) {
+        retStr = list[1];
+        startIndex = 2;
+    }
+
+    for(var j = startIndex; j < list.length; j++) {
+        retStr += " + " + list[j];
+    }
+    retStr = /*"\"\" + " + */retStr;
+    return retStr;
+};
+
 var parseTokensToStringFull = function(tokens){
     var str = "";
     for(var i = 0; i < tokens.length; i++ ) {
@@ -114,6 +167,7 @@ var LineScanner = function() {
     this.tokens = [];
     this.indentsInPreviousLine = 0;
     this.errorToken = null;
+    this.isTruncating = false;
     this.nextLine = function(line) {
         var contentHasAppeared = false;
         this.lineNumber++;
@@ -166,14 +220,21 @@ var LineScanner = function() {
                     token.index = charAt;
                     return false;
                 }
-                token.line = this.lineNumber;
                 charAt += token.index;
+                token.line = this.lineNumber;
                 token.column = charAt;
                 var tokenIndex = token.index;
+                var tokenLength = token.lexeme.length;
                 delete token.index;
-                this.tokens.push(token);
-                line = line.substring(token.lexeme.length + tokenIndex);
-                charAt += token.lexeme.length;
+                if(token.kind === "StrLit" && !this.isTruncating) {
+                    var truncated = truncate(token.lexeme);
+                    var tokens = scanLineSync(truncated, this.lineNumber, token.column, true);
+                    this.tokens = this.tokens.concat(tokens);
+                } else {
+                    this.tokens.push(token);
+                }
+                line = line.substring(tokenLength + tokenIndex);
+                charAt += tokenLength;
                 continue;
             } else {
                 var characterNumber = line.indexOf(Tokens.Comment[2]);
@@ -317,7 +378,12 @@ var LineScanner = function() {
         if(!contentHasAppeared && token !== null && token.index === 0) {
             return token;
         }
-        
+        // Syntax: $(id)
+        //var one = 1;
+        //var another = "the last";
+
+        //"here is a string...";
+        //"here is another string with $(one) reference";
         var tokenOptions = [];
         for(var i = 0; i < tokenFunctions.length; i++) {
             var token = tokenFunctions[i](line);
