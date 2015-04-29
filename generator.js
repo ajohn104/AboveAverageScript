@@ -1,10 +1,11 @@
 require('./language/implattempts/native');
 var fs = require('fs');
+var spawn = require('child_process').spawn;
 
-var generate = function(program, compileTarget, runFile, runArgs) {
+var generate = function(program, compileTarget, runFile, args) {
     var compileDest;
-    var doTest = defaults(runFile, false);
-    var runArgs = !isUndef(runArgs)?runArgs: "";
+    var runFile = defaults(runFile, false);
+    var args = defaults(args, []);
 
     var initiateFile = function() {
         compileDest = compileTarget.match(/^.*(?=\.avg)/)[0] + '.js';
@@ -32,16 +33,8 @@ var generate = function(program, compileTarget, runFile, runArgs) {
     };
 
     var testFile = function() {
-        if(doTest) {
-            //log(runArgs);
-            var args = runArgs.split(' '); // <- This is wrong. It really should ignore escaped spaces and quoted ones. Basically,
-            // it needs to behave just like node works. However, it would be a lot easier to just make a separate file to use
-            // when we intend to compile files and run them. Just let this be the debugger. Alternately, I could just use exec to
-            // run a script with the given arguments and let it give me back the arguments in an array. Probably terrible coding
-            // technique, but it really wouldn't be too inefficient. Honestly. Yeah, it seems like the regex would suck. So screw it.
-            // I'll just use the 'true' compiler for compilation.
-            process.argv = ['node', compileDest].concat(args);
-            require(compileDest);     // How to use exec with stdin??? -- Never mind, require is god child. Almost.
+        if(runFile) {
+            var child = spawn('node', [compileDest].concat(args), {stdio: [process.stdin, process.stdout, process.stderr]});
         }
     };
 

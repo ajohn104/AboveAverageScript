@@ -33,10 +33,6 @@ var ArrayLit = function() {
     };
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
-        if(this.array === []) {
-            write('[]');
-        } else {
-            this.array.compile(write, scope, 0, indentsHidden);
-        }
+        write('[]');
     };
 };

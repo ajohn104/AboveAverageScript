@@ -66,7 +66,7 @@ var Exp = function() {
     };
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
-        var max = len(this.furtherExps);
+        var max = this.furtherExps.length;
         for(var i = 0; i < max; i++) {
             this.furtherExps[i].compile(write, scope, indents + i, indentsHidden + i);
             write('\n');

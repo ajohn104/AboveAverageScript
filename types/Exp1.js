@@ -10,11 +10,13 @@ module.exports = function(env, at, next, debug) {
             var indexBefore = env.index;
             var indentedBefore = env.inIndented;
             debug("Starting on exp1. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
+            var entity = new Exp1();
             if(!at(Exp2)) {
                 env.index = indexBefore;
                 env.inIndented = indentedBefore;
                 return false;
             }
+            entity.val = env.last;
             checkIndent();
             if(at('if')) {
                 checkIndent();
@@ -23,6 +25,7 @@ module.exports = function(env, at, next, debug) {
                     env.inIndented = indentedBefore;
                     return false;
                 }
+                entity.condit = env.last;
                 checkIndent();
                 if(at('else')) {
                     checkIndent();
@@ -31,8 +34,10 @@ module.exports = function(env, at, next, debug) {
                         env.inIndented = indentedBefore;
                         return false;
                     }
+                    entity.altval = env.last;
                 }
             }
+            env.last = entity;
             debug("Finalizing exp1 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
             return true;
         }
@@ -41,34 +46,34 @@ module.exports = function(env, at, next, debug) {
 
 var Exp1 = function() {
     this.val = null;
-    this.ifexp = null;
-    this.elseexp = null;
+    this.condit = null;
+    this.altval = null;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
         var out = this.val.toString(indentlevel, indLvlHidden);
-        if(this.ifexp !== null) {
-            out += "if(" + this.ifexp.toString(0, indLvlHidden) +")";
-            if(this.elseexp !== null) {
-                out += "else(" + this.elseexp.toString(0, indLvlHidden) + ")";
+        if(this.condit !== null) {
+            out += " if(" + this.condit.toString(0, indLvlHidden) +")";
+            if(this.altval !== null) {
+                out += "else(" + this.altval.toString(0, indLvlHidden) + ")";
             }
         }
         return out;
     };
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
-        if(this.ifexp !== null) {
-            write('(');
-            this.ifexp.compile(write, scope, 0, indentsHidden);
-            write('?');
+        if(this.condit !== null) {
+            write('((');
+            this.condit.compile(write, scope, 0, indentsHidden);
+            write(')?(');
             this.val.compile(write, scope, 0, indentsHidden);
-            write(':');
-            if(this.elseexp !== null) {
-                this.elseexp.compile(write, scope, 0, indentsHidden);
+            write('):(');
+            if(this.altval !== null) {
+                this.altval.compile(write, scope, 0, indentsHidden);
             } else {
                 write('undefined');
             }
-            write(')');
+            write('))');
         } else {
             this.val.compile(write, scope, 0, indentsHidden);
         }

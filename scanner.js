@@ -1,8 +1,10 @@
-var Tokens = require('./tokens');
-var fs = require('fs'),
-    byline = require('byline');
+var Tokens = require('./tokens'),
+    fs = require('fs'),
+    byline = require('byline'),
+    error = require('./output').scanError;
+
  
-var scan = function(file, callback, error) {
+var scan = function(file, callback) {
     var stream = fs.createReadStream(file);
     stream = byline.createStream(stream, { encoding: 'utf8', keepEmptyLines: true });
 
@@ -15,7 +17,7 @@ var scan = function(file, callback, error) {
             var allValid = scanner.nextLine(line);
             if(!allValid) {
                 error(scanner.errorToken);
-                callback = undefined;
+                callback(false);
                 return;
             }
         }
@@ -28,11 +30,12 @@ var scan = function(file, callback, error) {
     });
 };
 
-var scanLine = function(line, callback, error) {
+var scanLine = function(line, callback) {
     var scanner = new LineScanner();
     var valid = scanner.nextLine(line);
     if(!valid) {
         error(scanner.errorToken);
+        callback(false);
         return;
     }
     if(typeof callback !== 'undefined') {

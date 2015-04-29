@@ -1,0 +1,11 @@
+let scan = require('./scanner').scan,
+    parse = require('./parser').parse,
+    generate = require('./generator').generate,
+    file = process.argv[2],
+    args = [],
+    scanCall = func tokens ->
+        let result = parse(tokens) if tokens else false
+        generate(result, file, true, args) if result
+
+args.push(process.argv[i]) for i in range(3, len(process.argv))
+scan(file, scanCall)

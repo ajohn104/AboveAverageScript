@@ -8,22 +8,10 @@ var generate = Generator.generate;
 var files = ["./examples/HelloIndents.avg", "./examples/UnpacksConsumersInlines.avg", "./examples/arrow_sign.avg", "./examples/testCases.avg",
     "./examples/syntaxTests.avg", "./language/scratch/syntaxFix.avg"];
 
-var file = files[1];
-var scanError = function(errorToken) {
-    switch(errorToken.kind) {
-        case "Unused":
-            console.error("Scan Error. Found disallowed reserved word: '" + errorToken.lexeme + "'");
-            break;
-        case "UnexpectedChars":
-            console.error("Scan Error. Found unexpected character(s): '" + errorToken.lexeme 
-                + "', line number: " +  errorToken.line + ", column: " + errorToken.index);
-            break;
-    }
-    finalCallBack(false);
-};    
+var file = files[1];  
 
 var compile = function(fileName, finalCall) {
-    scan(fileName, scanCall, scanError);
+    scan(fileName, scanCall);
 };
 
 var debugParse = false;
@@ -33,19 +21,12 @@ var generateCode = false;
 var runCode = false;
 var runArgs = "";
 var scanCall = function(tokens) {
-    var result = parse(tokens, parseCall, parseError, debugParse, displayTree);
-    var isValidProgram = typeof result === 'object';
-    if(generateCode && isValidProgram) generate(result, file, runCode, runArgs);
-    finalCallBack(isValidProgram);
-};
-
-var parseCall = function(stuff) {
-    console.log(stuff);
-};
-
-var parseError = function(stuff) {
-    console.error("Error on token:");
-    console.error(stuff);
+    if(tokens) {
+        var result = parse(tokens, debugParse, displayTree);
+        var isValidProgram = typeof result === 'object';
+        if(generateCode && isValidProgram) generate(result, file, runCode, runArgs);
+        finalCallBack(isValidProgram);
+    }
 };
 
 var readStdIn = function(args) {
@@ -74,7 +55,7 @@ var readStdIn = function(args) {
             continue;
         }
         if(argument.search(/^\-run(\:.*)?$/) >= 0) {
-            runArgs = argument.substring(5);
+            runArgs = argument.substring(5).split(' ');
             runCode = true;
             continue;
         }

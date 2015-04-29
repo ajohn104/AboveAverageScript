@@ -1,3 +1,5 @@
+var error = require('./output').parseError;
+
 var isArray = function(obj) {
     return Object.prototype.toString.call(obj) === '[object Array]';
 }
@@ -66,12 +68,10 @@ var entityNames = [
 
 
 var callback = undefined;
-var error = undefined;
-var debugMode = false;
 var outputTree = false;
 
-var parse = function(tkns, call, err, dbgMode, tree) {
-    debugMode = (typeof dbgMode !== "undefined")?(dbgMode):(false);
+var parse = function(tkns, debugMode, tree) {
+    var debugMode = (typeof debugMode !== "undefined"?debugMode:false);
     debug = debugMode?(function(output){
         console.log(output);
     }):debug;
@@ -89,14 +89,12 @@ var parse = function(tkns, call, err, dbgMode, tree) {
         env[name].loadData();
     });
 
-    outputTree = tree;
-    var parser = new tokenStreamParser(tkns, call, err);
+    outputTree = (typeof tree !== 'undefined'?tree:false);
+    var parser = new tokenStreamParser(tkns);
     return parser.parseProgram();
 };
 
-var tokenStreamParser = function(tkns, call, err) {
-    callback = call;
-    error = err;
+var tokenStreamParser = function(tkns) {
     env.parseTokens = tkns;
     env.index = 0;
 
