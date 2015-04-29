@@ -1,11 +1,25 @@
+/* 
+ * Fairly simple to compile and run files now. 
+ * 
+ * To compile only, use the command: 
+ *      node compiler.js -compile $(filename)
+ *
+ * To compile and run, use the command: 
+ *      node compiler.js -run $(filename) $(arg)*
+ *
+ * Example 1: node compiler.js -compile test.avg
+ * Example 2: node compiler.js -run test.avg arg1 arg2 arg3
+ *
+ */
 let scan = require('./scanner').scan,
     parse = require('./parser').parse,
     generate = require('./generator').generate,
-    file = process.argv[2],
+    file = process.argv[3],
     args = [],
+    runCode = process.argv[2] === '-run',
     scanCall = func tokens ->
         let result = parse(tokens) if tokens else false
-        generate(result, file, true, args) if result
+        generate(result, file, runCode, args) if result
 
-args.push(process.argv[i]) for i in range(3, len(process.argv))
+args.push(process.argv[i]) for i in range(4, len(process.argv))
 scan(file, scanCall)

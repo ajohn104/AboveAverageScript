@@ -154,15 +154,16 @@ _.global.keys = function(val) {
 var scan = require('./scanner').scan,
     parse = require('./parser').parse,
     generate = require('./generator').generate,
-    file = process.argv[2],
+    file = process.argv[3],
     args = [],
+    runCode = (process.argv[2] === '-run'),
     scanCall = function(tokens) {
         var result = ((tokens)?(parse(tokens)):(false));
-        ((result)?(generate(result, file, true, args)):(undefined));
+        ((result)?(generate(result, file, runCode, args)):(undefined));
     };
-var lfn987 = range(3, len(process.argv));
-Object.keys(lfn987).forEach(function(wbp248) {
-    var i = lfn987[wbp248];
+var kby201 = range(4, len(process.argv));
+Object.keys(kby201).forEach(function(rwv570) {
+    var i = kby201[rwv570];
     args.push(process.argv[i])
 });
 scan(file, scanCall);
