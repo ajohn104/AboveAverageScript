@@ -23,7 +23,10 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
             entity.val = env.last;
-            env.last = entity;
+            if(entity.prefix === "") {
+                entity = entity.val;
+            }
+            env.last = /*(entity.prefix === "")?entity.val:*/entity;
             debug("Finalizing exp14 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
             return true;
         }

@@ -37,7 +37,10 @@ module.exports = function(env, at, next, debug) {
                     entity.altval = env.last;
                 }
             }
-            env.last = entity;
+            if(entity.condit === null) {
+                entity = entity.val;
+            }
+            env.last = /*(entity.condit === null)?entity.val:*/entity;
             debug("Finalizing exp1 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
             return true;
         }

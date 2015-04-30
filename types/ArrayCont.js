@@ -70,6 +70,9 @@ module.exports = function(env, at, next, debug) {
 
 var ArrayCont = function() {
     this.array = [];
+    this.isSingular = function() {
+        return this.array.length === 1 && !this.array[0].isExp && this.array[0].isSingular();
+    };
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);

@@ -39,7 +39,10 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
             env.inIndented = env.indentedExp.pop();
-            env.last = entity;
+            if(entity.furtherExps.length === 0) {
+                entity = entity.val;
+            }
+            env.last = /*(entity.furtherExps.length === 0)?entity.val:*/entity;
             debug("Finalizing exp success. env.index:" + env.index  + ', lexeme: ' + env.parseTokens[env.index].lexeme + '\n');
             return true;
         }
@@ -50,7 +53,9 @@ var Exp = function() {
     this.val = null;
     this.furtherExps = [];
     this.isExp = true;
+    this.isEnclosed = false;
     this.buried = undefined;
+    this.isSingular = this.val.isSingular;
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -67,6 +72,9 @@ var Exp = function() {
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
         var max = this.furtherExps.length;
+        if(this.isEnclosed) {
+            write('(');
+        }
         for(var i = 0; i < max; i++) {
             this.furtherExps[i].compile(write, scope, indents + i, indentsHidden + i);
             write('\n');
@@ -76,6 +84,9 @@ var Exp = function() {
         this.val.compile(write, scope, 0, indentsHidden + max);
         for(var j = max - 1; j >= 0; j--) {
             write('\n' + scope.ind(indents + j) + '})');
+        }
+        if(this.isEnclosed) {
+            write(')');
         }
     };
     this.compileRedo = function(write, scope, indents, indentsHidden) {

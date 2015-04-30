@@ -30,7 +30,10 @@ module.exports = function(env, at, next, debug) {
                 entity.furtherExps.push(part);
                 indexMid = env.index;
             }
-            env.last = entity;
+            if(entity.furtherExps.length === 0) {
+                entity = entity.val;
+            }
+            env.last = /*(entity.furtherExps.length === 0)?entity.val:*/entity;
             debug("Finalizing exp6 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
             return true;
         }

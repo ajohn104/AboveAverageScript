@@ -19,6 +19,8 @@ module.exports = function(env, at, next, debug) {
 
 var StringLit = function() {
     this.val = null;
+    this.isLiteral = true;
+    this.isSingular = function() { return true; };
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);

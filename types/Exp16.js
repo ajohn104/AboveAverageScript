@@ -20,8 +20,7 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
             entity.val = env.last;
-            
-            env.last = entity;
+            env.last = (entity.prefix === "")?entity.val:entity;
             debug("Finalizing exp16 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
             return true;
         }

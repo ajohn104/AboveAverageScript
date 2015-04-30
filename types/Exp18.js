@@ -21,9 +21,9 @@ module.exports = function(env, at, next, debug) {
             var indexBefore = env.index; 
             var indentedBefore = env.inIndented;
             var isParenthesizedExpr = false;
-            var entity = new Exp18();
+            var entity = null;
             if(at('(') && at(Exp2)) {
-                entity.val = env.last;
+                entity = env.last;
                 debug("Found exp within possible ParenthesizedExpr. Looking for ')'. env.index:" + env.index);
 
                 debug("Checking for newline. env.index:" + env.index);
@@ -38,7 +38,7 @@ module.exports = function(env, at, next, debug) {
                 }
                 debug("Found ')'. Completed ParenthesizedExpr. env.index:" + env.index);
                 isParenthesizedExpr = true;
-                entity.isParenthesizedExpr = true;
+                entity.isEnclosed = true;
             } else {
                 env.index = indexBefore; 
                 env.inIndented = indentedBefore;
@@ -55,8 +55,8 @@ module.exports = function(env, at, next, debug) {
                      || at(This)
                      || at(RegExpLit);
             var accessIndex = env.index;
-            if(entity.val === null) {
-                entity.val = env.last;
+            if(entity === null) {
+                entity = env.last;
             }
             if(env.index === 0) accessIndex = 0;
             env.last = entity;
@@ -66,7 +66,7 @@ module.exports = function(env, at, next, debug) {
     };
 };
 
-var Exp18 = function() {
+var Exp18 = function() { // This is actually no longer used. I completely phased it out.
     this.val = null;
     this.isParenthesizedExpr = false;
     this.toString = function(indentlevel, indLvlHidden) {

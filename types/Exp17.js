@@ -62,7 +62,7 @@ module.exports = function(env, at, next, debug) {
                     break;
                 }
             }
-            env.last = entity;
+            env.last = entity.lastVal;      // This is more of a guess than the others.
             debug("Finalizing exp17 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
             return true;
         }
@@ -80,6 +80,7 @@ var Exp17 = function() {
     };
 };
 
+// DotAccessor = object.key
 var DotAccessor = function(key, obj) {
     this.key = key;
     this.object = obj;
@@ -93,18 +94,18 @@ var DotAccessor = function(key, obj) {
     };
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
-        //write('(');
-        
-        //write(').')
         this.object.compile(write, scope, 0, indentsHidden);
         write('.');
         this.key.compile(write, scope, 0, indentsHidden);
     };
 };
 
+// BracketAccessor = object[keys]
 var BracketAccessor = function(keys, obj) {
     this.keys = keys;
     this.object = obj;
+    this.isBraceAccess = true;
+    this.isSingular = function() { return this.keys.isSingular() && this.object.isSingular()};
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -113,15 +114,48 @@ var BracketAccessor = function(keys, obj) {
         out += "object: " + this.object.toString(0, indLvlHidden) + ")";
         return out;
     };
-    this.compile = function(write, scope, indents, indentsHidden) {
+    this.compile = function(write, scope, indents, indentsHidden) { // DONE. WOW. MIGHT WORK.
         scope = scope.clone();
-        //write('(');
-        this.object.compile(write, scope, 0, indentsHidden);
-        //write(')');
-        this.keys.compile(write, scope, 0, indentsHidden);
+
+        if(this.isSingular()) {
+            this.object.compile(write, scope, 0, indentsHidden);
+            this.keys.compile(write, scope, 0, indentsHidden);
+        } else {
+            var objIsSingle = this.object.isSingular();
+            var keysAreSingle = this.keys.isSingular();
+            var dataVar = scope.randId();
+            var objStore = scope.randId();
+            var objVar = scope.randId();
+            var keysStore = scope.randId();
+            var keysVar = scope.randId();
+            write('(function() {var ' + dataVar + ' = [];');
+            write('var ' + objStore + ' = ');
+            this.obj.compile(write, scope, 0, indentsHidden);
+            write(';var ' + keysStore + ' = ');
+            this.keys.compile(write, scope, 0, indentsHidden);
+            write(';');
+            if(objIsSingle) {
+                write('var ' + objVar + ' = ' + objStore + ';');
+            } else {
+                write(objStore + '.forEach(function(' + objVar + ') {');
+            }
+
+            if(keysAreSingle) {
+                write(dataVar + '.push(' + objVar + '[' + keysStore + '];');
+            } else {
+                write(keysStore + '.forEach(function(' + keysVar + ') {');
+                write(dataVar + '.push(' + objVar + '[' + keysStore + '];');
+                write('});')
+            }
+            if(!objIsSingle) {
+                write('});');
+            }
+            write('return ' + dataVar + ';})()');
+        }
     };
 };
 
+// FunctionCall = object Call
 var FunctionCall = function(call, obj) {
     this.call = call;
     this.object = obj;

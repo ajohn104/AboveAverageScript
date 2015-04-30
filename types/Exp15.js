@@ -24,8 +24,10 @@ module.exports = function(env, at, next, debug) {
             if(foundOp) {
                 entity.postfix = env.last;
             }
-
-            env.last = entity;
+            if(entity.postfix === "") {
+                entity = entity.val;
+            }
+            env.last = /*(entity.postfix === "")?entity.val:*/entity;
             debug("Finalizing exp15 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
             return true;
         }

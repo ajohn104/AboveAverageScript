@@ -41,7 +41,10 @@ module.exports = function(env, at, next, debug) {
                 }
                 entity.furtherExps.secondexp = env.last;
             }
-            env.last = entity;
+            if(entity.furtherExps === null) {
+                entity = entity.val;
+            }
+            env.last = /*(entity.furtherExps === null)?entity.val:*/entity;
             debug("Finalizing exp3 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);
             return true;
         }
