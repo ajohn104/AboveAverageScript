@@ -1,3 +1,6 @@
+let pipe = process.stdin.pipe(require('split')())
+let result = {}
+
 let processLine = func line ->
     let words = line.toLowerCase().replace(/[^a-z\']/g, " ").split(" ")
     words = words.filter(func item -> ret item if item)
@@ -10,8 +13,7 @@ let gatherResults = func ->
     word_array.sort()
     log(word.join(" ")) for word in word_array
 
-let pipe = process.stdin.pipe(require('split')())
+
 pipe.on('data', processLine)
 pipe.on('end', gatherResults)
 
-let result = {}
