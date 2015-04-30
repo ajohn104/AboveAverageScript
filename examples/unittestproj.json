@@ -1,0 +1,11 @@
+{
+    "project": {
+        "main": "unittests",
+        "defaultAction": "-run",
+        "defaultArguments": [],
+        "files": [
+            "unittests",
+            "wordcount"
+        ]
+    }
+}

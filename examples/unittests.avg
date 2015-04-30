@@ -1,0 +1,127 @@
+let self = {},
+//let warmup = require('./warmup.js')
+    tests = [],
+    failedTests = []
+
+let assert = func condition, testName -> failedTests.push(testName) if not condition
+
+let arrays_equal = func arrOne, arrTwo ->
+    if len(arrOne) !== len(arrTwo):
+        ret false
+    for i : arrOne:
+        if isInst(arrOne[i], Array) and isInst(arrTwo[i], Array):
+            ret arrays_equal(arrOne[i], arrTwo[i])
+        if arrOne[i] !== arrTwo[i]:
+            ret false
+    ret true
+
+/*let init_self = func ->
+    self.changeExampleOne = [33.25, [ 1, 0, 1, 3.25 ]]
+    self.stripQuotesExampleOne = ["a\"\"\'\"\"\"\"z", "az"]
+    self.scrambleExampleOne = ["LMU Computer Science"]
+    self.powersOfTwoExampleOne = [70, [1, 2, 4, 8, 16, 32, 64]]
+    self.prefixesExampleOne = ["brendan eich", ["", "b", "br", "bre", "bren", "brend", "brenda", "brendan", "brendan ", "brendan e", "brendan ei", "brendan eic", "brendan eich"]]
+    self.interleaveExampleOne = [["a", "b"], [1, 2, true, null], ["a", 1, "b", 2, true, null]]
+    self.stutterExampleOne = [[5,'dog',[3],9], [5,5,'dog','dog',[3],[3],9,9]]
+*/
+let addTest = func test -> tests.push(test)
+    
+/*function test_change() {
+    init_self();
+    var result = warmup.change(self.changeExampleOne[0]);
+    assert( arrays_equal(result,self.changeExampleOne[1]), "change" );
+}
+addTest(test_change);
+
+function test_stripQuotes() {
+    init_self();
+    var result = warmup.stripQuotes(self.stripQuotesExampleOne[0]);
+    assert( result === self.stripQuotesExampleOne[1], "strip_quotes");
+}
+addTest(test_stripQuotes);
+
+function test_scramble() {
+    init_self();
+    var result = warmup.scramble(self.scrambleExampleOne[0]);
+    var statementOne = result != self.scrambleExampleOne[0];
+    var statementTwo = arrays_equal(result.split("").sort(), self.scrambleExampleOne[0].split("").sort());
+    assert( statementOne && statementTwo, "scramble");
+}
+addTest(test_scramble);
+
+function test_powersOfTwo() {
+    init_self();
+    var result = [];
+    warmup.powersOfTwo(self.powersOfTwoExampleOne[0], function(p) {result.push(p)});
+    assert(arrays_equal( result, self.powersOfTwoExampleOne[1]), "powersOfTwo");
+}
+addTest(test_powersOfTwo);
+
+function test_prefixes() {
+    init_self();
+    var result = [];
+    warmup.prefixes(self.prefixesExampleOne[0], function(p) {result.push(p)});
+    assert(arrays_equal(result, self.prefixesExampleOne[1]), "prefixes");
+}
+addTest(test_prefixes);
+
+function test_interleave() {
+    init_self();          
+    var result = warmup.interleave(self.interleaveExampleOne[0], self.interleaveExampleOne[1]);
+    assert(arrays_equal(result, self.interleaveExampleOne[2]), "interleave");
+}
+addTest(test_interleave);
+
+function test_stutter() {
+    init_self();
+    var result = warmup.stutter(self.stutterExampleOne[0]);
+    assert(arrays_equal(result, self.stutterExampleOne[1]), "stutter");
+}
+addTest(test_stutter);
+
+function test_lines() {
+    init_self();
+    var exec = require('child_process').exec;
+    exec('node lines.js SmallerExample.txt', function (error, stdout) {
+        var result = (stdout)?stdout:error;
+        assert(result === "3\n", "lines");
+    });
+}
+addTest(test_lines);*/
+
+let test_wordcount = func ->
+    //init_self()
+    let exec = require('child_process').exec
+    exec('node wordcount.js < story', func error, stdout, stderr ->
+        log(stderr)
+        assert(stdout === "a 2\nag 1\nan 1\nand 2\nfound 1\nint 1\nlong 3\nstring 1\nthey'd 1\n", "wordcount")
+    )
+addTest(test_wordcount)
+
+/*function test_fifa2014group() {
+    init_self();
+    var exec = require('child_process').exec;
+    exec('node fifa2014group.js B', function (error, stdout, stderr) {
+        var result = (stdout)?stdout:stderr;
+        var correctResult = /Name +W  D  L\nNetherlands +3  0  0\nChile +2  0  1\nSpain +1  0  2\nAustralia +0  0  3\n/
+        //var correctError = /Need just one commandline argument, A...H/
+        assert(correctResult.test(result), "fifa2014group");
+        //assert(correctError.test(result), "fifa2014group");
+    });
+}
+addTest(test_fifa2014group);*/
+
+let runTests = func ->
+    log("Running $(tests.length) tests...")
+    test() for test in tests
+    setTimeout(checkTestResults, 3000)
+
+let checkTestResults = func ->
+    if len(failedTests) === 0:
+        log("All tests passed")
+    else
+        log("A total of $(failedTests.length) test(s) failed")
+        log("The following tests failed:")
+        log("\t$(failure)") for failure in failedTests
+
+runTests()

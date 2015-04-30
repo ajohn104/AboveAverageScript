@@ -19,14 +19,14 @@ module.exports = function(env, at, next, debug) {
             entity.val = env.last;
             checkIndent();
             if(at('?')) {
-                env.furtherExps = {};
+                entity.furtherExps = {};
                 checkIndent();
                 if(!at(Exp4)) {
                     env.index = indexBefore; 
                     env.inIndented = indentedBefore;
                     return false;
                 }
-                env.furtherExps.firstexp = env.last;
+                entity.furtherExps.firstexp = env.last;
                 checkIndent();
                 if(!at(':')) {
                     env.index = indexBefore; 
@@ -39,7 +39,7 @@ module.exports = function(env, at, next, debug) {
                     env.inIndented = indentedBefore;
                     return false;
                 }
-                env.furtherExps.secondexp = env.last;
+                entity.furtherExps.secondexp = env.last;
             }
             env.last = entity;
             debug("Finalizing exp3 success. env.index:" + env.index + ', lexeme: ' + env.parseTokens[env.index].lexeme);

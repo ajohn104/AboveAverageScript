@@ -1,0 +1,43 @@
+let fs = require('fs'),
+    child_process = require('child_process'),
+    path = require('path'),
+    execSync = child_process.execSync,
+    spawn = child_process.spawn,
+    arg2 = process.argv[2],
+    actionSpecified = arg2.match(/^-(compile|run)$/) !== null,
+    offset = actionSpecified?1:0,
+    projectFile = process.argv[2 + offset],
+    projPath = path.dirname(projectFile),
+    contents = fs.readFileSync(projectFile),
+    project = JSON.parse(contents).project,
+    defaultAction = defaults(project.defaultAction, '-compile'),
+    runCode = actionSpecified?arg2:defaultAction,   // This is bugged. I need to do to exp3 or 4 what I did to exp1
+    main = project.main,
+    files = project.files,
+    args = defaults(project.defaultArguments, [])
+
+if len(process.argv) > 3 + offset:
+    args = []
+    args.push(process.argv[i]) for i : range(3 + offset, len(process.argv))
+
+execSync('node compiler.js -compile $(projPath)/$(file).avg') for file in files
+spawn('node', ["$(main).js"].concat(args), {cwd: projPath, stdio: [process.stdin, process.stdout, process.stderr]}) if runCode === '-run'
+
+
+// If you wanted to compile a project with the argument '-compile', it would be node avgproj.js $(filename) -compile arg1
+// If you wanted to compile and run a project with the argument '-compile', it would be node avgproj.js -run $(filename) -compile
+
+
+// To run this file, the syntax is: node avgproj.js ("-compile" or "-run")? $(projectFile) $(argument)*
+
+/*
+ * Structure:
+ *     "project": {
+ *        (Optional) "main": $(file),                          <-- Optional, but required in order to run
+ *        (Optional) "defaultAction": "compile" or "run",      <-- If not specified, defaults to compile
+ *        (Optional) "defaultArguments": [ $(argument)* ],
+ *        (Required) "files": [ $(file)+ ]
+ *     }
+ *
+*/
+
