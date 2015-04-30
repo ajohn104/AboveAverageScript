@@ -54,7 +54,7 @@ var ForColon = function() {
 
         write(scope.ind(indents) + 'var ' + objId + ' = ');
         this.exp.compile(write, scope, 0, indentsHidden);
-        write(';\n' + scope.ind(indentsHidden) + 'Object.keys(' 
+        write(';\n' + scope.ind(indentsHidden) + 'keys(' 
             + objId + ').forEach(function(' + keyId + ') {');
     };
 };

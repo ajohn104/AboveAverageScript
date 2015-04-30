@@ -1,0 +1,9 @@
+// blah this has 3 non-fully commented, non-whitespace lines
+blah blah
+
+blah //g
+//ggggggg
+  g //
+            //
+
+            

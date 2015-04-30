@@ -1,0 +1,50 @@
+//+ Jonas Raoni Soares Silva
+//@ http://jsfromhell.com/array/shuffle [v1.0]
+let shuffle = func o -> //v1.0
+    let j = 0,
+        x = 0,
+        i = len(o)
+    while i:
+        j = Math.floor(Math.random() * i)
+        x = o[--i]
+        o[i] = o[j]
+        o[j] = x
+    ret o
+
+let divMod = func coin, amt ->
+    let count = Math.floor(amt.val/coin)
+    amt.val %= coin
+    ret count
+
+module.exports =
+    change: func amount ->
+        Error.stackTraceLimit = 0
+        let amt = 
+            val: amount
+        if amt.val < 0:
+            process.exit(1) // temporarily...
+            //throw new RangeError("amount cannot be negative") // I still haven't actually added the syntax for this
+        ret [25, 10, 5].map(func x -> ret divMod(x,amt)).concat(amt.val)
+
+    stripQuotes: func string -> ret string.replace(/\'|\"/g, '')
+
+    scramble: func string -> ret shuffle(string.split("")).join("")
+
+    powersOfTwo: func max, output ->
+        let power = 0
+        while Math.pow(2,power) <= max:
+            output(Math.pow(2,power++))
+
+    prefixes: func string, output -> output(string.substring(0,i)) for i in range(len(string)+1)
+        
+    interleave: func array_1, array_2 ->
+        let l1 = len(array_1),
+            l2 = len(array_2),
+            max = Math.max(l1, l2),
+            weavedArray = []
+        for i in range(max):
+            weavedArray.push(array_1[i]) if i < l1
+            weavedArray.push(array_2[i]) if i < l2
+        ret weavedArray
+
+    stutter: func array -> ret _.interleave(array, array)

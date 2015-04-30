@@ -34,7 +34,7 @@ var generate = function(program, compileTarget, runFile, args) {
 
     var testFile = function() {
         if(runFile) {
-            var child = spawn('node', [compileDest].concat(args), {stdio: [process.stdin, process.stdout, process.stderr]});
+            spawn('node', [compileDest].concat(args), {stdio: [process.stdin, process.stdout, process.stderr]});
         }
     };
 

@@ -1,0 +1,7 @@
+
+    
+    one
+two
+       // comment
+hash char not the first non-blank       // comment
+// comment

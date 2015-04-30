@@ -17,7 +17,7 @@ ConsumeStmt     ::= ExpList? '<-' Exp
 ReturnStmt      ::= 'ret' Exp?
 ControlStmt     ::= 'stop' | 'skip'
 SetAssign       ::= Exp AssignOp Exp
-SetEqual        ::= Exp '=' Exp
+SetEqual        ::= Id '=' Exp
 
 // Beware uses of Exp with numbers > 0, since they don't save the current indent at the moment. Well, not in the way Exp does.
 IfStmt          ::= 'if' Exp1 ':' Indent Block Dedent (Newline 'elif' Exp1 ':' Indent Block Dedent)* (Newline 'else' Indent Block Dedent)?
@@ -51,7 +51,7 @@ Exp12           ::= Exp13 (AddOp Exp13)*
 Exp13           ::= Exp14 (MulOp Exp14)*
 Exp14           ::= PrefixOp? Exp15
 Exp15           ::= Exp16 PostfixOp?
-Exp16           ::= ('new' Exp17 Call) | Exp17
+Exp16           ::= 'new'? Exp17
 Exp17           ::= Exp18 (ArrayCont | Call | '.' Exp18)*
 Exp18           ::= Id | BoolLit | IntLit | StringLit | '(' Exp2 Newline? ')' | Func | ArrayLit | ObjectInline | This | RegExpLit
 

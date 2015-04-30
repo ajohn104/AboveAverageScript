@@ -1,10 +1,10 @@
-// Func            ::= 'func' (Id (',' Id)* )? '->' (Exp1 | ReturnStmt) | (Indent Block Dedent)
+// Func            ::= 'func' (Id (',' Id)* )? '->' (Exp | ReturnStmt) | (Indent Block Dedent)
 module.exports = function(env, at, next, debug) {
     var Id, Exp1, ReturnStmt, Indent, Block, Dedent;
     return {
         loadData: function() {
             Id = env.Id,
-            Exp1 = env.Exp1,
+            Exp = env.Exp,          // Temporarily using Exp instead of Exp1, perhaps use ret only with Exp1? and let Exp be allowed w/o ret?
             ReturnStmt = env.ReturnStmt,
             Indent = env.Indent,
             Block = env.Block,
@@ -38,10 +38,10 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
             debug("Found '->'. Looking for single line 'ret'. env.index:" + env.index);
-            if(at(Exp1) || at(ReturnStmt)) {
+            if(at(Exp) || at(ReturnStmt)) {
                 debug("Found single line exp or return stmt. env.index:" + env.index);
                 entity.block = env.last;
-                //debug("Single line 'ret' not found. Instead found Single line Exp1. env.index:" + env.index);
+                //debug("Single line 'ret' not found. Instead found Single line Exp. env.index:" + env.index);
                 ; // Just let it fall through
             } else {
                 debug("Not single line. checking for indent. env.index:" + env.index);

@@ -1,0 +1,10 @@
+let FileLineReader = require("FileLineReader"),
+    reader = new FileLineReader(process.argv[2]),
+    count = 0,
+    checkLine = func line ->
+        ret (line.trim() and line.trim().substring(0,2)!=="//")?1:0
+
+while reader.hasNextLine():
+    count+=checkLine(reader.nextLine())
+
+log(count)

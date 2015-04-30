@@ -11,7 +11,7 @@
   "contributors": "aljo",
   "repository": "https://github.com/ajohn104/AboveAverageScript",
   "engines": {
-    "node": ">=0.10.32"
+    "node": ">=0.12.2"
   },
   "dependencies": {
     "byline": "^4.2.1",

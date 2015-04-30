@@ -1,18 +1,20 @@
-// SetEqual        ::= Exp '=' Exp
+// SetEqual        ::= Id '=' Exp
 module.exports = function(env, at, next, debug) {
-    var Exp;
+    var Id, Exp;
     return {
         loadData: function() {
+            Id = env.Id;
             Exp = env.Exp;
         },
-        is: function() {
+        is: function(previous) {
             var indexBefore = env.index;
             var entity = new SetEqual();
-            if(!at(Exp)) {
+            var havePrevious = (typeof previous !== 'undefined');
+            if(!havePrevious && !at(Id)) {
                 env.index = indexBefore;
                 return false;
             }
-            entity.leftexp = env.last;
+            entity.leftexp = havePrevious?previous:env.last;
             if(!at('=')) {
                 env.index = indexBefore;
                 return false;

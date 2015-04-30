@@ -46,7 +46,7 @@ module.exports = function(env, at, next, debug) {
             }
 
             // Yeah I know this looks terrible but it makes things faster
-            if(foundExpList && env.initialExpList.length === 1 && !found && at(SetAssign, previous)) {
+            if(foundExpList && env.initialExpList && env.initialExpList.length === 1 && !found && at(SetAssign, previous)) {
                 found = true;
                 entity = new AssignMultiLine();
                 entity.assignpairs.push(env.last);

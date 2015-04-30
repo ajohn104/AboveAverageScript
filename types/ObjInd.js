@@ -21,10 +21,10 @@ module.exports = function(env, at, next, debug) {
                 return false;
             }
             if(!(at(Prop) || at(PropInd))) {
-                entity.props.push(env.last);
                 env.index = indexBefore;
                 return false;
             }
+            entity.props.push(env.last);
             var indexMid = env.index;
             while(at(Newline) && (at(Prop) || at(PropInd))) {
                 entity.props.push(env.last);
@@ -63,6 +63,6 @@ var ObjectInd = function() {
             this.props[i].compile(write, scope, indents+1, indentsHidden+1);
             write('\n');
         }
-        write('}');
+        write(scope.ind(indents) + '}');
     };
 };

@@ -25,9 +25,12 @@ module.exports = function(env, at, next, debug) {
             var found = false;
             var indexMid = env.index;
             var ids = [];
+            var firstId = undefined;
             if(at(Id)) {
                 found = true;
-                ids.push(env.last);
+                firstId = env.last;
+                indexMid = env.index;
+                ids.push(firstId);
                 while(at(',')) {
                     if(!at(Id)) {
                         env.index = indexMid;
@@ -52,7 +55,7 @@ module.exports = function(env, at, next, debug) {
             }
             debug("DeclareStmt: found ExpList: " + found + ". env.index:" + env.index);
 
-            if(!found && at(SetEqual)) {
+            if(!found && at(SetEqual, firstId)) {
                 debug("DeclareStmt: checking for SetEqual stuff. env.index:" + env.index);
                 found = true;
                 entity = new DeclareMultiLine();

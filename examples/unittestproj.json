@@ -5,7 +5,9 @@
         "defaultArguments": [],
         "files": [
             "unittests",
-            "wordcount"
+            "wordcount",
+            "lines",
+            "warmup"
         ]
     }
 }
