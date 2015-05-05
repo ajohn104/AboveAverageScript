@@ -90,15 +90,15 @@ let test_wordcount = func ->
 addTest(test_wordcount)
 
 let runTests = func ->
-    log("Running $(tests.length) tests...")
+    log("Running ${tests.length} tests...")
     test() for test in tests
 
 let checkTestResults = func ->
     if len(failedTests) === 0:
         log("All tests passed")
     else
-        log("A total of $(failedTests.length) test(s) failed")
+        log("A total of ${failedTests.length} test(s) failed")
         log("The following tests failed:")
-        log("\t$(failure)") for failure in failedTests
+        log("\t${failure}") for failure in failedTests
 
 runTests()

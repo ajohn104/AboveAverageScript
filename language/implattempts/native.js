@@ -1,5 +1,7 @@
 // It has been decided that these functions WILL pollute the global namespace. 
-// Always. The only thing ***native*** changes is the time they get loaded.
+// Always. The only thing ***native*** changes is the time they get loaded. It's
+// also highly recommended that native gets specified (or not at all) as soon as
+// possible since the compiled code actually assumes it has been loaded.
 
 // _ is gonna hold all the BS that this language uses in the background, because no user can use/make
 // variable with that id.
