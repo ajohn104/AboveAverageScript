@@ -20,15 +20,15 @@ if len(process.argv) > 3 + offset:
     args = []
     args.push(process.argv[i]) for i : range(3 + offset, len(process.argv))
 
-execSync('node compiler.js -compile $(projPath)/$(file).avg') for file in files
-spawn('node', ["$(main).js"].concat(args), {cwd: projPath, stdio: [process.stdin, process.stdout, process.stderr]}) if runCode === '-run'
+execSync('node ' + __dirname + '/compiler.js -compile ${projPath}/${file}.avg') for file in files
+spawn('node', ["${main}.js"].concat(args), {cwd: projPath, stdio: [process.stdin, process.stdout, process.stderr]}) if runCode === '-run'
 
 
 // If you wanted to compile a project with the argument '-compile', it would be node avgproj.js $(filename) -compile arg1
 // If you wanted to compile and run a project with the argument '-compile', it would be node avgproj.js -run $(filename) -compile
 
 
-// To run this file, the syntax is: node avgproj.js ("-compile" or "-run")? $(projectFile) $(argument)*
+// To run this file, the syntax is: node avgproj.js ("-compile" or "-run")? ${projectFile} ${argument}*
 
 /*
  * Structure:
