@@ -1,12 +1,7 @@
-// This isn't so much an attempt as it is just a place to collect 
-// all the built-ins so I can grab them more easily, and, more importantly,
-// use require to make them available in each implattempt rather than
-// copy paste over and over like I've been doing.
-// Also, I'm adding them to the global namespace here because it makes the require easier,
-// but it in the final implementation from native, that isn't how it will be used. native
-// will only place the built-ins in the scope specified. This way, it doesn't pollute
-// the global namespace at all. But here I'm allowing it. Because its assumed that native
-// won't actually 'require' anything, but quite literally drop them all in with vars.
+// It has been decided that these functions WILL pollute the global namespace. 
+// Always. The only thing ***native*** changes is the time they get loaded. It's
+// also highly recommended that native gets specified (or not at all) as soon as
+// possible since the compiled code actually assumes it has been loaded.
 
 // _ is gonna hold all the BS that this language uses in the background, because no user can use/make
 // variable with that id.
@@ -22,6 +17,11 @@ _.global.type = function(x) {
 // Returns true if x is undefined.
 _.global.isUndef = function(x) {
     return (typeof x) === 'undefined';
+};
+
+// Returns true if x is undefined.
+_.global.isNull = function(x) {
+    return x === null;
 };
 
 // Returns a if a has a value other than undefined. If a is undefined, returns the def val.
