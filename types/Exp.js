@@ -73,6 +73,7 @@ var Exp = function() {
         scope = scope.clone();
         var max = this.furtherExps.length;
         var dataVar = scope.randId();
+        var valueVar = scope.randId();
         if(this.isEnclosed) {
             write('(');
         }
@@ -86,12 +87,16 @@ var Exp = function() {
         // write(scope.ind(indents) + 'IKCSPRASHUN'); -- deprecated
         write(scope.ind(indents + max));
         if(max > 0) {
-            write(dataVar + '.push(');
+            write('var ' + valueVar + ' = ');
+            this.val.compile(write, scope, 0, indentsHidden + max);
+            write(';if(typeof ' + valueVar + ' !== "object" || !' + valueVar + '.isAVGRemoval) {');
+            write(dataVar + '.push(' + valueVar + ');};');
+        } else {
+            this.val.compile(write, scope, 0, indentsHidden + max);
         }
-        this.val.compile(write, scope, 0, indentsHidden + max);
-        if(max > 0) {
+        /*if(max > 0) {
             write(');');
-        }
+        }*/
         for(var j = max - 1; j >= 0; j--) {
             write('\n' + scope.ind(indents + j) + '});');
         }

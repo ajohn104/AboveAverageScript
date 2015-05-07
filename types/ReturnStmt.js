@@ -36,7 +36,16 @@ var ReturnStmt = function() {
         write(scope.ind(indents) + 'return');
         if(this.exp !== null) {
             write(' ');
-            this.exp.compile(write, scope, 0, indentsHidden);
+            if(this.exp.isIfExp && this.exp.altVal !== null) {
+                var retVal = scope.randId();
+                write('(function() {var ' +  retVal + ' = ');
+                this.exp.compile(write, scope, 0, indentsHidden);
+                write(';return (typeof ' + retVal + ' === "object" && ')
+                write(retVal + '.isAVGRemoval)?undefined:' + retVal + ';})();');
+            } else {
+                this.exp.compile(write, scope, 0, indentsHidden);
+                write(';'); // Unnecessary, but hey, I like style.
+            }
         }
     };
 };

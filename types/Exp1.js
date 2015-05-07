@@ -51,8 +51,9 @@ var Exp1 = function() {
     this.val = null;
     this.condit = null;
     this.altval = null;
+    this.isIfExp = true;
     this.isSingular = function() {
-        if(!this.val.isSingular() || !this.altval.isSingular()) return false;
+        if(!this.val.isSingular() || (!isNull(this.altval) && !this.altval.isSingular())) return false;
         return true;
     };
     this.toString = function(indentlevel, indLvlHidden) {
@@ -78,8 +79,8 @@ var Exp1 = function() {
             if(this.altval !== null) {
                 this.altval.compile(write, scope, 0, indentsHidden);
             } else {
-                write('undefined');
-            }
+                write('{isAVGRemoval: true}'); // was previously just undefined. But I don't like this solution either.
+            }                                       // --> I'm just not sure where an if statement's value could appear, honestly.
             write('))');
         } else {
             this.val.compile(write, scope, 0, indentsHidden);
