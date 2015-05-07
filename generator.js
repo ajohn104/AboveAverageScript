@@ -50,6 +50,7 @@ var generate = function(program, compileTarget, runFile, args) {
 
     var nativeComplete = false;
     var writeBufferEmpty = false;
+    var initialIdNum = 1001;
 
     var scope = {
         indent: "    ",
@@ -88,15 +89,15 @@ var generate = function(program, compileTarget, runFile, args) {
             return id;
         },
         randId: function() {
-            var id = "";
+            //var id = "";
             // id += rand(10); :/ I wanted license plate variables, but I can't start them with numbers...
-            for(var i = 0; i < 3; i++) {
+            /*for(var i = 0; i < 3; i++) {
                 id += randIn(alphabet);
             }
             for(var j = 0; j < 3; j++) {
                 id += rand(10);
-            }
-            return id;
+            }*/
+            return '_id' + initialIdNum++;//id; // This doesn't consider id's that have been taken, but for now I don't care.
         },
         allStatementsCompleted: false,
         checkCompletion: function() {

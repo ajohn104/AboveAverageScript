@@ -1,5 +1,7 @@
 // It has been decided that these functions WILL pollute the global namespace. 
-// Always. The only thing ***native*** changes is the time they get loaded.
+// Always. The only thing ***native*** changes is the time they get loaded. It's
+// also highly recommended that native gets specified (or not at all) as soon as
+// possible since the compiled code actually assumes it has been loaded.
 
 // _ is gonna hold all the BS that this language uses in the background, because no user can use/make
 // variable with that id.
@@ -154,16 +156,16 @@ _.global.keys = function(val) {
 var scan = require('./scanner').scan,
     parse = require('./parser').parse,
     generate = require('./generator').generate,
-    file = process.argv[3],
+    file = (process.argv[3]),
     args = [],
-    runCode = (process.argv[2] === '-run'),
+    runCode = ((process.argv[2]) === '-run'),
     scanCall = function(tokens) {
         var result = ((tokens)?(parse(tokens)):(false));
-        ((result)?(generate(result, file, runCode, args)):(undefined));
+((result)?(generate(result, file, runCode, args)):(undefined));
     };
-var kby201 = range(4, len(process.argv));
-Object.keys(kby201).forEach(function(rwv570) {
-    var i = kby201[rwv570];
-    args.push(process.argv[i])
-});
+(function() {var _id1001 = [];var _id1003 = range(4, len(process.argv));
+keys(_id1003).forEach(function(_id1002) {
+    var i = _id1003[_id1002];
+    _id1001.push(args.push((process.argv[i])));
+});return _id1001})();
 scan(file, scanCall);
