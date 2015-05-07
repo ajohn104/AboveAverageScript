@@ -30,6 +30,7 @@ module.exports = function(env, at, next, debug) {
 var Exp16 = function() {
     this.prefix = "";
     this.val = null;
+    this.isSingular = function() { return this.val.isSingular();};
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -38,6 +39,9 @@ var Exp16 = function() {
     };
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
+        if(!this.isSingular()) {
+            // I really have no idea how I'm going to do this with the current structure.
+        }
         if(this.prefix !== "") {
             write('(' + this.prefix + ' ');
         }

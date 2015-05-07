@@ -1,69 +1,82 @@
+let NA = 'Not Applicable',
+    incomplete = 'incomplete',
+    NAforSupport = 'Support unnecessary',
+    NAIthink = 'Support probably not applicable',
+    unsupported = 'adv. expr\'s not supported',
+    completed = 'supported'
+
 let Checklist =
-    'Block':  '${incomplete}'
-    'Stmt':  '${incomplete}'
+    'Block':  '${NA}'
+    'Stmt':  '${NA}'
     'DeclareStmt':  '${incomplete}'
     'AssignStmt':  '${incomplete}'
-    'ConsumeStmt':  '${incomplete}'
-    'ReturnStmt':  '${incomplete}'
-    'ControlStmt':  '${incomplete}'
-    'IfStmt':  '${incomplete}'
-    'Loop':  '${incomplete}'
-    'WhileLoop':  '${incomplete}'
-    'DoWhile':  '${incomplete}'
+    'ConsumeStmt':  '${incomplete}'     // Don't forget, this should go as deep as it can to grab all possible values. Think matrices.
+    'ReturnStmt':  '${incomplete}'      // Highly unlikely this will support adv. expr's, but I'll leave it on the table for now.
+    'ControlStmt':  '${NA}'             // I still would like to support these with if expr's. Maybe.
+    'IfStmt':  '${incomplete}'          // Same problem as For. But that isn't to say that adv. expr's can't be used to make a single value.
+    'Loop':  '${NAforSupport}'
+    'WhileLoop':  '${NAforSupport}'
+    'DoWhile':  '${incomplete}'         // Like with For, I don't know how I feel about support here. Probably unsupported. Consider later.
     'While':  '${incomplete}'
-    'ForLoop':  '${incomplete}'
-    'ForIn':  '${incomplete}'
-    'ForColon':  '${incomplete}'
-    'For':  '${incomplete}'
-    'SwitchStmt':  '${incomplete}'
-    'Case':  '${incomplete}'
-    'Default':  '${incomplete}'
-    'NativeStmt':  '${incomplete}'
-    'Exp':  '${incomplete}'
-    'Exp1':  '${incomplete}'
-    'Exp2':  '${incomplete}'
-    'Exp3':  '${incomplete}'
-    'Exp4':  '${incomplete}'
-    'Exp5':  '${incomplete}'
-    'Exp6':  '${incomplete}'
-    'Exp7':  '${incomplete}'
-    'Exp8':  '${incomplete}'
-    'Exp9' :  '${incomplete}'
-    'Exp10':  '${incomplete}'
-    'Exp11':  '${incomplete}'
-    'Exp12':  '${incomplete}'
-    'Exp13':  '${incomplete}'
-    'Exp14':  '${incomplete}'
-    'Exp15':  '${incomplete}'
-    'Exp16':  '${incomplete}'
-    'Exp17':  '${incomplete}'
-    'Exp18':  '${incomplete}'
-    'BoolLit':  '${incomplete}'
-    'IntLit':  '${incomplete}'
-    'StringLit':  '${incomplete}'
-    'Func':  '${incomplete}'
-    'ObjectInline':  '${incomplete}'
-    'Prop':  '${incomplete}'
-    'PropInd':  '${incomplete}'
-    'ArrayLit':  '${incomplete}'
-    'ArrayCont':  '${incomplete}'
-    'AssignOp':  '${incomplete}'
-    'EqualOp':  '${incomplete}'
-    'CompareOp':  '${incomplete}'
-    'ShiftOp':  '${incomplete}'
-    'AddOp':  '${incomplete}'
-    'MulOp':  '${incomplete}'
-    'PrefixOp':  '${incomplete}'
-    'PostfixOp':  '${incomplete}'
+    'ForLoop':  '${NAforSupport}'
+    'ForIn':  '${NAforSupport}'         // Here, use of the adv. expr's are already dealt with by the expr's themselves. Probably.
+    'ForColon':  '${NAforSupport}'   
+    'For':  '${incomplete}'             // I'm really not sure whether to support it here or not. Consider later.
+    'SwitchStmt':  '${unsupported}'     // In some places, the adv. expr's simply don't make sense, so they are considered unsupported.
+    'Case':  '${unsupported}'
+    'Default':  '${NA}'
+    'NativeStmt':  '${NA}'
+    'Exp':  '${completed}'
+    'Exp1':  '${incomplete}'            // This also needs to better integrate with loops. It shouldn't even return undefined for loops.
+    'Exp2':  '${incomplete}'                // -> The issue pretty much lies with arrays and how it will place undefined in arrays a lot.
+    'Exp3':  '${incomplete}'                // -> Although, I never actually tested this so I could be wrong.
+    'Exp4':  '${completed}'
+    'Exp5':  '${completed}'
+    'Exp6':  '${completed}'
+    'Exp7':  '${completed}'
+    'Exp8':  '${completed}'
+    'Exp9' :  '${completed}'
+    'Exp10':  '${completed}'
+    'Exp11':  '${completed}'
+    'Exp12':  '${completed}'
+    'Exp13':  '${completed}'
+    'Exp14':  '${completed}'
+    'Exp15':  '${completed}'
+    'Exp16':  '${incomplete}'           // This one's gonna need extra care, or a nice restructuring of the code
+    'Exp17':  '${completed}'            // But reliable? Yet to be determined.
+    'Exp18':  '${incomplete}'           // Probably unnecessary, honestly
+    'BoolLit':  '${NA}'
+    'IntLit':  '${NA}'
+    'StringLit':  '${NA}'
+    'Func':  '${incomplete}'            // Support here is probably unnecessary, but give it more thought later anyways.
+    'ObjectInline':  '${NA}'
+    'Prop':  '${NAIthink}'              // A lot of these, such as Prop here, won't actually support or need to support the adv. expressions
+    'PropInd':  '${NAIthink}'           // Or at least, they won't need to bother with it since the exp will have already dealt with it.
+    'ArrayLit':  '${NAIthink}'
+    'ArrayCont':  '${completed}'
+    'AssignOp':  '${NA}'                // ...And some of these are just simple operators that don't give a hoot.
+    'EqualOp':  '${NA}'
+    'CompareOp':  '${NA}'
+    'ShiftOp':  '${NA}'
+    'AddOp':  '${NA}'
+    'MulOp':  '${NA}'
+    'PrefixOp':  '${NA}'
+    'PostfixOp':  '${NA}'
     'Call':  '${incomplete}'
-    'Id':  '${incomplete}'
-    'This':  '${incomplete}'
-    'Newline':  '${incomplete}'
-    'Indent':  '${incomplete}'
-    'Dedent':  '${incomplete}'
-    'RegExpLit':  '${incomplete}'
-    'EndOfFile':  '${incomplete}'
+    'Id':  '${NA}'
+    'This':  '${NA}'
+    'Newline':  '${NA}'
+    'Indent':  '${NA}'
+    'Dedent':  '${NA}'
+    'RegExpLit':  '${NA}'
+    'EndOfFile':  '${NA}'
     'ExpList':  '${incomplete}'
     'SetAssign':  '${incomplete}'
     'SetEqual':  '${incomplete}'
-    'ObjInd':  '${incomplete}'
+    'ObjInd':  '${NA}'
+
+log('Incomplete\'s remaining:')
+log('  ${type}') if status === incomplete for type, status in Checklist
+
+// Note: The parser/generator still needs to add found id's to the scope thing during parsing. That, and the built-ins.
+    // That's the best I can do, anyways.

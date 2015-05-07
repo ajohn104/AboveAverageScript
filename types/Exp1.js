@@ -51,6 +51,10 @@ var Exp1 = function() {
     this.val = null;
     this.condit = null;
     this.altval = null;
+    this.isSingular = function() {
+        if(!this.val.isSingular() || !this.altval.isSingular()) return false;
+        return true;
+    };
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);

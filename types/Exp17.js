@@ -71,6 +71,7 @@ module.exports = function(env, at, next, debug) {
 
 var Exp17 = function() {
     this.lastVal = null;
+    this.isSingular = function() { return this.lastVal.isSingular()};
     this.toString = function(indentlevel, indLvlHidden) {
         return this.lastVal.toString(indentlevel, indLvlHidden);
     };
@@ -84,6 +85,7 @@ var Exp17 = function() {
 var DotAccessor = function(key, obj) {
     this.key = key;
     this.object = obj;
+    this.isSingular = function() { return this.key.isSingular() && this.object.isSingular()};
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -94,9 +96,23 @@ var DotAccessor = function(key, obj) {
     };
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
-        this.object.compile(write, scope, 0, indentsHidden);
-        write('.');
-        this.key.compile(write, scope, 0, indentsHidden);
+        if(!this.object.isSingular()) {
+            var objStore = scope.randId();
+            var dataVar = scope.randId();
+            var objVar = scope.randId();
+
+            write('(function() {var ' + dataVar + ' = [];');
+            write('var ' + objStore + ' = ');
+            this.obj.compile(write, scope, 0, indentsHidden);
+            write(';' + dataVar + '.forEach(function(' + objVar + ') {'); // Probably wrong somewhere. I'm still not sure about the keys thing.
+            write(dataVar + '.push(' + objVar + '.');   // I think its supposed to be using symmetry but oh well.
+            this.key.compile(write, scope, 0, indentsHidden);
+            write(');return ' + dataVar + '})()');
+        } else {
+            this.object.compile(write, scope, 0, indentsHidden);
+            write('.');
+            this.key.compile(write, scope, 0, indentsHidden);
+        }
     };
 };
 
@@ -105,7 +121,7 @@ var BracketAccessor = function(keys, obj) {
     this.keys = keys;
     this.object = obj;
     this.isBraceAccess = true;
-    this.isSingular = function() { return this.keys.isSingular() && this.object.isSingular()};
+    this.isSingular = function() { return this.keys.isSingleProp() && this.object.isSingular()};
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -118,11 +134,13 @@ var BracketAccessor = function(keys, obj) {
         scope = scope.clone();
 
         if(this.isSingular()) {
+            write('(');
             this.object.compile(write, scope, 0, indentsHidden);
             this.keys.compile(write, scope, 0, indentsHidden);
+            write(')');
         } else {
             var objIsSingle = this.object.isSingular();
-            var keysAreSingle = this.keys.isSingular();
+            var keysAreSingle = this.keys.isSingleProp();
             var dataVar = scope.randId();
             var objStore = scope.randId();
             var objVar = scope.randId();
@@ -130,7 +148,7 @@ var BracketAccessor = function(keys, obj) {
             var keysVar = scope.randId();
             write('(function() {var ' + dataVar + ' = [];');
             write('var ' + objStore + ' = ');
-            this.obj.compile(write, scope, 0, indentsHidden);
+            this.object.compile(write, scope, 0, indentsHidden);
             write(';var ' + keysStore + ' = ');
             this.keys.compile(write, scope, 0, indentsHidden);
             write(';');
@@ -141,10 +159,10 @@ var BracketAccessor = function(keys, obj) {
             }
 
             if(keysAreSingle) {
-                write(dataVar + '.push(' + objVar + '[' + keysStore + '];');
+                write(dataVar + '.push(' + objVar + '[' + keysStore + ']);');
             } else {
                 write(keysStore + '.forEach(function(' + keysVar + ') {');
-                write(dataVar + '.push(' + objVar + '[' + keysStore + '];');
+                write(dataVar + '.push(' + objVar + '[' + keysVar + ']);');
                 write('});')
             }
             if(!objIsSingle) {
@@ -159,6 +177,7 @@ var BracketAccessor = function(keys, obj) {
 var FunctionCall = function(call, obj) {
     this.call = call;
     this.object = obj;
+    this.isSingular = function() { return this.object.isSingular(); };
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -168,9 +187,20 @@ var FunctionCall = function(call, obj) {
     };
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
-        //write('(');
-        this.object.compile(write, scope, 0, indentsHidden);
-        //write(')');
-        this.call.compile(write, scope, 0, indentsHidden);  
+        if(!this.object.isSingular()) {
+            var objStore = scope.randId();
+            var dataVar = scope.randId();
+            var objVar = scope.randId();
+            write('(function() {var ' + dataVar + ' = [];');
+            write('var ' + objStore + ' = ');
+            this.obj.compile(write, scope, 0, indentsHidden);
+            write(';' + dataVar + '.forEach(function(' + objVar + ') {'); // Probably wrong somewhere. I'm still not sure about the keys thing.
+            write(dataVar + '.push(' + objVar);   // I think its supposed to be using symmetry but oh well.
+            this.call.compile(write, scope, 0, indentsHidden);
+            write(');return ' + dataVar + '})()');
+        } else {
+            this.object.compile(write, scope, 0, indentsHidden);
+            this.call.compile(write, scope, 0, indentsHidden);  
+        }
     };
 };

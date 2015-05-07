@@ -37,6 +37,7 @@ module.exports = function(env, at, next, debug) {
 var Exp15 = function() {
     this.val = null;
     this.postfix = "";
+    this.isSingular = function() { return this.val.isSingular();};
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -45,12 +46,20 @@ var Exp15 = function() {
     };
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
-        if(this.postfix !== "") {
+        if(!this.isSingular()) {
+            var numId = scope.randId();
             write('(');
-        }
-        this.val.compile(write, scope, 0, indentsHidden);
-        if(this.postfix !== "") {
-            write(')' + this.postfix);
+            this.val.compile(write, scope, 0, indentsHidden);
+            write('.map(function(' + numId + ') { return ' + numId + this.postfix + ';})')
+            write(')');
+        } else {
+            if(this.postfix !== "") {
+                write('(');
+            }
+            this.val.compile(write, scope, 0, indentsHidden);
+            if(this.postfix !== "") {
+                write(')' + this.postfix);
+            }
         }
     };
 };

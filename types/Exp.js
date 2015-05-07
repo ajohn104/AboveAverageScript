@@ -55,7 +55,7 @@ var Exp = function() {
     this.isExp = true;
     this.isEnclosed = false;
     this.buried = undefined;
-    this.isSingular = this.val.isSingular;
+    this.isSingular = function() { return this.val.isSingular() };
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -72,8 +72,12 @@ var Exp = function() {
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
         var max = this.furtherExps.length;
+        var dataVar = scope.randId();
         if(this.isEnclosed) {
             write('(');
+        }
+        if(max > 0) {
+            write('(function() {var ' + dataVar + ' = [];' );
         }
         for(var i = 0; i < max; i++) {
             this.furtherExps[i].compile(write, scope, indents + i, indentsHidden + i);
@@ -81,9 +85,18 @@ var Exp = function() {
         }
         // write(scope.ind(indents) + 'IKCSPRASHUN'); -- deprecated
         write(scope.ind(indents + max));
+        if(max > 0) {
+            write(dataVar + '.push(');
+        }
         this.val.compile(write, scope, 0, indentsHidden + max);
+        if(max > 0) {
+            write(');');
+        }
         for(var j = max - 1; j >= 0; j--) {
-            write('\n' + scope.ind(indents + j) + '})');
+            write('\n' + scope.ind(indents + j) + '});');
+        }
+        if(max > 0) {
+            write('return ' + dataVar + '})()');
         }
         if(this.isEnclosed) {
             write(')');

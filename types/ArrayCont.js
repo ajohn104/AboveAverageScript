@@ -71,8 +71,18 @@ module.exports = function(env, at, next, debug) {
 var ArrayCont = function() {
     this.array = [];
     this.isSingular = function() {
-        return this.array.length === 1 && !this.array[0].isExp && this.array[0].isSingular();
+        return true;    // Because an array, by itself, is a single value.
     };
+    this.isSingleProp = function() {
+        return this.array.length === 1 && !this.array[0].isExp && this.array[0].isSingular();   // Because a prop list can have many values
+    };
+    this.isSimpleArray = function() {
+        if(this.isSingleProp()) return true;
+        for(var i = 0; i < this.array.length; i++) {
+            if(!this.array[i].isSingular() || this.array[i].isExp) return false;
+        }
+        return true;
+    }
     this.toString = function(indentlevel, indLvlHidden) {
         indentlevel = (typeof indentlevel === "undefined")?0:indentlevel;
         var indents = env.indents(indentlevel);
@@ -87,14 +97,24 @@ var ArrayCont = function() {
     this.compile = function(write, scope, indents, indentsHidden) {
         scope = scope.clone();
         var max = len(this.array);
-        write('[');
-        if(max > 0) {
+        if(this.isSimpleArray()) {
+            write('[');
+            if(max > 0) {
+                this.array[0].compile(write, scope, 0, indentsHidden);
+            }
+            for(var i = 1; i < max; i++) {
+                write(', ');
+                this.array[i].compile(write, scope, 0, indentsHidden);
+            }
+            write(']');
+        } else {
+            write('([].concat(');
             this.array[0].compile(write, scope, 0, indentsHidden);
+            for(var i = 1; i < max; i++) {
+                write(', ');
+                this.array[i].compile(write, scope, 0, indentsHidden);
+            }
+            write('))');
         }
-        for(var i = 1; i < max; i++) {
-            write(', ');
-            this.array[i].compile(write, scope, 0, indentsHidden);
-        }
-        write(']');
     };
 };
